@@ -134,13 +134,6 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 		GUICtrlSetState($chkWideEdge, $GUI_UNCHECKED)
 	EndIf
 
-	If $ichkBackground = 1 Then
-		GUICtrlSetState($chkBackground, $GUI_CHECKED)
-	Else
-		GUICtrlSetState($chkBackground, $GUI_UNCHECKED)
-	EndIf
-	chkBackground() ;Applies it to hidden button
-
 	If $ichkBotStop = 1 Then
 		GUICtrlSetState($chkBotStop, $GUI_CHECKED)
 	Else
@@ -149,11 +142,6 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	_GUICtrlComboBox_SetCurSel($cmbBotCommand, $icmbBotCommand)
 	_GUICtrlComboBox_SetCurSel($cmbBotCond, $icmbBotCond)
 
-	If $ichkForceBS = 1 Then
-		GUICtrlSetState($chkForceBS, $GUI_CHECKED)
-	Else
-		GUICtrlSetState($chkForceBS, $GUI_UNCHECKED)
-	EndIf
 	GUICtrlSetData($txtCapacity, $itxtcampCap)
 	GUICtrlSetData($txtSpellCap, $itxtspellCap)
 
@@ -258,9 +246,4 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 		GUICtrlSetState($chkDonateOnly, $GUI_UNCHECKED)
 	EndIf
 
-	If $ichkUpdate = 1 Then
-		GUICtrlSetState($chkUpdate, $GUI_CHECKED)
-	Else
-		GUICtrlSetState($chkUpdate, $GUI_UNCHECKED)
-	EndIf
 EndFunc   ;==>applyConfig

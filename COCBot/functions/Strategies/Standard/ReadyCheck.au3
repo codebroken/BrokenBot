@@ -235,7 +235,9 @@ Func Standard_Train($reset = False)
 	$troopFirstArch = 0
 	$troopSecondArch = 0
 
+	Local $BarrackControl
 	For $i = 0 To 3
+
 		If _Sleep(500) Then ExitLoop
 
 		ClickP($TopLeftClient) ;Click Away
@@ -256,8 +258,18 @@ Func Standard_Train($reset = False)
 			If _Sleep(1000) Then ExitLoop
 
 			If _GUICtrlComboBox_GetCurSel($cmbTroopComp) = 8 Then
+				Switch $i
+					Case 0
+						$BarrackControl = $cmbBarrack1
+					Case 1
+						$BarrackControl = $cmbBarrack2
+					Case 2
+						$BarrackControl = $cmbBarrack3
+					Case 3
+						$BarrackControl = $cmbBarrack4
+				EndSwitch
 				_CaptureRegion()
-				Switch $barrackTroop[$i]
+				Switch _GUICtrlComboBox_GetCurSel($BarrackControl)
 					Case 0
 						While _ColorCheck(_GetPixelColor(220, 320), Hex(0xF89683, 6), 20)
 							Click(220, 320, 75) ;Barbarian

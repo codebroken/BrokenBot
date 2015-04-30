@@ -4,7 +4,7 @@
 ; You **MAY NOT SOLICIT DONATIONS** from any project which includes any part of the code in this sub-directory without express written consent of BrokenBot.org
 ;
 Func checkupdate()
-	If $ichkUpdate = 1 Then
+	If IsChecked($chkUpdate) Then
 		Local $sFilePath = @TempDir & "\update.dat"
 
 		Local $hMasterVersion = InetGet("https://github.com/codebroken/BrokenBot/blob/master/BrokenBot.au3", $sFilePath, 3)

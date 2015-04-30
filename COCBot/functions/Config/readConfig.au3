@@ -80,9 +80,21 @@ Func readConfig() ;Reads config and sets it to the variables
 	;---------------------------------------------------------------------------------------
 	; Config settings ----------------------------------------------------------------------
 	;---------------------------------------------------------------------------------------
-	$ichkBackground = IniRead($config, "config", "Background", "0")
-	$ichkForceBS = IniRead($config, "config", "ForceBS", "0")
-	$ichkUpdate = IniRead($config, "config", "chkUpdate", "0")
+	If IniRead($config, "config", "Background", "0") = 1 Then
+		GUICtrlSetState($chkBackground, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkBackground, $GUI_UNCHECKED)
+	EndIf
+	If IniRead($config, "config", "ForceBS", "0") = 1 Then
+		GUICtrlSetState($chkForceBS, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkForceBS, $GUI_UNCHECKED)
+	EndIf
+	If IniRead($config, "config", "chkUpdate", "0") = 1 Then
+		GUICtrlSetState($chkUpdate, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkUpdate, $GUI_UNCHECKED)
+	EndIf
 
 	;---------------------------------------------------------------------------------------
 	; Base location settings ---------------------------------------------------------------

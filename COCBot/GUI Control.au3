@@ -422,16 +422,6 @@ Func btnHide()
 	EndIf
 EndFunc   ;==>btnHide
 
-Func chkBackground()
-	If IsChecked($chkBackground) Then
-		$ichkBackground = 1
-		GUICtrlSetState($btnHide, $GUI_ENABLE)
-	Else
-		$ichkBackground = 0
-		GUICtrlSetState($btnHide, $GUI_DISABLE)
-	EndIf
-EndFunc   ;==>chkBackground
-
 Func chkNoAttack()
 	If IsChecked($chkNoAttack) Then
 		$CurrentMode = $modeDonateTrain

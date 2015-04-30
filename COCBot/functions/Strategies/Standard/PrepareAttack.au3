@@ -10,24 +10,35 @@ Func Standard_PrepareAttack($remaining = False, $AttackMethod = 1) ;Assigns troo
 	_CaptureRegion()
 
 	Local $iAlgorithm = ($AttackMethod = 0) ? _GUICtrlComboBox_GetCurSel($cmbDeadAlgorithm) : _GUICtrlComboBox_GetCurSel($cmbAlgorithm)
+	Local $BarrackControl
 	For $i = 0 To 8
 		Local $troopKind = IdentifyTroopKind($i)
 		If $iAlgorithm = 8 Then
 			For $x = 0 To 3
+				Switch $i
+					Case 0
+						$BarrackControl = $cmbBarrack1
+					Case 1
+						$BarrackControl = $cmbBarrack2
+					Case 2
+						$BarrackControl = $cmbBarrack3
+					Case 3
+						$BarrackControl = $cmbBarrack4
+				EndSwitch
 				$troopKind = IdentifyTroopKind($i)
-				If $troopKind = $eBarbarian And $barrackTroop[$x] = 0 Then
+				If $troopKind = $eBarbarian And _GUICtrlComboBox_GetCurSel($BarrackControl) = 0 Then
 					$atkTroops[$i][0] = $troopKind
 					ExitLoop
-				ElseIf $troopKind = $eArcher And $barrackTroop[$x] = 1 Then
+				ElseIf $troopKind = $eArcher And _GUICtrlComboBox_GetCurSel($BarrackControl) = 1 Then
 					$atkTroops[$i][0] = $troopKind
 					ExitLoop
-				ElseIf $troopKind = $eGiant And $barrackTroop[$x] = 2 Then
+				ElseIf $troopKind = $eGiant And _GUICtrlComboBox_GetCurSel($BarrackControl) = 2 Then
 					$atkTroops[$i][0] = $troopKind
 					ExitLoop
-				ElseIf $troopKind = $eGoblin And $barrackTroop[$x] = 3 Then
+				ElseIf $troopKind = $eGoblin And _GUICtrlComboBox_GetCurSel($BarrackControl) = 3 Then
 					$atkTroops[$i][0] = $troopKind
 					ExitLoop
-				ElseIf $troopKind = $eWallbreaker And $barrackTroop[$x] = 4 Then
+				ElseIf $troopKind = $eWallbreaker And _GUICtrlComboBox_GetCurSel($BarrackControl) = 4 Then
 					$atkTroops[$i][0] = $troopKind
 					ExitLoop
 				ElseIf $troopKind = $eMinion And ($DarkBarrackTroop[0] = 0 Or $DarkBarrackTroop[1] = 0) Then
