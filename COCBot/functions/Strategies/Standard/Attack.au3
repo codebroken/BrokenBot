@@ -18,6 +18,16 @@ Func Standard_SetSleep($type)
 	EndSwitch
 EndFunc   ;==>Standard_SetSleep
 
+; Old mecanism, not used anymore
+Func Standard_OldDropTroop($troup, $position, $nbperspot)
+	SelectDropTroupe($troup) ;Select Troop
+	If _Sleep(100) Then Return
+	For $i = 0 To 4
+		Click($position[$i][0], $position[$i][1], $nbperspot, 1)
+		If _Sleep(50) Then Return
+	Next
+EndFunc   ;==>OldDropTroop
+
 ; improved function, that avoids to only drop on 5 discret drop points :
 Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1, $x = -1, $Center = 1)
 	Switch $troop
@@ -96,7 +106,7 @@ EndFunc   ;==>Standard_DropOnEdge
 
 Func Standard_DropOnEdges($troop, $nbSides, $number, $slotsPerEdge = 0, $miniEdge = False)
 	If $nbSides = 0 Or $number = 1 Then
-		OldDropTroop($troop, $Edges[0], $number);
+		Standard_OldDropTroop($troop, $Edges[0], $number);
 		Return
 	EndIf
 	If $nbSides < -1 Then Return
