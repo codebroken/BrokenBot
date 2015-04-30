@@ -1,4 +1,4 @@
-# Broken_Clashbot
+# BrokenBot - Open Source Clash of Clans bot
 
 ## Community
 Forums available for discussion at: http://brokenbot.org/
