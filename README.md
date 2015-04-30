@@ -14,6 +14,7 @@ Original source:
 
 Modification of v5.8 of bot originally available from http://clashbot.org/forums/index.php?/topic/1010-flawless-clashbot-release-58-recommended/
 
+
 Latest version: 2.0 - Beta release
 
 Latest stable version: 1.5.1
