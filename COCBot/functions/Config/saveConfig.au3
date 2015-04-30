@@ -91,12 +91,22 @@ Func saveConfig() ;Saves the controls settings to the config
 	;---------------------------------------------------------------------------------------
 	; Upgrade settings ---------------------------------------------------------------------
 	;---------------------------------------------------------------------------------------
-	$ichkWalls = IniRead($config, "upgrade", "auto-wall", "0")
-	$icmbWalls = IniRead($config, "upgrade", "walllvl", "0")
-	$iUseStorage = IniRead($config, "upgrade", "use-storage", "0")
-	$itxtWallMinGold = IniRead($config, "upgrade", "minwallgold", "0")
-	$itxtWallMinElixir = IniRead($config, "upgrade", "minwallelixir", "0")
-	$icmbTolerance = IniRead($config, "upgrade", "walltolerance", "0")
+	If GUICtrlRead($chkWalls) = $GUI_CHECKED Then
+		IniWrite($config, "other", "auto-wall", 1)
+	Else
+		IniWrite($config, "other", "auto-wall", 0)
+	EndIf
+	IniWrite($config, "other", "walllvl", _GUICtrlComboBox_GetCurSel($cmbWalls))
+	IniWrite($config, "other", "walltolerance", _GUICtrlComboBox_GetCurSel($cmbTolerance))
+	If GUICtrlRead($UseGold) = $GUI_CHECKED Then
+		IniWrite($config, "other", "use-storage", 0)
+	ElseIf GUICtrlRead($UseElixir) = $GUI_CHECKED Then
+		IniWrite($config, "other", "use-storage", 1)
+	ElseIf GUICtrlRead($UseGoldElix) = $GUI_CHECKED Then
+		IniWrite($config, "other", "use-storage", 2)
+	EndIf
+	IniWrite($config, "other", "minwallgold", GUICtrlRead($txtWallMinGold))
+	IniWrite($config, "other", "minwallelixir", GUICtrlRead($txtWallMinElixir))
 
 	; Relics below...in save but not read
 	If IsChecked($chkUpgrade1) Then
@@ -272,32 +282,6 @@ Func saveConfig() ;Saves the controls settings to the config
 	;---------------------------------------------------------------------------------------
 	; Base location settings ---------------------------------------------------------------
 	;---------------------------------------------------------------------------------------
-	$CCPos[0] = IniRead($config, "position", "xCCPos", "0")
-	$CCPos[1] = IniRead($config, "position", "yCCPos", "0")
-	$frmBotPosX = IniRead($config, "position", "frmBotPosX", "100")
-	$frmBotPosY = IniRead($config, "position", "frmBotPosY", "100")
-	$TownHallPos[0] = IniRead($config, "position", "xTownHall", "-1")
-	$TownHallPos[1] = IniRead($config, "position", "yTownHall", "-1")
-	$ArmyPos[0] = IniRead($config, "position", "xArmy", "0")
-	$ArmyPos[1] = IniRead($config, "position", "yArmy", "0")
-	$SpellPos[0] = IniRead($config, "position", "xSpell", "-1")
-	$SpellPos[1] = IniRead($config, "position", "ySpell", "-1")
-	$KingPos[0] = IniRead($config, "position", "xKing", "0")
-	$KingPos[1] = IniRead($config, "position", "yKing", "0")
-	$QueenPos[0] = IniRead($config, "position", "xQueen", "0")
-	$QueenPos[1] = IniRead($config, "position", "yQueen", "0")
-	For $i = 0 To 3 ;Covers all 4 Barracks
-		$barrackPos[$i][0] = IniRead($config, "position", "xBarrack" & $i + 1, "0")
-		$barrackPos[$i][1] = IniRead($config, "position", "yBarrack" & $i + 1, "0")
-	Next
-	For $i = 0 To 1 ;Cover 2 Dark Barracks
-		$DarkBarrackPos[$i][0] = IniRead($config, "position", "xDarkBarrack" & $i + 1, "0")
-		$DarkBarrackPos[$i][1] = IniRead($config, "position", "yDarkBarrack" & $i + 1, "0")
-	Next
-	For $i = 0 To 16 ;Covers all Collectors
-		$collectorPos[$i][0] = IniRead($config, "position", "xCollector" & $i + 1, "0")
-		$collectorPos[$i][1] = IniRead($config, "position", "yCollector" & $i + 1, "0")
-	Next
 	IniWrite($config, "position", "xCCPos", $CCPos[0])
 	IniWrite($config, "position", "yCCPos", $CCPos[1])
 	Local $frmBotPos = WinGetPos($sBotTitle)
