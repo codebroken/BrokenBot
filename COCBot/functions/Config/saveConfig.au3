@@ -264,19 +264,19 @@ Func saveConfig() ;Saves the controls settings to the config
 	; Config settings ----------------------------------------------------------------------
 	;---------------------------------------------------------------------------------------
 	If IsChecked($chkBackground) Then
-		IniWrite($config, "general", "Background", 1)
+		IniWrite($config, "config", "Background", 1)
 	Else
-		IniWrite($config, "general", "Background", 0)
+		IniWrite($config, "config", "Background", 0)
 	EndIf
 	If IsChecked($chkForceBS) Then
-		IniWrite($config, "general", "ForceBS", 1)
+		IniWrite($config, "config", "ForceBS", 1)
 	Else
-		IniWrite($config, "general", "ForceBS", 0)
+		IniWrite($config, "config", "ForceBS", 0)
 	EndIf
 	If IsChecked($chkUpdate) Then
-		IniWrite($config, "general", "chkUpdate", 1)
+		IniWrite($config, "config", "chkUpdate", 1)
 	Else
-		IniWrite($config, "general", "chkUpdate", 0)
+		IniWrite($config, "config", "chkUpdate", 0)
 	EndIf
 
 	;---------------------------------------------------------------------------------------

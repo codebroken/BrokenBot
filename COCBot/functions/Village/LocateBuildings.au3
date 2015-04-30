@@ -17,7 +17,6 @@ Func LocateBarrack()
 				Next
 				ExitLoop (2)
 			EndIf
-			If _Sleep(500) Then ExitLoop
 			$MsgBox = MsgBox(6 + 262144, "Locate second barrack", "Click Continue then click on your second barrack. Cancel if not available. Try again to start over.", 0, $frmBot)
 			If $MsgBox = 11 Then
 				$barrackPos[1][0] = FindPos()[0]
@@ -31,7 +30,6 @@ Func LocateBarrack()
 				Next
 				ExitLoop (2)
 			EndIf
-			If _Sleep(500) Then ExitLoop
 			$MsgBox = MsgBox(6 + 262144, "Locate third barrack", "Click Continue then click on your third barrack. Cancel if not available. Try again to start over.", 0, $frmBot)
 			If $MsgBox = 11 Then
 				$barrackPos[2][0] = FindPos()[0]
@@ -45,7 +43,6 @@ Func LocateBarrack()
 				Next
 				ExitLoop (2)
 			EndIf
-			If _Sleep(500) Then ExitLoop
 			$MsgBox = MsgBox(6 + 262144, "Locate fourth barrack", "Click Continue then click on your fourth barrack. Cancel if not available. Try again to start over.", 0, $frmBot)
 			If $MsgBox = 11 Then
 				$barrackPos[3][0] = FindPos()[0]

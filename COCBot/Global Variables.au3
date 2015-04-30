@@ -237,8 +237,6 @@ Global $frmBotPosY ; Position Y of the GUI
 Global $Hide = False ; If hidden or not
 
 Global $firstrun = True
-Global $chkUpdate
-Global $ichkUpdate
 Global $btnBugRep
 
 Global Enum $modeDonateTrain, $modeDonate, $modeExperience, $modeNormal = 9
@@ -250,7 +248,6 @@ Global $TimeToStop = -1
 
 Global $itxtMinTrophy ; Trophy after drop
 Global $itxtMaxTrophy ; Max trophy before drop trophy
-Global $ichkBackground ; Background mode enabled disabled
 Global $ichkForceBS = 0
 Global $ichkNoAttack = 0, $ichkDonateOnly = 0
 Global $collectorPos[17][2] ;Positions of each collectors
