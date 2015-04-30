@@ -1,0 +1,30 @@
+##################################################
+## Remove files not part of BrokenBot base code ##
+##################################################
+
+AllTowns/
+Attacks/
+Debug/
+logs/
+Loots/
+*.ini
+
+######################
+## Windows detritus ##
+######################
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Autoit BAK file
+*.bak
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Mac crap
+.DS_Store
