@@ -17,7 +17,7 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 	Local $hCtrl = $lParam
 	#forceref $hWind, $iMsg, $wParam, $lParam
 
- 	If @error Then Return
+	If @error Then Return
 	If $hWind <> $frmAttackConfig Then
 		Switch $iMsg
 			Case 273
@@ -118,7 +118,7 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 							ControlHide("", "", $txtLog)
 						EndIf
 					Case Else
-						EndSwitch
+				EndSwitch
 			Case 274
 				Switch $wParam
 					Case 0xf060
@@ -131,7 +131,7 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 		EndSwitch
 	Else
 		If IsArray($PluginEvents) Then
-			For $i = 1 to $PluginEvents[0][0]
+			For $i = 1 To $PluginEvents[0][0]
 				If $nID = $PluginEvents[$i][0] And $nNotifyCode = $PluginEvents[$i][1] Then
 					$strPlugInInUse = IniRead($dirStrat & GUICtrlRead($lstStrategies) & ".ini", "plugin", "name", "")
 					SetLOG($strPlugInInUse & $PluginEvents[$i][2])
@@ -229,7 +229,7 @@ Func btnPause()
 	Else
 		GUICtrlSetData($btnPause, "Pause")
 	EndIf
-EndFunc
+EndFunc   ;==>btnPause
 
 Func btnAtkNow()
 	$AttackNow = True
@@ -442,9 +442,9 @@ Func chkNoAttack()
 		EndIf
 		$CurrentMode = $modeDonate
 		SetLog("~~~Donate Only Activated~~~", $COLOR_PURPLE)
-     ElseIf IsChecked($expMode) Then
+	ElseIf IsChecked($expMode) Then
 		If IsChecked($lblpushbulletenabled) Then
-            SetLog("PushBullet is disabled !!!", $COLOR_RED)
+			SetLog("PushBullet is disabled !!!", $COLOR_RED)
 		EndIf
 		$CurrentMode = $modeExperience
 		SetLog("~~~Goblin Mode Activated~~~", $COLOR_PURPLE)
@@ -620,22 +620,22 @@ Func btnBugRep()
 	$iLines = _GUICtrlRichEdit_GetLineCount($txtLog)
 	$iLines = $iLines - 100
 	If $iLines < 1 Then $iLines = 1
-	For $dummy = $iLines to _GUICtrlRichEdit_GetLineCount($txtLog)
-		if $dummy > $iLines Then
-			GUICtrlSetData($inpLog, GUICtrlRead($inpLog) & @CRLF & _GUICtrlRichEdit_GetTextInLine($txtLog,$dummy))
+	For $dummy = $iLines To _GUICtrlRichEdit_GetLineCount($txtLog)
+		If $dummy > $iLines Then
+			GUICtrlSetData($inpLog, GUICtrlRead($inpLog) & @CRLF & _GUICtrlRichEdit_GetTextInLine($txtLog, $dummy))
 		Else
-			GUICtrlSetData($inpLog, _GUICtrlRichEdit_GetTextInLine($txtLog,$dummy))
+			GUICtrlSetData($inpLog, _GUICtrlRichEdit_GetTextInLine($txtLog, $dummy))
 		EndIf
 	Next
 
 	GUICtrlSetData($inpSettings, "")
-	$firstLine=True
+	$firstLine = True
 	If FileExists($config) Then
 		$hConfig = FileOpen($config)
 		While True
 			$strNextLine = FileReadLine($hConfig)
-			if @error Then ExitLoop
-			if StringInStr($strNextLine, "accounttoken=") Then
+			If @error Then ExitLoop
+			If StringInStr($strNextLine, "accounttoken=") Then
 				$strNextLine = "accounttoken=REDACTED"
 			EndIf
 			If Not $firstLine Then
@@ -653,11 +653,11 @@ Func btnBugRep()
 	GUISetState(@SW_SHOW, $frmBugReport)
 	WinActivate($frmBugReport)
 
-EndFunc
+EndFunc   ;==>btnBugRep
 
 Func openWebsite()
 	ShellExecute("http://www.brokenbot.org")
-EndFunc
+EndFunc   ;==>openWebsite
 
 Func _btnRefresh()
 	$searchfile = FileFindFirstFile($dirStrat & "*.ini")
@@ -667,20 +667,20 @@ Func _btnRefresh()
 		If @error Then ExitLoop
 		$strPlugInRead = IniRead($dirStrat & $newfile, "plugin", "name", "")
 		$arStrats = StringSplit($StratNames, "|")
-		For $i=1 to $arStrats[0]
-			If $arStrats[$i]=$strPlugInRead Then
+		For $i = 1 To $arStrats[0]
+			If $arStrats[$i] = $strPlugInRead Then
 				$foundfiles = $foundfiles & StringLeft($newfile, StringLen($newfile) - 4) & "|"
 				ExitLoop
 			EndIf
 		Next
 	WEnd
 	FileClose($searchfile)
-	If StringLen($foundfiles)>0 Then
+	If StringLen($foundfiles) > 0 Then
 		$foundfiles = StringLeft($foundfiles, StringLen($foundfiles) - 1)
 	EndIf
 	GUICtrlSetData($lstStrategies, "")
 	GUICtrlSetData($lstStrategies, $foundfiles)
-EndFunc
+EndFunc   ;==>_btnRefresh
 
 Func _btnSaveStrat($Name = "")
 	$strPlugInInUse = IniRead($dirStrat & GUICtrlRead($lstStrategies) & ".ini", "plugin", "name", "")
@@ -701,7 +701,7 @@ Func _btnSaveStrat($Name = "")
 			EndIf
 		EndIf
 	EndIf
-EndFunc
+EndFunc   ;==>_btnSaveStrat
 
 Func _lstStrategies()
 	If GUICtrlRead($lstStrategies) <> $prevSelection Then
@@ -712,5 +712,5 @@ Func _lstStrategies()
 		$DefaultTab = Call($strPlugInInUse & "_LoadGUI")
 		If _GUICtrlTab_GetCurSel($tabMain) = 1 Then GUISetState(@SW_SHOW, $frmAttackConfig)
 	EndIf
-EndFunc
+EndFunc   ;==>_lstStrategies
 

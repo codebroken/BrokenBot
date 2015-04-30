@@ -46,15 +46,15 @@ Func BoostAllBuilding()
 			Click($DarkBarrackPos[0][0], $DarkBarrackPos[0][1]) ;Click Dark Barrack 1
 			If _Sleep(500) Then Return
 			BoostBuilding()
-		 EndIf
+		EndIf
 
-		 If GUICtrlRead($chkBoostDB2) = 1 Then; Dark Barrack 2
+		If GUICtrlRead($chkBoostDB2) = 1 Then; Dark Barrack 2
 			SetLog("Boosting Dark Barrack 2...", $COLOR_BLUE)
 			Click($DarkBarrackPos[1][0], $DarkBarrackPos[1][1]) ;Click Dark Barrack 2
 			If _Sleep(500) Then Return
 			BoostBuilding()
-		 EndIf
-		 
+		EndIf
+		
 		If GUICtrlRead($chkBoostKing) = 1 Then; King Altar
 			If $KingPos[0] = "" Then
 				LocateKingAltar()
@@ -88,10 +88,10 @@ Func BoostAllBuilding()
 				If _Sleep(2000) Then Return
 				ClickP($TopLeftClient) ;Click Away
 			EndIf
-				SetLog("Boosting Spell Factory...", $COLOR_BLUE)
-				Click($SpellPos[0], $SpellPos[1]) ;Click Spell Factory
-				If _Sleep(500) Then Return
-				BoostSpells()
+			SetLog("Boosting Spell Factory...", $COLOR_BLUE)
+			Click($SpellPos[0], $SpellPos[1]) ;Click Spell Factory
+			If _Sleep(500) Then Return
+			BoostSpells()
 		EndIf
 
 		If $BoostAll >= 1 Then
@@ -134,11 +134,11 @@ Func BoostSpells()
 	_CaptureRegion()
 	Local $Boost = _PixelSearch(355, 608, 362, 610, Hex(0xA1A084, 6), 10) ;Check Boost
 	If IsArray($Boost) Then
-	  If GUICtrlRead($txtSpellCap) = 5 Then
-  		Click(430, 608) ;Click Boost for Spell Factory lvl5
-	  Else
-		Click(355, 608) ;Click Boost for Not Spell Factory lvl5
-	  EndIf
+		If GUICtrlRead($txtSpellCap) = 5 Then
+			Click(430, 608) ;Click Boost for Spell Factory lvl5
+		Else
+			Click(355, 608) ;Click Boost for Not Spell Factory lvl5
+		EndIf
 		If _Sleep(1000) Then Return
 		_CaptureRegion()
 		If _ColorCheck(_GetPixelColor(420, 375), Hex(0xd2ec78, 6), 20) Then ;Confirm Message
@@ -161,4 +161,4 @@ Func BoostSpells()
 		SetLog("Spells are already Boosted", $COLOR_ORANGE)
 		If _Sleep(1000) Then Return
 	EndIf
-EndFunc
+EndFunc   ;==>BoostSpells

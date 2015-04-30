@@ -780,7 +780,7 @@ Func getChar(ByRef $x, $y)
 	Next
 	$x -= 3
 
-    ;============================Numbers on requests as strings ======================================================
+	;============================Numbers on requests as strings ======================================================
 	;search for '1'
 	$width = 2
 	Local $c1 = Hex(0xFBFBFB, 6), $c2 = Hex(0xBBBCBB, 6), $c3 = Hex(0xFFFFFF, 6)

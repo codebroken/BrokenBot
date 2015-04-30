@@ -72,4 +72,4 @@ Func BotStopped($CheckLimits = True)
 	Else
 		Return False
 	EndIf
-EndFunc   ;==>BotCommand
+EndFunc   ;==>BotStopped

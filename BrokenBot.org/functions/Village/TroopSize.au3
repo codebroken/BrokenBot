@@ -7,37 +7,37 @@
 
 Func getTroopSize($troop)
 	Switch $troop
-		Case 0,"barb","barbarian","B","Ba"
-			return 1
-		Case 1,"arch","archer","Ar","Arch"
-			return 1
-		Case 2,"gob","goblin","Gob"
-			return 1
-		Case 3,"giant","Gi","G"
-			return 5
-		Case 4,"Wa","WB","wb","wall breaker"
-			return 2
-		Case 5,"loon","balloon","Loon"
-			return 5
-		Case 6,"wiz","wizard"
-			return 4
-		Case 7,"He","Heal","healer"
-			return 14
-		Case 8,"drag","dragon"
-			return 20
-		Case 9,"Pe","pekka"
-			return 25
-		Case 10,"min","minion","Min"
-			return 2
-		Case 11,"hog","hogger","hog rider","pigger","Ho"
-			return 5
-		Case 12,"valk","valkyrie","Val"
-			return 1
-		Case 13,"Go","golem"
-			return 30
-		Case 14,"witch"
-			return 12
+		Case 0, "barb", "barbarian", "B", "Ba"
+			Return 1
+		Case 1, "arch", "archer", "Ar", "Arch"
+			Return 1
+		Case 2, "gob", "goblin", "Gob"
+			Return 1
+		Case 3, "giant", "Gi", "G"
+			Return 5
+		Case 4, "Wa", "WB", "wb", "wall breaker"
+			Return 2
+		Case 5, "loon", "balloon", "Loon"
+			Return 5
+		Case 6, "wiz", "wizard"
+			Return 4
+		Case 7, "He", "Heal", "healer"
+			Return 14
+		Case 8, "drag", "dragon"
+			Return 20
+		Case 9, "Pe", "pekka"
+			Return 25
+		Case 10, "min", "minion", "Min"
+			Return 2
+		Case 11, "hog", "hogger", "hog rider", "pigger", "Ho"
+			Return 5
+		Case 12, "valk", "valkyrie", "Val"
+			Return 1
+		Case 13, "Go", "golem"
+			Return 30
+		Case 14, "witch"
+			Return 12
 		Case Else
-			return 999
+			Return 999
 	EndSwitch
-EndFunc
+EndFunc   ;==>getTroopSize

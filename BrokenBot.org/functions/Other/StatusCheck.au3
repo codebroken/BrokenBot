@@ -23,5 +23,5 @@ Func StatusCheck($OnMainScreen = True, $WriteLog = False, $maxDelay = 1)
 	Else
 		Return False
 	EndIf
-EndFunc
+EndFunc   ;==>StatusCheck
 

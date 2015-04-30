@@ -60,8 +60,8 @@ Func Donate_CheckArmyCamp()
 					If ($CurWB = 0 And $FirstStart) Then $CurWB -= $TroopQ
 					$TroopName = "Wallbreakers"
 				ElseIf _ColorCheck($TroopKind, Hex(0x131D38, 6), 20) Then
-					   If ($FirstStart) Then $CurMinion -= $TroopQ
-					   $TroopName = "Minions"
+					If ($FirstStart) Then $CurMinion -= $TroopQ
+					$TroopName = "Minions"
 				ElseIf _ColorCheck($TroopKind2, Hex(0x212018, 6), 20) Then
 					If ($FirstStart) Then $CurHog -= $TroopQ
 					$TroopName = "Hogs"
@@ -76,4 +76,4 @@ Func Donate_CheckArmyCamp()
 		$FirstCampView = True
 	EndIf
 	Return $fullArmy
-EndFunc   ;==>CheckArmyCamp
+EndFunc   ;==>Donate_CheckArmyCamp

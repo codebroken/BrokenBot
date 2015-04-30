@@ -5,7 +5,7 @@
 ;
 Func _PluginDefaults()
 	$arStrats = StringSplit($StratNames, "|")
-	For $i=1 to $arStrats[0]
+	For $i = 1 To $arStrats[0]
 		$searchfile = FileFindFirstFile($dirStrat & "*.ini")
 		$found = False
 		While True
@@ -25,4 +25,4 @@ Func _PluginDefaults()
 		EndIf
 		FileClose($searchfile)
 	Next
-EndFunc
+EndFunc   ;==>_PluginDefaults

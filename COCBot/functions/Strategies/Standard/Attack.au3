@@ -16,7 +16,7 @@ Func Standard_SetSleep($type)
 				Return ($icmbWaveDelay + 1) * 100
 			EndIf
 	EndSwitch
-EndFunc   ;==>SetSleep
+EndFunc   ;==>Standard_SetSleep
 
 ; improved function, that avoids to only drop on 5 discret drop points :
 Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1, $x = -1, $Center = 1)
@@ -92,7 +92,7 @@ Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1,
 			If _Sleep(Standard_SetSleep(0)) Then Return
 		Next
 	EndIf
-EndFunc   ;==>DropOnEdge
+EndFunc   ;==>Standard_DropOnEdge
 
 Func Standard_DropOnEdges($troop, $nbSides, $number, $slotsPerEdge = 0, $miniEdge = False)
 	If $nbSides = 0 Or $number = 1 Then
@@ -225,7 +225,7 @@ Func Standard_DropOnEdges($troop, $nbSides, $number, $slotsPerEdge = 0, $miniEdg
 			Standard_DropOnEdge($troop, $edgeA, $nbTroopsPerEdge, $slotsPerEdge, $edgeB, -1, $AimTH)
 		EndIf
 	EndIf
-EndFunc   ;==>DropOnEdges
+EndFunc   ;==>Standard_DropOnEdges
 
 Func Standard_LaunchTroop($troopKind, $nbSides, $waveNb, $maxWaveNb, $slotsPerEdge = 0, $miniEdge = False)
 	Local $troop = -1
@@ -253,7 +253,7 @@ Func Standard_LaunchTroop($troopKind, $nbSides, $waveNb, $maxWaveNb, $slotsPerEd
 	SetLog("Dropping " & $waveName & " wave of " & $troopNb & " " & $name, $COLOR_BLUE)
 	Standard_DropOnEdges($troop, $nbSides, $troopNb, $slotsPerEdge, $miniEdge)
 	Return True
-EndFunc   ;==>LaunchTroop
+EndFunc   ;==>Standard_LaunchTroop
 
 Func Standard_Attack($AttackMethod = 1)
 
@@ -270,7 +270,7 @@ Func Standard_Attack($AttackMethod = 1)
 	$pQueen = _GDIPlus_PenCreate(0xFF9D58E9, 1)
 	$pCC = _GDIPlus_PenCreate(0xFFFEF8F7, 1)
 
-	If $ichkAvoidEdge=1 Then SeekEdges()
+	If $ichkAvoidEdge = 1 Then SeekEdges()
 
 	If $AttackMethod = 2 Then
 		SetLog("~Nuking the dark elixir storage", $COLOR_BLUE)
@@ -503,7 +503,7 @@ Func Standard_Attack($AttackMethod = 1)
 		; Check resources
 		$Resources = GetResources(True)
 		; Nuke DE if desired
-		If ($SpellQty >= GUICtrlRead($txtSpellNumber)) And  Number($Resources[4])>= Number(GUICtrlRead($txtDENukeLimit)) And IsChecked($chkNukeAttacking) Then
+		If ($SpellQty >= GUICtrlRead($txtSpellNumber)) And Number($Resources[4]) >= Number(GUICtrlRead($txtDENukeLimit)) And IsChecked($chkNukeAttacking) Then
 			SetLog("~Nuking the dark elixir storage", $COLOR_BLUE)
 			Standard_DropNukes()
 		EndIf
@@ -518,7 +518,7 @@ Func Standard_Attack($AttackMethod = 1)
 				If $i = $eBarbarian Or $i = $eArcher Or $i = $eMinion Or $i = $eHog Or $i = $eValkyrie Then
 					Standard_LaunchTroop($i, (($mixedMode) ? 1 : $nbSides), 0, 1)
 				Else
-					If $i <> $eLSpell then Standard_LaunchTroop($i, $nbSides, 0, 1, 2)
+					If $i <> $eLSpell Then Standard_LaunchTroop($i, $nbSides, 0, 1, 2)
 				EndIf
 				If _Sleep(500) Then Return
 			Next
@@ -526,8 +526,8 @@ Func Standard_Attack($AttackMethod = 1)
 
 		;Activate KQ's power if deployed
 		Local $QueenUsed = ($AttackMethod = 0) ? (IsChecked($chkDeadUseQueen) ? (True) : (False)) : (IsChecked($chkUseQueen) ? (True) : (False))
-		Local $KingUsed = ($AttackMethod = 0) ? (IsChecked($chkDeadUseKing) ?  (True) : (False)) : (IsChecked($chkUseKing) ? (True) : (False))
-		If $KingUsed or $QueenUsed Then
+		Local $KingUsed = ($AttackMethod = 0) ? (IsChecked($chkDeadUseKing) ? (True) : (False)) : (IsChecked($chkUseKing) ? (True) : (False))
+		If $KingUsed Or $QueenUsed Then
 			If Number(GUICtrlRead($txtKingSkill)) < Number(GUICtrlRead($txtQueenSkill)) Then
 				If $King <> -1 Then
 					While True
@@ -579,7 +579,7 @@ Func Standard_Attack($AttackMethod = 1)
 	EndIf
 
 	If $TakeAttackSnapShot = 1 Then
-		$AttackFile = @YEAR & @MON & @MDAY & @HOUR & @MIN & @SEC & "-TH-" & $THLoc & ((($THquadrant > 0) and ($THquadrant < 10)) ? ("-Q" & $THquadrant) : ("")) & (($AttackMethod = 0) ? ("-Dead-") : ("-Live")) & ".jpg"
+		$AttackFile = @YEAR & @MON & @MDAY & @HOUR & @MIN & @SEC & "-TH-" & $THLoc & ((($THquadrant > 0) And ($THquadrant < 10)) ? ("-Q" & $THquadrant) : ("")) & (($AttackMethod = 0) ? ("-Dead-") : ("-Live")) & ".jpg"
 		_GDIPlus_ImageSaveToFile($hAttackBitmap, $dirAttack & $AttackFile)
 		If _Sleep(2000) Then Return
 		If $PushBulletEnabled = 1 And $PushBulletattacktype = 1 Then
@@ -587,7 +587,7 @@ Func Standard_Attack($AttackMethod = 1)
 		EndIf
 	EndIf
 	_GDIPlus_ImageDispose($hAttackBitmap)
-EndFunc   ;==>algorithm_AllTroops
+EndFunc   ;==>Standard_Attack
 
 Func Standard_DropNukes()
 	If checkDarkElix() Then
@@ -614,7 +614,7 @@ Func Standard_DropNukes()
 			Until $nSpellQty = 0 Or $z = 100
 		EndIf
 	EndIf
-EndFunc   ;==>DropNukes
+EndFunc   ;==>Standard_DropNukes
 
 ;Drops Clan Castle troops, given the slot and x, y coordinates.
 
@@ -627,7 +627,7 @@ Func Standard_dropCC($x, $y, $slot, $AttackMethod = 1, $CenterLoc = 1) ;Drop cla
 		Click($x, $y, 1, 500, $CenterLoc, 30)
 		_GDIPlus_GraphicsDrawEllipse($Buffer, $x - 4, $y - 4, 8, 8, $pCC)
 	EndIf
-EndFunc   ;==>dropCC
+EndFunc   ;==>Standard_dropCC
 
 ;Will drop heroes in a specific coordinates, only if slot is not -1
 ;Only drops when option is clicked.
@@ -661,4 +661,4 @@ Func Standard_dropHeroes($x, $y, $KingSlot = -1, $QueenSlot = -1, $AttackMethod 
 
 		ExitLoop
 	WEnd
-EndFunc   ;==>dropHeroes
+EndFunc   ;==>Standard_dropHeroes

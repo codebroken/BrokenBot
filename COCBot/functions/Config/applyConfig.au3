@@ -42,10 +42,10 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 		GUICtrlSetState($chkDonateAllGiants, $GUI_UNCHECKED)
 	EndIf
 	If IniRead($config, "donate", "gtfo", "0") = 1 Then
-                GUICtrlSetState($gtfo, $GUI_CHECKED)
-        Else
-                GUICtrlSetState($gtfo, $GUI_UNCHECKED)
-        EndIf
+		GUICtrlSetState($gtfo, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($gtfo, $GUI_UNCHECKED)
+	EndIf
 
 
 	GUICtrlSetData($txtDonateBarbarians, $itxtDonateBarbarians)

@@ -15,12 +15,12 @@ Func Click($x, $y, $times = 1, $speed = 0, $CenteredOn = 0, $BufferDist = 20)
 			If $times <> 1 Then
 				For $i = 0 To ($times - 1)
 					ControlClick($Title, "", "", "left", "1", $x, $y)
-					_GDIPlus_GraphicsDrawEllipse($Buffer, $x-2, $y - 2, 4, 4, $Pen)
+					_GDIPlus_GraphicsDrawEllipse($Buffer, $x - 2, $y - 2, 4, 4, $Pen)
 					If _Sleep($speed, False) Then ExitLoop
 				Next
 			Else
 				ControlClick($Title, "", "", "left", "1", $x, $y)
-				_GDIPlus_GraphicsDrawEllipse($Buffer, $x-2, $y - 2, 4, 4, $Pen)
+				_GDIPlus_GraphicsDrawEllipse($Buffer, $x - 2, $y - 2, 4, 4, $Pen)
 			EndIf
 		EndIf
 	EndIf

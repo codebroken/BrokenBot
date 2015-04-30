@@ -1,163 +1,163 @@
 Func Standard_LoadConfig()
 	$configFile = $dirStrat & GUICtrlRead($lstStrategies) & ".ini"
 	;Search Settings------------------------------------------------------------------------
-	If IniRead($configfile, "search", "DeadActivate", "0") = 1 Then
+	If IniRead($configFile, "search", "DeadActivate", "0") = 1 Then
 		GUICtrlSetState($chkDeadActivate, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkDeadActivate, $GUI_UNCHECKED)
 	EndIf
-	If IniRead($configfile, "search", "AnyActivate", "0") = 1 Then
+	If IniRead($configFile, "search", "AnyActivate", "0") = 1 Then
 		GUICtrlSetState($chkAnyActivate, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkAnyActivate, $GUI_UNCHECKED)
 	EndIf
-	GUICtrlSetData($txtDeadMinGold, IniRead($configfile, "search", "searchDeadGold", "50000"))
-	GUICtrlSetData($txtDeadMinElixir, IniRead($configfile, "search", "searchDeadElixir", "50000"))
-	GUICtrlSetData($txtDeadMinDarkElixir, IniRead($configfile, "search", "searchDeadDark", "0"))
-	GUICtrlSetData($txtDeadMinTrophy, IniRead($configfile, "search", "searchDeadTrophy", "0"))
-	GUICtrlSetData($txtMinGold, IniRead($configfile, "search", "searchGold", "80000"))
-	GUICtrlSetData($txtMinElixir, IniRead($configfile, "search", "searchElixir", "80000"))
-	GUICtrlSetData($txtMinDarkElixir, IniRead($configfile, "search", "searchDark", "0"))
-	GUICtrlSetData($txtMinTrophy, IniRead($configfile, "search", "searchTrophy", "0"))
-	_GUICtrlComboBox_SetCurSel($cmbAny, IniRead($configfile, "search", "AnyAndOr", "0"))
-	_GUICtrlComboBox_SetCurSel($cmbDead, IniRead($configfile, "search", "DeadAndOr", "0"))
+	GUICtrlSetData($txtDeadMinGold, IniRead($configFile, "search", "searchDeadGold", "50000"))
+	GUICtrlSetData($txtDeadMinElixir, IniRead($configFile, "search", "searchDeadElixir", "50000"))
+	GUICtrlSetData($txtDeadMinDarkElixir, IniRead($configFile, "search", "searchDeadDark", "0"))
+	GUICtrlSetData($txtDeadMinTrophy, IniRead($configFile, "search", "searchDeadTrophy", "0"))
+	GUICtrlSetData($txtMinGold, IniRead($configFile, "search", "searchGold", "80000"))
+	GUICtrlSetData($txtMinElixir, IniRead($configFile, "search", "searchElixir", "80000"))
+	GUICtrlSetData($txtMinDarkElixir, IniRead($configFile, "search", "searchDark", "0"))
+	GUICtrlSetData($txtMinTrophy, IniRead($configFile, "search", "searchTrophy", "0"))
+	_GUICtrlComboBox_SetCurSel($cmbAny, IniRead($configFile, "search", "AnyAndOr", "0"))
+	_GUICtrlComboBox_SetCurSel($cmbDead, IniRead($configFile, "search", "DeadAndOr", "0"))
 
-	If IniRead($configfile, "search", "conditionDeadGoldElixir", "0") = 1 Then
+	If IniRead($configFile, "search", "conditionDeadGoldElixir", "0") = 1 Then
 		GUICtrlSetState($chkDeadGE, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkDeadGE, $GUI_UNCHECKED)
 	EndIf
 
-	If IniRead($configfile, "search", "conditionDeadDark", "0") = 1 Then
+	If IniRead($configFile, "search", "conditionDeadDark", "0") = 1 Then
 		GUICtrlSetState($chkDeadMeetDE, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkDeadMeetDE, $GUI_UNCHECKED)
 	EndIf
 
-	If IniRead($configfile, "search", "conditionDeadTrophy", "0") = 1 Then
+	If IniRead($configFile, "search", "conditionDeadTrophy", "0") = 1 Then
 		GUICtrlSetState($chkDeadMeetTrophy, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkDeadMeetTrophy, $GUI_UNCHECKED)
 	EndIf
 
-	If IniRead($configfile, "search", "conditionDeadTHLevel", "0") = 1 Then
+	If IniRead($configFile, "search", "conditionDeadTHLevel", "0") = 1 Then
 		GUICtrlSetState($chkDeadMeetTH, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkDeadMeetTH, $GUI_UNCHECKED)
 	EndIf
 
-	If IniRead($configfile, "search", "conditionDeadTHOutside", "0") = 1 Then
+	If IniRead($configFile, "search", "conditionDeadTHOutside", "0") = 1 Then
 		GUICtrlSetState($chkDeadMeetTHO, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkDeadMeetTHO, $GUI_UNCHECKED)
 	EndIf
 
-	If IniRead($configfile, "search", "conditionGoldElixir", "0") = 1 Then
+	If IniRead($configFile, "search", "conditionGoldElixir", "0") = 1 Then
 		GUICtrlSetState($chkMeetGE, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkMeetGE, $GUI_UNCHECKED)
 	EndIf
 
-	If IniRead($configfile, "search", "conditionDark", "0") = 1 Then
+	If IniRead($configFile, "search", "conditionDark", "0") = 1 Then
 		GUICtrlSetState($chkMeetDE, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkMeetDE, $GUI_UNCHECKED)
 	EndIf
 
-	If IniRead($configfile, "search", "conditionTrophy", "0") = 1 Then
+	If IniRead($configFile, "search", "conditionTrophy", "0") = 1 Then
 		GUICtrlSetState($chkMeetTrophy, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkMeetTrophy, $GUI_UNCHECKED)
 	EndIf
 
-	If IniRead($configfile, "search", "conditionTHLevel", "0") = 1 Then
+	If IniRead($configFile, "search", "conditionTHLevel", "0") = 1 Then
 		GUICtrlSetState($chkMeetTH, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkMeetTH, $GUI_UNCHECKED)
 	EndIf
 
-	If IniRead($configfile, "search", "conditionTHOutside", "0") = 1 Then
+	If IniRead($configFile, "search", "conditionTHOutside", "0") = 1 Then
 		GUICtrlSetState($chkMeetTHO, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkMeetTHO, $GUI_UNCHECKED)
 	EndIf
 
-	If IniRead($configfile, "search", "conditionDeadSnipe", "0") = 1 Then
+	If IniRead($configFile, "search", "conditionDeadSnipe", "0") = 1 Then
 		GUICtrlSetState($chkDeadSnipe, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkDeadSnipe, $GUI_UNCHECKED)
 	EndIf
 
-	If IniRead($configfile, "search", "conditionSnipe", "0") = 1 Then
+	If IniRead($configFile, "search", "conditionSnipe", "0") = 1 Then
 		GUICtrlSetState($chkSnipe, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkSnipe, $GUI_UNCHECKED)
 	EndIf
 
-	_GUICtrlComboBox_SetCurSel($cmbTH, IniRead($configfile, "search", "AnyTHLvl", "0"))
-	_GUICtrlComboBox_SetCurSel($cmbDeadTH, IniRead($configfile, "search", "DeadTHLvl", "0"))
+	_GUICtrlComboBox_SetCurSel($cmbTH, IniRead($configFile, "search", "AnyTHLvl", "0"))
+	_GUICtrlComboBox_SetCurSel($cmbDeadTH, IniRead($configFile, "search", "DeadTHLvl", "0"))
 
 	Standard_chkDeadActivate()
 	Standard_chkAnyActivate()
 
 	;Attack Settings-------------------------------------------------------------------------
-	_GUICtrlComboBox_SetCurSel($cmbDeadDeploy, IniRead($configfile, "attack", "deploy-dead", "0"))
-	_GUICtrlComboBox_SetCurSel($cmbDeadAlgorithm, IniRead($configfile, "attack", "algorithm-dead", "0"))
+	_GUICtrlComboBox_SetCurSel($cmbDeadDeploy, IniRead($configFile, "attack", "deploy-dead", "0"))
+	_GUICtrlComboBox_SetCurSel($cmbDeadAlgorithm, IniRead($configFile, "attack", "algorithm-dead", "0"))
 
-	If IniRead($configfile, "attack", "king-dead", "0") = 1 Then
+	If IniRead($configFile, "attack", "king-dead", "0") = 1 Then
 		GUICtrlSetState($chkDeadUseKing, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkDeadUseKing, $GUI_UNCHECKED)
 	EndIf
 
-	If IniRead($configfile, "attack", "queen-dead", "0") = 1 Then
+	If IniRead($configFile, "attack", "queen-dead", "0") = 1 Then
 		GUICtrlSetState($chkDeadUseQueen, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkDeadUseQueen, $GUI_UNCHECKED)
 	EndIf
 
-	If IniRead($configfile, "attack", "use-cc-dead", "0") = 1 Then
+	If IniRead($configFile, "attack", "use-cc-dead", "0") = 1 Then
 		GUICtrlSetState($chkDeadUseClanCastle, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkDeadUseClanCastle, $GUI_UNCHECKED)
 	EndIf
 
-	_GUICtrlComboBox_SetCurSel($cmbDeadAttackTH, IniRead($configfile, "attack", "townhall-dead", "0"))
+	_GUICtrlComboBox_SetCurSel($cmbDeadAttackTH, IniRead($configFile, "attack", "townhall-dead", "0"))
 
-	_GUICtrlComboBox_SetCurSel($cmbDeploy, IniRead($configfile, "attack", "deploy", "0"))
-	_GUICtrlComboBox_SetCurSel($cmbAlgorithm, IniRead($configfile, "attack", "algorithm", "0"))
+	_GUICtrlComboBox_SetCurSel($cmbDeploy, IniRead($configFile, "attack", "deploy", "0"))
+	_GUICtrlComboBox_SetCurSel($cmbAlgorithm, IniRead($configFile, "attack", "algorithm", "0"))
 
-	If IniRead($configfile, "attack", "king-all", "0") = 1 Then
+	If IniRead($configFile, "attack", "king-all", "0") = 1 Then
 		GUICtrlSetState($chkUseKing, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkUseKing, $GUI_UNCHECKED)
 	EndIf
 
-	If IniRead($configfile, "attack", "queen-all", "0") = 1 Then
+	If IniRead($configFile, "attack", "queen-all", "0") = 1 Then
 		GUICtrlSetState($chkUseQueen, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkUseQueen, $GUI_UNCHECKED)
 	EndIf
 
-	If IniRead($configfile, "attack", "use-cc", "0") = 1 Then
+	If IniRead($configFile, "attack", "use-cc", "0") = 1 Then
 		GUICtrlSetState($chkUseClanCastle, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkUseClanCastle, $GUI_UNCHECKED)
 	EndIf
 
-	_GUICtrlComboBox_SetCurSel($cmbAttackTH, IniRead($configfile, "attack", "townhall", "0"))
+	_GUICtrlComboBox_SetCurSel($cmbAttackTH, IniRead($configFile, "attack", "townhall", "0"))
 
-	GUICtrlSetData($txtKingSkill, IniRead($configfile, "attack", "kingskilldelay", "10"))
-	GUICtrlSetData($txtQueenSkill, IniRead($configfile, "attack", "queenskilldelay", "10"))
+	GUICtrlSetData($txtKingSkill, IniRead($configFile, "attack", "kingskilldelay", "10"))
+	GUICtrlSetData($txtQueenSkill, IniRead($configFile, "attack", "queenskilldelay", "10"))
 
 	;Troop Settings--------------------------------------------------------------------------
-	_GUICtrlComboBox_SetCurSel($cmbTroopComp, IniRead($configfile, "troop", "composition", "0"))
-	_GUICtrlComboBox_SetCurSel($cmbRaidcap, IniRead($configfile, "troop", "raidcapacity", "0"))
-	GUICtrlSetData($txtBarbarians, IniRead($configfile, "troop", "barbarian", "0"))
-	GUICtrlSetData($txtArchers, IniRead($configfile, "troop", "archer", "0"))
-	GUICtrlSetData($txtNumGiants, IniRead($configfile, "troop", "giant", "0"))
-	GUICtrlSetData($txtGoblins, IniRead($configfile, "troop", "goblin", "0"))
-	GUICtrlSetData($txtNumWallbreakers, IniRead($configfile, "troop", "WB", "0"))
+	_GUICtrlComboBox_SetCurSel($cmbTroopComp, IniRead($configFile, "troop", "composition", "0"))
+	_GUICtrlComboBox_SetCurSel($cmbRaidcap, IniRead($configFile, "troop", "raidcapacity", "0"))
+	GUICtrlSetData($txtBarbarians, IniRead($configFile, "troop", "barbarian", "0"))
+	GUICtrlSetData($txtArchers, IniRead($configFile, "troop", "archer", "0"))
+	GUICtrlSetData($txtNumGiants, IniRead($configFile, "troop", "giant", "0"))
+	GUICtrlSetData($txtGoblins, IniRead($configFile, "troop", "goblin", "0"))
+	GUICtrlSetData($txtNumWallbreakers, IniRead($configFile, "troop", "WB", "0"))
 	Standard_SetComboTroopComp()
 
 	_GUICtrlComboBox_SetCurSel($cmbBarrack1, $barrackTroop[0])
@@ -167,11 +167,11 @@ Func Standard_LoadConfig()
 	;Dark Troops---------------------------------------------
 	_GUICtrlComboBox_SetCurSel($cmbDarkBarrack1, $DarkBarrackTroop[0])
 	_GUICtrlComboBox_SetCurSel($cmbDarkBarrack2, $DarkBarrackTroop[1])
-	GUICtrlSetData($txtDarkBarrack1, IniRead($configfile, "other", "DarkRax1", "0"))
-	GUICtrlSetData($txtDarkBarrack2, IniRead($configfile, "other", "DarkRax2", "0"))
+	GUICtrlSetData($txtDarkBarrack1, IniRead($configFile, "other", "DarkRax1", "0"))
+	GUICtrlSetData($txtDarkBarrack2, IniRead($configFile, "other", "DarkRax2", "0"))
 
 	;Spell Settings--------------------------------------------------------------------------
-	If IniRead($configfile, "spells", "chkMakeSpells", "0") = 1 Then
+	If IniRead($configFile, "spells", "chkMakeSpells", "0") = 1 Then
 		GUICtrlSetState($chkMakeSpells, $GUI_CHECKED)
 		GUICtrlSetState($cmbSpellCreate, $GUI_ENABLE)
 		GUICtrlSetState($txtDENukeLimit, $GUI_ENABLE)
@@ -188,34 +188,34 @@ Func Standard_LoadConfig()
 		GUICtrlSetState($chkNukeOnly, $GUI_DISABLE)
 		GUICtrlSetState($chkNukeOnlyWithFullArmy, $GUI_DISABLE)
 	EndIf
-	_GUICtrlComboBox_SetCurSel($cmbSpellCreate, IniRead($configfile, "spells", "spellname", "0"))
-	GUICtrlSetData($txtDENukeLimit, IniRead($configfile, "spells", "nukelimit", "2000"))
-	GUICtrlSetData($txtSpellNumber, IniRead($configfile, "spells", "spellnumber", "3"))
-	If IniRead($configfile, "spells", "chkNukeAttacking", "0") = 1 Then
+	_GUICtrlComboBox_SetCurSel($cmbSpellCreate, IniRead($configFile, "spells", "spellname", "0"))
+	GUICtrlSetData($txtDENukeLimit, IniRead($configFile, "spells", "nukelimit", "2000"))
+	GUICtrlSetData($txtSpellNumber, IniRead($configFile, "spells", "spellnumber", "3"))
+	If IniRead($configFile, "spells", "chkNukeAttacking", "0") = 1 Then
 		GUICtrlSetState($chkNukeAttacking, $GUI_CHECKED)
 		GUICtrlSetState($txtSpellNumber, $GUI_ENABLE)
 	Else
 		GUICtrlSetState($chkNukeAttacking, $GUI_UNCHECKED)
 		GUICtrlSetState($txtSpellNumber, $GUI_DISABLE)
 	EndIf
-	If IniRead($configfile, "spells", "chkNukeOnly", "0") = 1 Then
+	If IniRead($configFile, "spells", "chkNukeOnly", "0") = 1 Then
 		GUICtrlSetState($chkNukeOnly, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkNukeOnly, $GUI_UNCHECKED)
 	EndIf
-	If IniRead($configfile, "spells", "chkNukeOnlyWithFullArmy", "0") = 1 Then
+	If IniRead($configFile, "spells", "chkNukeOnlyWithFullArmy", "0") = 1 Then
 		GUICtrlSetState($chkNukeOnlyWithFullArmy, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkNukeOnlyWithFullArmy, $GUI_UNCHECKED)
 	EndIf
-	If IniRead($configfile, "spells", "DESearchAcc", 1) = 1 Then
+	If IniRead($configFile, "spells", "DESearchAcc", 1) = 1 Then
 		GUICtrlSetState($rdoMaybeSkip, $GUI_CHECKED)
 		GUICtrlSetState($rdoFalsePositive, $GUI_UNCHECKED)
 	Else
 		GUICtrlSetState($rdoMaybeSkip, $GUI_UNCHECKED)
 		GUICtrlSetState($rdoFalsePositive, $GUI_CHECKED)
 	EndIf
-EndFunc
+EndFunc   ;==>Standard_LoadConfig
 
 Func Standard_SaveConfig($configFile)
 	IniWrite($configFile, "plugin", "name", "Standard")
@@ -460,4 +460,4 @@ Func Standard_SaveConfig($configFile)
 	Else
 		IniWrite($configFile, "spells", "DESearchAcc", 0)
 	EndIf
-EndFunc
+EndFunc   ;==>Standard_SaveConfig

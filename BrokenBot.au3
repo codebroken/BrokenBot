@@ -61,8 +61,8 @@ AdlibRegister("SetTime", 1000)
 
 Local $StartImmediately = False
 If IsArray($CmdLine) Then
-	If $CmdLine[0]=1 Then $StartImmediately = True
-	If $CmdLine[0]=2 Then
+	If $CmdLine[0] = 1 Then $StartImmediately = True
+	If $CmdLine[0] = 2 Then
 		; Add option to start with specific profile
 	EndIf
 EndIf

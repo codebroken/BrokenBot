@@ -62,4 +62,4 @@ Func Standard_PrepareAttack($remaining = False, $AttackMethod = 1) ;Assigns troo
 
 		If $troopKind <> -1 Then SetLog("-" & NameOfTroop($atkTroops[$i][0]) & " " & $atkTroops[$i][1], $COLOR_GREEN)
 	Next
-EndFunc   ;==>PrepareAttack
+EndFunc   ;==>Standard_PrepareAttack

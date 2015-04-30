@@ -56,43 +56,43 @@ Func RedLineDeploy($x, $y, $times = 1, $speed = 0, $CenteredOn = 0, $BufferDist 
 		SetLog("Bad call, unknown where to center attack")
 		Return
 	EndIf
-	For $i=0 to 41
-		For $j=0 to 41
-			If ($Grid[$i][$j][2]>0 and $Grid[$i][$j+1][2]>0) Then ; Up and to the right edges
-				If (($x < $Grid[$i][$j+1][0]) and ($Grid[$i][$j][0] < $AimX)) Or (($x > $Grid[$i][$j][0]) and ($Grid[$i][$j+1][0] > $AimX)) Then
-					If (($y < $Grid[$i][$j][1]) and ($Grid[$i][$j+1][1] < $AimY)) Or (($y > $Grid[$i][$j+1][1]) and ($Grid[$i][$j][1] > $AimY)) Then
+	For $i = 0 To 41
+		For $j = 0 To 41
+			If ($Grid[$i][$j][2] > 0 And $Grid[$i][$j + 1][2] > 0) Then ; Up and to the right edges
+				If (($x < $Grid[$i][$j + 1][0]) And ($Grid[$i][$j][0] < $AimX)) Or (($x > $Grid[$i][$j][0]) And ($Grid[$i][$j + 1][0] > $AimX)) Then
+					If (($y < $Grid[$i][$j][1]) And ($Grid[$i][$j + 1][1] < $AimY)) Or (($y > $Grid[$i][$j + 1][1]) And ($Grid[$i][$j][1] > $AimY)) Then
 						$A1 = $AimY - $y
 						$B1 = $x - $AimX
 						$C1 = ($A1 * $x) + ($B1 * $y)
-						$A2 = $Grid[$i][$j+1][1] - $Grid[$i][$j][1]
-						$B2 = $Grid[$i][$j][0] - $Grid[$i][$j+1][0]
+						$A2 = $Grid[$i][$j + 1][1] - $Grid[$i][$j][1]
+						$B2 = $Grid[$i][$j][0] - $Grid[$i][$j + 1][0]
 						$C2 = ($A2 * $Grid[$i][$j][0]) + ($B2 * $Grid[$i][$j][1])
-						If $A1*$B2 <> $A2*$B1 Then
-							$IntX = ($B2 * $C1 - $B1 * $C2)/($A1 * $B2 - $A2 * $B1)
-							If $Grid[$i][$j][0] < $IntX and $IntX < $Grid[$i][$j+1][0] Then
+						If $A1 * $B2 <> $A2 * $B1 Then
+							$IntX = ($B2 * $C1 - $B1 * $C2) / ($A1 * $B2 - $A2 * $B1)
+							If $Grid[$i][$j][0] < $IntX And $IntX < $Grid[$i][$j + 1][0] Then
 								; They cross, so lets make intersection the new aimed point
-								$AimX = ($B2 * $C1 - $B1 * $C2)/($A1 * $B2 - $A2 * $B1)
-								$AimY = ($A1 * $C2 - $A2 * $C1)/($A1 * $B2 - $A2 * $B1)
+								$AimX = ($B2 * $C1 - $B1 * $C2) / ($A1 * $B2 - $A2 * $B1)
+								$AimY = ($A1 * $C2 - $A2 * $C1) / ($A1 * $B2 - $A2 * $B1)
 							EndIf
 						EndIf
 					EndIf
 				EndIf
 			EndIf
-			If ($Grid[$i][$j][2]>0 and $Grid[$i+1][$j][2]>0) Then ; Down and to the right edges
-				If (($x < $Grid[$i+1][$j][0]) and ($Grid[$i][$j][0] < $AimX)) Or (($x > $Grid[$i][$j][0]) and ($Grid[$i+1][$j][0] > $AimX)) Then
-					If (($y < $Grid[$i+1][$j][1]) and ($Grid[$i][$j][1] < $AimY)) Or (($y > $Grid[$i][$j][1]) and ($Grid[$i+1][$j][1] > $AimY)) Then
+			If ($Grid[$i][$j][2] > 0 And $Grid[$i + 1][$j][2] > 0) Then ; Down and to the right edges
+				If (($x < $Grid[$i + 1][$j][0]) And ($Grid[$i][$j][0] < $AimX)) Or (($x > $Grid[$i][$j][0]) And ($Grid[$i + 1][$j][0] > $AimX)) Then
+					If (($y < $Grid[$i + 1][$j][1]) And ($Grid[$i][$j][1] < $AimY)) Or (($y > $Grid[$i][$j][1]) And ($Grid[$i + 1][$j][1] > $AimY)) Then
 						$A1 = $AimY - $y
 						$B1 = $x - $AimX
 						$C1 = ($A1 * $x) + ($B1 * $y)
-						$A2 = $Grid[$i+1][$j][1] - $Grid[$i][$j][1]
-						$B2 = $Grid[$i][$j][0] - $Grid[$i+1][$j][0]
+						$A2 = $Grid[$i + 1][$j][1] - $Grid[$i][$j][1]
+						$B2 = $Grid[$i][$j][0] - $Grid[$i + 1][$j][0]
 						$C2 = ($A2 * $Grid[$i][$j][0]) + ($B2 * $Grid[$i][$j][1])
-						If $A1*$B2 <> $A2*$B1 Then
-							$IntX = ($B2 * $C1 - $B1 * $C2)/($A1 * $B2 - $A2 * $B1)
-							If $Grid[$i][$j][0] < $IntX and $IntX < $Grid[$i+1][$j][0] Then
+						If $A1 * $B2 <> $A2 * $B1 Then
+							$IntX = ($B2 * $C1 - $B1 * $C2) / ($A1 * $B2 - $A2 * $B1)
+							If $Grid[$i][$j][0] < $IntX And $IntX < $Grid[$i + 1][$j][0] Then
 								; They cross, so lets make intersection the new aimed point
-								$AimX = ($B2 * $C1 - $B1 * $C2)/($A1 * $B2 - $A2 * $B1)
-								$AimY = ($A1 * $C2 - $A2 * $C1)/($A1 * $B2 - $A2 * $B1)
+								$AimX = ($B2 * $C1 - $B1 * $C2) / ($A1 * $B2 - $A2 * $B1)
+								$AimY = ($A1 * $C2 - $A2 * $C1) / ($A1 * $B2 - $A2 * $B1)
 							EndIf
 						EndIf
 					EndIf
@@ -100,46 +100,46 @@ Func RedLineDeploy($x, $y, $times = 1, $speed = 0, $CenteredOn = 0, $BufferDist 
 			EndIf
 		Next
 	Next
-	$j=42
-	For $i=0 to 41
-		If ($Grid[$i][$j][2]>0 and $Grid[$i+1][$j][2]>0) Then ; Down and to the right edges
-			If (($x < $Grid[$i+1][$j][0]) and ($Grid[$i][$j][0] < $AimX)) Or (($x > $Grid[$i][$j][0]) and ($Grid[$i+1][$j][0] > $AimX)) Then
-				If (($y < $Grid[$i+1][$j][1]) and ($Grid[$i][$j][1] < $AimY)) Or (($y > $Grid[$i][$j][1]) and ($Grid[$i+1][$j][1] > $AimY)) Then
+	$j = 42
+	For $i = 0 To 41
+		If ($Grid[$i][$j][2] > 0 And $Grid[$i + 1][$j][2] > 0) Then ; Down and to the right edges
+			If (($x < $Grid[$i + 1][$j][0]) And ($Grid[$i][$j][0] < $AimX)) Or (($x > $Grid[$i][$j][0]) And ($Grid[$i + 1][$j][0] > $AimX)) Then
+				If (($y < $Grid[$i + 1][$j][1]) And ($Grid[$i][$j][1] < $AimY)) Or (($y > $Grid[$i][$j][1]) And ($Grid[$i + 1][$j][1] > $AimY)) Then
 					$A1 = $AimY - $y
 					$B1 = $x - $AimX
 					$C1 = ($A1 * $x) + ($B1 * $y)
-					$A2 = $Grid[$i+1][$j][1] - $Grid[$i][$j][1]
-					$B2 = $Grid[$i][$j][0] - $Grid[$i+1][$j][0]
+					$A2 = $Grid[$i + 1][$j][1] - $Grid[$i][$j][1]
+					$B2 = $Grid[$i][$j][0] - $Grid[$i + 1][$j][0]
 					$C2 = ($A2 * $Grid[$i][$j][0]) + ($B2 * $Grid[$i][$j][1])
-					If $A1*$B2 <> $A2*$B1 Then
-						$IntX = ($B2 * $C1 - $B1 * $C2)/($A1 * $B2 - $A2 * $B1)
-						If $Grid[$i][$j][0] < $IntX and $IntX < $Grid[$i+1][$j][0] Then
+					If $A1 * $B2 <> $A2 * $B1 Then
+						$IntX = ($B2 * $C1 - $B1 * $C2) / ($A1 * $B2 - $A2 * $B1)
+						If $Grid[$i][$j][0] < $IntX And $IntX < $Grid[$i + 1][$j][0] Then
 							; They cross, so lets make intersection the new aimed point
-							$AimX = ($B2 * $C1 - $B1 * $C2)/($A1 * $B2 - $A2 * $B1)
-							$AimY = ($A1 * $C2 - $A2 * $C1)/($A1 * $B2 - $A2 * $B1)
+							$AimX = ($B2 * $C1 - $B1 * $C2) / ($A1 * $B2 - $A2 * $B1)
+							$AimY = ($A1 * $C2 - $A2 * $C1) / ($A1 * $B2 - $A2 * $B1)
 						EndIf
 					EndIf
 				EndIf
 			EndIf
 		EndIf
 	Next
-	$i=42
-	For $j=0 to 41
-		If ($Grid[$i][$j][2]>0 and $Grid[$i][$j+1][2]>0) Then ; Up and to the right edges
-			If (($x < $Grid[$i][$j+1][0]) and ($Grid[$i][$j][0] < $AimX)) Or (($x > $Grid[$i][$j][0]) and ($Grid[$i][$j+1][0] > $AimX)) Then
-				If (($y < $Grid[$i][$j][1]) and ($Grid[$i][$j+1][1] < $AimY)) Or (($y > $Grid[$i][$j+1][1]) and ($Grid[$i][$j][1] > $AimY)) Then
+	$i = 42
+	For $j = 0 To 41
+		If ($Grid[$i][$j][2] > 0 And $Grid[$i][$j + 1][2] > 0) Then ; Up and to the right edges
+			If (($x < $Grid[$i][$j + 1][0]) And ($Grid[$i][$j][0] < $AimX)) Or (($x > $Grid[$i][$j][0]) And ($Grid[$i][$j + 1][0] > $AimX)) Then
+				If (($y < $Grid[$i][$j][1]) And ($Grid[$i][$j + 1][1] < $AimY)) Or (($y > $Grid[$i][$j + 1][1]) And ($Grid[$i][$j][1] > $AimY)) Then
 					$A1 = $AimY - $y
 					$B1 = $x - $AimX
 					$C1 = ($A1 * $x) + ($B1 * $y)
-					$A2 = $Grid[$i][$j+1][1] - $Grid[$i][$j][1]
-					$B2 = $Grid[$i][$j][0] - $Grid[$i][$j+1][0]
+					$A2 = $Grid[$i][$j + 1][1] - $Grid[$i][$j][1]
+					$B2 = $Grid[$i][$j][0] - $Grid[$i][$j + 1][0]
 					$C2 = ($A2 * $Grid[$i][$j][0]) + ($B2 * $Grid[$i][$j][1])
-					If $A1*$B2 <> $A2*$B1 Then
-						$IntX = ($B2 * $C1 - $B1 * $C2)/($A1 * $B2 - $A2 * $B1)
-						If $Grid[$i][$j][0] < $IntX and $IntX < $Grid[$i][$j+1][0] Then
+					If $A1 * $B2 <> $A2 * $B1 Then
+						$IntX = ($B2 * $C1 - $B1 * $C2) / ($A1 * $B2 - $A2 * $B1)
+						If $Grid[$i][$j][0] < $IntX And $IntX < $Grid[$i][$j + 1][0] Then
 							; They cross, so lets make intersection the new aimed point
-							$AimX = ($B2 * $C1 - $B1 * $C2)/($A1 * $B2 - $A2 * $B1)
-							$AimY = ($A1 * $C2 - $A2 * $C1)/($A1 * $B2 - $A2 * $B1)
+							$AimX = ($B2 * $C1 - $B1 * $C2) / ($A1 * $B2 - $A2 * $B1)
+							$AimY = ($A1 * $C2 - $A2 * $C1) / ($A1 * $B2 - $A2 * $B1)
 						EndIf
 					EndIf
 				EndIf
@@ -147,13 +147,13 @@ Func RedLineDeploy($x, $y, $times = 1, $speed = 0, $CenteredOn = 0, $BufferDist 
 		EndIf
 	Next
 	; Now we are sitting right on top of the edge so let's move back a bit
-	$m = ($AimY - $y)/($AimX - $x)
-	$Dist = _Random_Gaussian($BufferDist,2)
-	$deltaX = (($Dist^2)/(1+$m^2))^.5
-	If $AimX > $x Then $deltaX=$deltaX*-1
-	If Abs($x-$AimX) < Abs($deltaX) Then
-		$AimX=Round($x)
-		$AimY=Round($y)
+	$m = ($AimY - $y) / ($AimX - $x)
+	$Dist = _Random_Gaussian($BufferDist, 2)
+	$deltaX = (($Dist ^ 2) / (1 + $m ^ 2)) ^ .5
+	If $AimX > $x Then $deltaX = $deltaX * -1
+	If Abs($x - $AimX) < Abs($deltaX) Then
+		$AimX = Round($x)
+		$AimY = Round($y)
 	Else
 		$AimX = Round($AimX + $deltaX)
 		$AimY = Round($AimY + $m * $deltaX)
@@ -168,7 +168,7 @@ Func RedLineDeploy($x, $y, $times = 1, $speed = 0, $CenteredOn = 0, $BufferDist 
 		ControlClick($Title, "", "", "left", "1", $AimX, $AimY)
 		_GDIPlus_GraphicsDrawEllipse($Buffer, $AimX - 2, $AimY - 2, 4, 4, $Pen)
 	EndIf
-EndFunc
+EndFunc   ;==>RedLineDeploy
 
 Func SeekEdges()
 	; Clear edge data
@@ -201,7 +201,7 @@ Func SeekEdges()
 			Next
 			If $YesEdge Then
 				$Grid[$i][$j][2] = 1
-				$Grid[$i][$j+1][2] = 1
+				$Grid[$i][$j + 1][2] = 1
 			EndIf
 			$YesEdge = False
 			$m = ($Grid[$i + 1][$j][1] - $Grid[$i][$j][1]) / ($Grid[$i + 1][$j][0] - $Grid[$i][$j][0])
@@ -220,7 +220,7 @@ Func SeekEdges()
 			Next
 			If $YesEdge Then
 				$Grid[$i][$j][2] = 1
-				$Grid[$i+1][$j][2] = 1
+				$Grid[$i + 1][$j][2] = 1
 			EndIf
 		Next
 	Next
@@ -243,7 +243,7 @@ Func SeekEdges()
 		Next
 		If $YesEdge Then
 			$Grid[$i][$j][2] = 1
-			$Grid[$i][$j+1][2] = 1
+			$Grid[$i][$j + 1][2] = 1
 		EndIf
 	Next
 	$j = 42
@@ -265,60 +265,60 @@ Func SeekEdges()
 		Next
 		If $YesEdge Then
 			$Grid[$i][$j][2] = 1
-			$Grid[$i+1][$j][2] = 1
+			$Grid[$i + 1][$j][2] = 1
 		EndIf
 	Next
 	_GDIPlus_BitmapUnlockBits($hAttackBitmap, $BitmapData)
 
 	; Clean it up
 	$j = 0
-	For $i = 1 to 41
+	For $i = 1 To 41
 		$Neighbors = 0
-		If $Grid[$i-1][$j][2]=1 Then $Neighbors +=1
-		If $Grid[$i+1][$j][2]=1 Then $Neighbors +=1
-		If $Grid[$i][$j+1][2]=1 Then $Neighbors +=1
-		If $Neighbors < 2 Then $Grid[$i][$j][2]=0
+		If $Grid[$i - 1][$j][2] = 1 Then $Neighbors += 1
+		If $Grid[$i + 1][$j][2] = 1 Then $Neighbors += 1
+		If $Grid[$i][$j + 1][2] = 1 Then $Neighbors += 1
+		If $Neighbors < 2 Then $Grid[$i][$j][2] = 0
 	Next
 	$i = 0
-	For $j = 1 to 41
+	For $j = 1 To 41
 		$Neighbors = 0
-		If $Grid[$i][$j-1][2]=1 Then $Neighbors +=1
-		If $Grid[$i][$j+1][2]=1 Then $Neighbors +=1
-		If $Grid[$i+1][$j][2]=1 Then $Neighbors +=1
-		If $Neighbors < 2 Then $Grid[$i][$j][2]=0
+		If $Grid[$i][$j - 1][2] = 1 Then $Neighbors += 1
+		If $Grid[$i][$j + 1][2] = 1 Then $Neighbors += 1
+		If $Grid[$i + 1][$j][2] = 1 Then $Neighbors += 1
+		If $Neighbors < 2 Then $Grid[$i][$j][2] = 0
 	Next
-	For $i =1 to 41
-		For $j = 1 to 41
-			If $Grid[$i][$j][2]=0 and $Grid[$i+1][$j][2]=1 and $Grid[$i][$j+1][2]=1 and $Grid[$i+1][$j+1][2]=1 Then $Grid[$i][$j][2]=2
-			If $Grid[$i][$j][2]=0 and $Grid[$i][$j-1][2]=1 and $Grid[$i+1][$j-1][2]=1 and $Grid[$i+1][$j][2]=1 Then $Grid[$i][$j][2]=2
-			If $Grid[$i][$j][2]=0 and $Grid[$i-1][$j][2]=1 and $Grid[$i][$j-1][2]=1 and $Grid[$i-1][$j-1][2]=1 Then $Grid[$i][$j][2]=2
-			If $Grid[$i][$j][2]=0 and $Grid[$i-1][$j][2]=1 and $Grid[$i][$j+1][2]=1 and $Grid[$i-1][$j+1][2]=1 Then $Grid[$i][$j][2]=2
+	For $i = 1 To 41
+		For $j = 1 To 41
+			If $Grid[$i][$j][2] = 0 And $Grid[$i + 1][$j][2] = 1 And $Grid[$i][$j + 1][2] = 1 And $Grid[$i + 1][$j + 1][2] = 1 Then $Grid[$i][$j][2] = 2
+			If $Grid[$i][$j][2] = 0 And $Grid[$i][$j - 1][2] = 1 And $Grid[$i + 1][$j - 1][2] = 1 And $Grid[$i + 1][$j][2] = 1 Then $Grid[$i][$j][2] = 2
+			If $Grid[$i][$j][2] = 0 And $Grid[$i - 1][$j][2] = 1 And $Grid[$i][$j - 1][2] = 1 And $Grid[$i - 1][$j - 1][2] = 1 Then $Grid[$i][$j][2] = 2
+			If $Grid[$i][$j][2] = 0 And $Grid[$i - 1][$j][2] = 1 And $Grid[$i][$j + 1][2] = 1 And $Grid[$i - 1][$j + 1][2] = 1 Then $Grid[$i][$j][2] = 2
 			$Neighbors = 0
-			If $Grid[$i][$j-1][2]=1 Then $Neighbors +=1
-			If $Grid[$i][$j+1][2]=1 Then $Neighbors +=1
-			If $Grid[$i-1][$j][2]=1 Then $Neighbors +=1
-			If $Grid[$i+1][$j][2]=1 Then $Neighbors +=1
-			If $Neighbors < 2 Then $Grid[$i][$j][2]=0
+			If $Grid[$i][$j - 1][2] = 1 Then $Neighbors += 1
+			If $Grid[$i][$j + 1][2] = 1 Then $Neighbors += 1
+			If $Grid[$i - 1][$j][2] = 1 Then $Neighbors += 1
+			If $Grid[$i + 1][$j][2] = 1 Then $Neighbors += 1
+			If $Neighbors < 2 Then $Grid[$i][$j][2] = 0
 		Next
 	Next
 	$j = 42
-	For $i = 1 to 41
+	For $i = 1 To 41
 		$Neighbors = 0
-		If $Grid[$i-1][$j][2]=1 Then $Neighbors +=1
-		If $Grid[$i+1][$j][2]=1 Then $Neighbors +=1
-		If $Grid[$i][$j-1][2]=1 Then $Neighbors +=1
-		If $Neighbors = 1 Then $Grid[$i][$j][2]=0
+		If $Grid[$i - 1][$j][2] = 1 Then $Neighbors += 1
+		If $Grid[$i + 1][$j][2] = 1 Then $Neighbors += 1
+		If $Grid[$i][$j - 1][2] = 1 Then $Neighbors += 1
+		If $Neighbors = 1 Then $Grid[$i][$j][2] = 0
 	Next
 	$i = 42
-	For $j = 1 to 41
+	For $j = 1 To 41
 		$Neighbors = 0
-		If $Grid[$i][$j-1][2]=1 Then $Neighbors +=1
-		If $Grid[$i][$j+1][2]=1 Then $Neighbors +=1
-		If $Grid[$i-1][$j][2]=1 Then $Neighbors +=1
-		If $Neighbors = 1 Then $Grid[$i][$j][2]=0
+		If $Grid[$i][$j - 1][2] = 1 Then $Neighbors += 1
+		If $Grid[$i][$j + 1][2] = 1 Then $Neighbors += 1
+		If $Grid[$i - 1][$j][2] = 1 Then $Neighbors += 1
+		If $Neighbors = 1 Then $Grid[$i][$j][2] = 0
 	Next
 	SetLog("Done!", $COLOR_BLUE)
-EndFunc
+EndFunc   ;==>SeekEdges
 
 Func CompareColor($cRed, $cGreen, $cBlue, $tol = 7)
 	For $w = 0 To $numEdges - 1

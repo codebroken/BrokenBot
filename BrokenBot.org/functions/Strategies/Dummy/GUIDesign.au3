@@ -6,15 +6,15 @@ Func Dummy_LoadGUI()
 	_WinMoved(0, 0, 0, 0)
 	GUISwitch($frmAttackConfig)
 
-;	$tabStrat = GUICtrlCreateTab(10, 10, 415, 550)
-;
-;
-;
-;	GUI goes in here
-;
-;
-;
-;	GUICtrlCreateTabItem("")
+	;	$tabStrat = GUICtrlCreateTab(10, 10, 415, 550)
+	;
+	;
+	;
+	;	GUI goes in here
+	;
+	;
+	;
+	;	GUICtrlCreateTabItem("")
 
 	; Load your configuration
 	Dummy_LoadConfig()
@@ -28,4 +28,4 @@ Func Dummy_LoadGUI()
 
 	; Return the handle to the default control you want activated
 	Return $defaultcontrol
-EndFunc
+EndFunc   ;==>Dummy_LoadGUI

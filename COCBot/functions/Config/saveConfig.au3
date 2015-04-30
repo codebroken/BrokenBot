@@ -77,9 +77,9 @@ Func saveConfig() ;Saves the controls settings to the config
 
 	; Relics below...in save but not read
 	If IsChecked($gtfo) Then
-        IniWrite($config, "donate", "gtfo", 1)
+		IniWrite($config, "donate", "gtfo", 1)
 	Else
-        IniWrite($config, "donate", "gtfo", 0)
+		IniWrite($config, "donate", "gtfo", 0)
 	EndIf
 	IniWrite($config, "donate", "donate1", GUICtrlRead($cmbDonateBarbarians))
 	IniWrite($config, "donate", "donate2", GUICtrlRead($cmbDonateArchers))

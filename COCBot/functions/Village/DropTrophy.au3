@@ -4,7 +4,7 @@
 Func DropTrophy()
 	Local $i = 0
 	Local $TrophyCount = getOther(50, 74, "Trophy")
-	if Number($TrophyCount) > Number($itxtMaxTrophy) Then
+	If Number($TrophyCount) > Number($itxtMaxTrophy) Then
 		While Number($TrophyCount) > Number($itxtMinTrophy)
 			$TrophyCount = getOther(50, 74, "Trophy")
 			SetLog("Trophy Count : " & $TrophyCount, $COLOR_GREEN)

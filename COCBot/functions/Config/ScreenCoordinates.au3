@@ -37,10 +37,10 @@ Global $TrainGiant[4] = [475, 366, 0x3DD8E0, 20] ;
 Global $TrainGoblin[4] = [581, 366, 0x39D8E0, 20] ;
 Global $TrainWallbreaker[4] = [688, 366, 0x3AD8E0, 20] ;
 
-Global $TrainMinion[4]				= [261, 365, 0x43D9E2, 28] ;
+Global $TrainMinion[4] = [261, 365, 0x43D9E2, 28] ;
 ;Global $TrainMinion[4]				= [261, 365, 0x5DDCE5, 10] ;
-Global $TrainHog[4]				= [369, 366, 0x39CBDA, 10] ;
-Global $TrainValkyrie[4] 			= [475, 365, 0x3CD8E0, 10] ;
+Global $TrainHog[4] = [369, 366, 0x39CBDA, 10] ;
+Global $TrainValkyrie[4] = [475, 365, 0x3CD8E0, 10] ;
 
 Global $NextBtn[2] = [750, 500]
 ; Someone asking troupes : Color 0xD0E978 in x = 121
@@ -64,8 +64,8 @@ Func IdentifyTroopKind($position)
 	If _ColorCheck($TroopPixel, Hex(0xF8D49E, 6), 5) Then Return $eGiant ;Check if slot is Giant
 	If _ColorCheck($TroopPixel, Hex(0x60A4D0, 6), 5) Then Return $eWallbreaker ;Check if slot is Wallbreaker
 	If _ColorCheck(_GetPixelColor(68 + (72 * $position), 586), Hex(0x162038, 6), 5) Then Return $eMinion ;Check if slot is Minions
-    	If _ColorCheck($TroopPixel, Hex(0x603B30, 6), 5) Then Return $eHog ;Check if slot is Hogs
-    	If _ColorCheck($TroopPixel, Hex(0xB9645F, 6), 5) Then Return $eValkyrie ;Check if slot is Valkyries
+	If _ColorCheck($TroopPixel, Hex(0x603B30, 6), 5) Then Return $eHog ;Check if slot is Hogs
+	If _ColorCheck($TroopPixel, Hex(0xB9645F, 6), 5) Then Return $eValkyrie ;Check if slot is Valkyries
 	If _ColorCheck($TroopPixel, Hex(0xF8EB79, 6), 5) Then Return $eKing ;Check if slot is King
 	;$OtherPixel = _GetPixelColor(68 + (72 * $position), 588)
 

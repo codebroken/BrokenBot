@@ -55,7 +55,7 @@ Func CheckCostPerSearch()
 			$SearchCost = 1000
 		EndIf
 
-	    SetLog("Townhall Level " & $THLevel &", Gold Cost Per Search: " & $SearchCost, $COLOR_GREEN)
+		SetLog("Townhall Level " & $THLevel & ", Gold Cost Per Search: " & $SearchCost, $COLOR_GREEN)
 	EndIf
 	ClickP($TopLeftClient, 2, 250); Click away twice with 250ms delay
 

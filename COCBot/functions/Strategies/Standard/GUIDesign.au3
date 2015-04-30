@@ -294,13 +294,13 @@ Func Standard_LoadGUI()
 	Standard_LoadConfig()
 
 	Global $PluginEvents[3][3]
-	$PluginEvents[0][0]=2
-	$PluginEvents[1][0]=$cmbTroopComp
-	$PluginEvents[1][1]=1
-	$PluginEvents[1][2]="_cmbTroopComp"
-	$PluginEvents[2][0]=$cmbSpellCreate
-	$PluginEvents[2][1]=1
-	$PluginEvents[2][2]="_cmbSpellCreate"
+	$PluginEvents[0][0] = 2
+	$PluginEvents[1][0] = $cmbTroopComp
+	$PluginEvents[1][1] = 1
+	$PluginEvents[1][2] = "_cmbTroopComp"
+	$PluginEvents[2][0] = $cmbSpellCreate
+	$PluginEvents[2][1] = 1
+	$PluginEvents[2][2] = "_cmbSpellCreate"
 
 	Return $pageSearch
-EndFunc
+EndFunc   ;==>Standard_LoadGUI

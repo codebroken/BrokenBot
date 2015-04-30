@@ -1,8 +1,8 @@
 Func Dummy_LoadConfig()
 
-EndFunc
+EndFunc   ;==>Dummy_LoadConfig
 
 Func Dummy_SaveConfig($configFile)
 	IniWrite($configFile, "plugin", "name", "Dummy")
 
-EndFunc
+EndFunc   ;==>Dummy_SaveConfig

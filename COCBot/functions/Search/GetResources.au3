@@ -15,17 +15,17 @@ Func GetResources($MidAttack = False) ;Reads resources
 				If checkNextButton() And $x <= 20 Then ;Checks for Out of Sync or Connection Error during search
 					Click(750, 500) ;Click Next
 					If _Sleep(1000) Then Return False
-				$x += 1
+					$x += 1
 				Else
 					SetLog("Cannot locate Next button, Restarting Bot", $COLOR_RED)
 					_CaptureRegion()
 					Local $dummyX = 0
 					Local $dummyY = 0
 					If _ImageSearch(@ScriptDir & "\images\Client.bmp", 1, $dummyX, $dummyY, 50) = 1 Then
-						If $dummyX > 290 and $dummyX < 310 and $dummyY > 325 and $dummyY < 340 Then
+						If $dummyX > 290 And $dummyX < 310 And $dummyY > 325 And $dummyY < 340 Then
 							$speedBump += 500
 							If $speedBump > 5000 Then
-								$speedBump=5000
+								$speedBump = 5000
 								SetLog("Out of sync! Already searching slowly, not changing anything.", $COLOR_RED)
 							Else
 								SetLog("Out of sync! Slowing search speed by 0.5 secs.", $COLOR_RED)
@@ -46,12 +46,12 @@ Func GetResources($MidAttack = False) ;Reads resources
 	EndIf
 
 	If $MidAttack Then
-		$RetVal[0]=""
+		$RetVal[0] = ""
 	Else
 		$RetVal[0] = checkDeadBase()
 	EndIf
 	If $MidAttack Then
-		$RetVal[1]=""
+		$RetVal[1] = ""
 	Else
 		$RetVal[1] = checkTownhall()
 	EndIf

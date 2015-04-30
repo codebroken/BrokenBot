@@ -128,9 +128,9 @@ Func _PushFile($File, $Folder, $FileType, $title, $body)
 	Local $policy = _StringBetween($Result, 'policy":"', '"')
 	Local $file_url = _StringBetween($Result, 'file_url":"', '"')
 
-	If IsArray($upload_url) And IsArray($awsaccesskeyid) And IsArray($acl) And IsArray($key) And IsArray($signature) and IsArray($policy) Then
+	If IsArray($upload_url) And IsArray($awsaccesskeyid) And IsArray($acl) And IsArray($key) And IsArray($signature) And IsArray($policy) Then
 		$Result = RunWait(@ScriptDir & "\curl\curl.exe -i -X POST " & $upload_url[0] & ' -F awsaccesskeyid="' & $awsaccesskeyid[0] & '" -F acl="' & $acl[0] & '" -F key="' & $key[0] & '" -F signature="' & $signature[0] & '" -F policy="' & $policy[0] & '" -F content-type="' & $FileType & '" -F file=@"' & @ScriptDir & '\' & $Folder & '\' & $File & '" -o "' & @ScriptDir & '\logs\curl.log"', "", @SW_HIDE)
-		If Not FileExists($dirLogs & "curl.log") then _FileCreate($dirLogs & "curl.log")
+		If Not FileExists($dirLogs & "curl.log") Then _FileCreate($dirLogs & "curl.log")
 		If IsChecked($lblpushbulletdebug) Then
 			SetLog('=========================================================================')
 			SetLog($Result)
@@ -144,9 +144,9 @@ Func _PushFile($File, $Folder, $FileType, $title, $body)
 			SetLog($Result1)
 			SetLog(@ScriptDir & "\curl\curl.exe -i -X POST " & $upload_url[0] & ' -F awsaccesskeyid="' & $awsaccesskeyid[0] & '" -F acl="' & $acl[0] & '" -F key="' & $key[0] & '" -F signature="' & $signature[0] & '" -F policy="' & $policy[0] & '" -F content-type="' & $FileType & '" -F file=@"' & @ScriptDir & '\' & $Folder & '\' & $File & '" -o "' & @ScriptDir & '\logs\curl.log"')
 		EndIf
-		If Not FileExists($dirLogs & "curl.log") then _FileCreate($dirLogs & "curl.log")
-        	If _FileCountLines(@ScriptDir & '\logs\curl.log') > 8 Then
-        		Local $hFileOpen = FileOpen(@ScriptDir & '\logs\curl.log')
+		If Not FileExists($dirLogs & "curl.log") Then _FileCreate($dirLogs & "curl.log")
+		If _FileCountLines(@ScriptDir & '\logs\curl.log') > 8 Then
+			Local $hFileOpen = FileOpen(@ScriptDir & '\logs\curl.log')
 			Local $sFileRead = FileReadLine($hFileOpen, 8)
 			Local $sFileRead1 = StringSplit($sFileRead, " ")
 			Local $sLink = $sFileRead1[2]

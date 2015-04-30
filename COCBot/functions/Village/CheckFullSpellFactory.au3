@@ -33,4 +33,4 @@ Func CheckFullSpellFactory()
 		Return $fullSpellFactory
 	EndIf
 
-EndFunc   ;==>CheckSpellFactory
+EndFunc   ;==>CheckFullSpellFactory

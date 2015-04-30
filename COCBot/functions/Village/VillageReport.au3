@@ -68,9 +68,9 @@ Func VillageReport()
 
 		If $PushBulletEnabled = 1 And $PushBulletvillagereport = 1 Then
 			_Push("Village Report", "[G]: " & _NumberFormat($GoldCount) & " [E]: " & _NumberFormat($ElixirCount) & " [D]: " & _NumberFormat($DarkCount) & _
-				" [T]: " & $TrophyCount & " [GEM]: " & $GemCount & " [Attacked]: " & GUICtrlRead($lblresultvillagesattacked) & _
-				" [Skipped]: " & GUICtrlRead($lblresultvillagesskipped) & " [Wall Upgrade]: " & GUICtrlRead($lblwallupgradecount) & _
-				" [Run Time]: " & StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
+					" [T]: " & $TrophyCount & " [GEM]: " & $GemCount & " [Attacked]: " & GUICtrlRead($lblresultvillagesattacked) & _
+					" [Skipped]: " & GUICtrlRead($lblresultvillagesskipped) & " [Wall Upgrade]: " & GUICtrlRead($lblwallupgradecount) & _
+					" [Run Time]: " & StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
 			SetLog("Push: Village Report", $COLOR_GREEN)
 		EndIf
 
@@ -79,26 +79,26 @@ Func VillageReport()
 		GUICtrlSetData($lblresultdegain, $DarkGained)
 		GUICtrlSetData($lblresulttrophygain, $TrophyGained)
 
-		if Not $MidAttack and $Raid = 1 then ;report when there is a Raid except when bot disconnected
-			SetLog ("Last Raid Gain: [G]: " & _NumberFormat($GoldCount-$GoldCountold) & " [E]: " & _NumberFormat($ElixirCount-$ElixirCountOld) & _
-						" [D]: " & _NumberFormat($DarkCount-$DarkCountOld) & " [T]: " & ($TrophyCount-$TrophyCountOld))
-			SetLog ("Last Raid Loot: [G]: " & _NumberFormat($LastRaidGold) & " [E]: " & _NumberFormat($LastRaidElixir) & _
-						" [D]: " & _NumberFormat($LastRaidDarkElixir) & " [T]: " & $LastRaidTrophy )
+		If Not $MidAttack And $Raid = 1 Then ;report when there is a Raid except when bot disconnected
+			SetLog("Last Raid Gain: [G]: " & _NumberFormat($GoldCount - $GoldCountOld) & " [E]: " & _NumberFormat($ElixirCount - $ElixirCountOld) & _
+					" [D]: " & _NumberFormat($DarkCount - $DarkCountOld) & " [T]: " & ($TrophyCount - $TrophyCountOld))
+			SetLog("Last Raid Loot: [G]: " & _NumberFormat($LastRaidGold) & " [E]: " & _NumberFormat($LastRaidElixir) & _
+					" [D]: " & _NumberFormat($LastRaidDarkElixir) & " [T]: " & $LastRaidTrophy)
 			If $PushBulletEnabled = 1 Then ;do pushbullet reports
 				If $PushBullettype = 1 Then ;As JPG
 					If _Sleep(2000) Then Return
 					_PushFile($FileName, "loots", "image/jpeg", "Last Raid", $FileName)
 				EndIf
-				if $PushBulletlastraid = 1 then ;As Txt
-					_Push("Last Raid Report:", "Gain: \n[G]: " & _NumberFormat($GoldCount-$GoldCountold) & " [E]: " & _NumberFormat($ElixirCount-$ElixirCountOld) & _
-						" [D]: " & _NumberFormat($DarkCount-$DarkCountOld) & " [T]: " & ($TrophyCount-$TrophyCountOld) & _
-						"\nLoot: \n[G]: " & _NumberFormat($LastRaidGold) & " [E]: " & _NumberFormat($LastRaidElixir) & _
-						" [D]: " & _NumberFormat($LastRaidDarkElixir) & " [T]: " & $LastRaidTrophy & _
-						"\nVillage Report: \n[G]: " & _NumberFormat($GoldCount) & " [E]: " & _NumberFormat($ElixirCount) & _
-						" [D]: " & _NumberFormat($DarkCount) & " [T]: " & $TrophyCount & " [GEM]: " & $GemCount & _
-						" [Attacked]: " & GUICtrlRead($lblresultvillagesattacked) & " [Skipped]: " & GUICtrlRead($lblresultvillagesskipped) & _
-						" [Wall Upgrade]: " & GUICtrlRead($lblwallupgradecount) )
-					SetLog("Push: Last raid Report",$COLOR_GREEN)
+				If $PushBulletlastraid = 1 Then ;As Txt
+					_Push("Last Raid Report:", "Gain: \n[G]: " & _NumberFormat($GoldCount - $GoldCountOld) & " [E]: " & _NumberFormat($ElixirCount - $ElixirCountOld) & _
+							" [D]: " & _NumberFormat($DarkCount - $DarkCountOld) & " [T]: " & ($TrophyCount - $TrophyCountOld) & _
+							"\nLoot: \n[G]: " & _NumberFormat($LastRaidGold) & " [E]: " & _NumberFormat($LastRaidElixir) & _
+							" [D]: " & _NumberFormat($LastRaidDarkElixir) & " [T]: " & $LastRaidTrophy & _
+							"\nVillage Report: \n[G]: " & _NumberFormat($GoldCount) & " [E]: " & _NumberFormat($ElixirCount) & _
+							" [D]: " & _NumberFormat($DarkCount) & " [T]: " & $TrophyCount & " [GEM]: " & $GemCount & _
+							" [Attacked]: " & GUICtrlRead($lblresultvillagesattacked) & " [Skipped]: " & GUICtrlRead($lblresultvillagesskipped) & _
+							" [Wall Upgrade]: " & GUICtrlRead($lblwallupgradecount))
+					SetLog("Push: Last raid Report", $COLOR_GREEN)
 				EndIf
 				$Raid = 0
 			EndIf

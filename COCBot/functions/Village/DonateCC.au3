@@ -125,22 +125,22 @@ Func DonateCC()
 
 	;------------------------gtfo------------------------;
 	If GUICtrlRead($gtfo) = 1 Then
-		Local $scroll, $kick_y, $kicked = 0
+		Local $Scroll, $kick_y, $kicked = 0
 		While 1
 			Click($CCPos[0], $CCPos[1]) ; click clan castle
 			If _Sleep(500) Then Return
 			Click(530, 600) ; open clan page
 			If _Sleep(5000) Then Return ; wait for it to load
-			$scroll = 0
+			$Scroll = 0
 			While 1
 				_CaptureRegion(190, 80, 220, 650)
 				If _Sleep(1000) Then ExitLoop
 				Local $new = _PixelSearch(200, 80, 210, 650, Hex(0xE73838, 6), 20)
-					If IsArray($new) Then
+				If IsArray($new) Then
 					SetLog("x:" & $new[0] & " y:" & $new[1], $COLOR_RED) ; debuggin purpose
 					Click($new[0], $new[1])
 					If _Sleep(500) Then ExitLoop
-					If $new[1]+80> 640 Then
+					If $new[1] + 80 > 640 Then
 						$kick_y = 640
 					Else
 						$kick_y = $new[1] + 80
@@ -156,13 +156,13 @@ Func DonateCC()
 				Else
 					ControlSend($Title, "", "", "{CTRLDOWN}{UP}{CTRLUP}") ; scroll down the member list
 					SetLog("Scrolling down", $COLOR_RED)
-					$scroll += 1
+					$Scroll += 1
 					If _Sleep(3000) Then ExitLoop
 				EndIf
-				If $scroll = 8 Then ExitLoop(2)
+				If $Scroll = 8 Then ExitLoop (2)
 			WEnd
 		WEnd
-	SetLog("Finished kicking", $COLOR_RED)
+		SetLog("Finished kicking", $COLOR_RED)
 	EndIf
 	Click(1, 1, 1, 2000)
 EndFunc   ;==>DonateCC
@@ -212,29 +212,29 @@ Func DonateTroops($Troop, $i, $Row, $number)
 EndFunc   ;==>DonateTroops
 
 Func update_armycamp($Troop, $number)
-       Switch $Troop
-               Case "Archer"
-                       $CurArch += $number
-               Case "Barbarian"
-                       $CurBarb += $number
-               Case "Goblin"
-                       $CurGoblin += $number
-               Case "Giant"
-                       $CurGiant += $number
-               Case "WB"
-                       $CurWB += $number
-;              Case "Balloon"
-;             Case "Hog"
-;              Case "Dragon"
-;              Case "Pekka"
-;              Case "Minion"
-;              Case "Valkyrie"
-;              Case "Witch"
-;              Case "Healer"
-;              Case "Golem"
-;              Case "Lava"
-       EndSwitch
-EndFunc
+	Switch $Troop
+		Case "Archer"
+			$CurArch += $number
+		Case "Barbarian"
+			$CurBarb += $number
+		Case "Goblin"
+			$CurGoblin += $number
+		Case "Giant"
+			$CurGiant += $number
+		Case "WB"
+			$CurWB += $number
+			;              Case "Balloon"
+			;             Case "Hog"
+			;              Case "Dragon"
+			;              Case "Pekka"
+			;              Case "Minion"
+			;              Case "Valkyrie"
+			;              Case "Witch"
+			;              Case "Healer"
+			;              Case "Golem"
+			;              Case "Lava"
+	EndSwitch
+EndFunc   ;==>update_armycamp
 
 Func GetTroopCoord()
 	Switch $Troop

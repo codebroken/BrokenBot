@@ -4,19 +4,19 @@
 ; You **MAY NOT SOLICIT DONATIONS** from any project which includes any part of the code in this sub-directory without express written consent of BrokenBot.org
 ;
 Func checkupdate()
-	If $ichkUpdate=1 Then
+	If $ichkUpdate = 1 Then
 		Local $sFilePath = @TempDir & "\update.dat"
 
 		Local $hMasterVersion = InetGet("https://github.com/cool7su/Broken_Clashbot/blob/master/BrokenBot.au3", $sFilePath, 3)
 
-		if $hMasterVersion = 0 Then
+		If $hMasterVersion = 0 Then
 			SetLog("Failed to check updated version info.")
 		Else
 			$hReadFile = FileOpen($sFilePath)
 			While True
 				$strReadLine = FileReadLine($hReadFile)
 				If @error Then ExitLoop
-				if StringInStr($strReadLine, "$sBotVersion") Then
+				If StringInStr($strReadLine, "$sBotVersion") Then
 					$split = StringSplit($strReadLine, "&quot;", 1)
 					SetLog("Version of master branch online: " & $split[2])
 					If $sBotVersion < $split[2] Then
@@ -42,4 +42,4 @@ Func checkupdate()
 			FileDelete($sFilePath)
 		EndIf
 	EndIf
-EndFunc
+EndFunc   ;==>checkupdate

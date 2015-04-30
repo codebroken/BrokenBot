@@ -23,7 +23,7 @@ Func Standard_btnSearchMode()
 		;GUICtrlSetState($btnLocateCollectors, $GUI_ENABLE)
 		ExitLoop
 	WEnd
-EndFunc   ;==>btnSearchMode
+EndFunc   ;==>Standard_btnSearchMode
 
 Func Standard_chkDeadActivate()
 	If IsChecked($chkDeadActivate) Then
@@ -57,7 +57,7 @@ Func Standard_chkDeadActivate()
 			GUICtrlSetState($btnSearchMode, $GUI_DISABLE)
 		EndIf
 	EndIf
-EndFunc
+EndFunc   ;==>Standard_chkDeadActivate
 
 Func Standard_chkAnyActivate()
 	If IsChecked($chkAnyActivate) Then
@@ -91,7 +91,7 @@ Func Standard_chkAnyActivate()
 			GUICtrlSetState($btnSearchMode, $GUI_DISABLE)
 		EndIf
 	EndIf
-EndFunc
+EndFunc   ;==>Standard_chkAnyActivate
 
 Func Standard_chkMakeSpells()
 	If IsChecked($chkMakeSpells) Then
@@ -109,7 +109,7 @@ Func Standard_chkMakeSpells()
 		GUICtrlSetState($chkNukeOnly, $GUI_DISABLE)
 		GUICtrlSetState($chkNukeOnlyWithFullArmy, $GUI_DISABLE)
 	EndIf
-EndFunc
+EndFunc   ;==>Standard_chkMakeSpells
 
 Func Standard_chkNukeAttacking()
 	If IsChecked($chkNukeAttacking) Then
@@ -117,7 +117,7 @@ Func Standard_chkNukeAttacking()
 	Else
 		GUICtrlSetState($txtSpellNumber, $GUI_DISABLE)
 	EndIf
-EndFunc
+EndFunc   ;==>Standard_chkNukeAttacking
 
 Func Standard_cmbSpellCreate()
 	If _GUICtrlComboBox_GetCurSel($cmbSpellCreate) <> 0 Then
@@ -133,7 +133,7 @@ Func Standard_cmbSpellCreate()
 		GUICtrlSetState($chkNukeOnly, $GUI_ENABLE)
 		GUICtrlSetState($chkNukeOnlyWithFullArmy, $GUI_ENABLE)
 	EndIf
-EndFunc
+EndFunc   ;==>Standard_cmbSpellCreate
 
 Func Standard_cmbTroopComp()
 	If _GUICtrlComboBox_GetCurSel($cmbTroopComp) <> $prevTroopComp Then
@@ -148,7 +148,7 @@ Func Standard_cmbTroopComp()
 		_GUICtrlComboBox_SetCurSel($cmbAlgorithm, $prevTroopComp)
 		_GUICtrlComboBox_SetCurSel($cmbDeadAlgorithm, $prevTroopComp)
 	EndIf
-EndFunc
+EndFunc   ;==>Standard_cmbTroopComp
 
 Func Standard_SetComboTroopComp()
 	Local $BarbariansComp = GUICtrlRead($txtBarbarians)
@@ -303,5 +303,5 @@ Func Standard_SetComboTroopComp()
 			GUICtrlSetData($txtNumGiants, $GiantsComp)
 			GUICtrlSetData($txtNumWallbreakers, $WBComp)
 	EndSwitch
-EndFunc   ;==>SetComboTroopComp
+EndFunc   ;==>Standard_SetComboTroopComp
 

@@ -16,7 +16,7 @@ Func Standard_Search()
 	$MinGold = GUICtrlRead($txtMinGold)
 	$MinElixir = GUICtrlRead($txtMinElixir)
 	$MinDark = GUICtrlRead($txtMinDarkElixir)
-	$MinTrophy =GUICtrlRead($txtMinTrophy)
+	$MinTrophy = GUICtrlRead($txtMinTrophy)
 	$MaxTH = _GUICtrlComboBox_GetEditText($cmbTH)
 	$iNukeLimit = GUICtrlRead($txtDENukeLimit)
 
@@ -206,7 +206,7 @@ Func Standard_Search()
 
 			$GoodBase = False
 			Local $conditionlogstr
-			$NukeAttack=False
+			$NukeAttack = False
 
 			$BaseData = GetResources()
 
@@ -246,7 +246,7 @@ Func Standard_Search()
 			; Variables to check whether to attack dead bases
 			Local $conditionDeadPass = True
 
-			If IsChecked($chkDeadActivate)  And $fullArmy Then
+			If IsChecked($chkDeadActivate) And $fullArmy Then
 				If IsChecked($chkDeadGE) Then
 					$deadEnabled = True
 					If _GUICtrlComboBox_GetCurSel($cmbDead) = 0 Then ; And
@@ -283,7 +283,7 @@ Func Standard_Search()
 				; Variables to check whether to attack non-dead bases
 				Local $conditionAnyPass = True
 
-				If IsChecked($chkAnyActivate)  And $fullArmy Then
+				If IsChecked($chkAnyActivate) And $fullArmy Then
 					If IsChecked($chkMeetGE) Then
 						$anyEnabled = True
 						If _GUICtrlComboBox_GetCurSel($cmbAny) = 0 Then ; And
@@ -322,7 +322,7 @@ Func Standard_Search()
 				If IsChecked($chkNukeOnly) And $fullSpellFactory And $iNukeLimit > 0 Then
 					If Number($searchDark) >= Number($iNukeLimit) Then
 						If checkDarkElix() Then
-							$NukeAttack=True
+							$NukeAttack = True
 							SetLog("~~~~~~~Base to Zap Found!~~~~~~~", $COLOR_GREEN)
 							$GoodBase = True
 							$AttackMethod = 2
@@ -383,5 +383,5 @@ Func Standard_Search()
 		_BlockInputEx(0, "", "", $HWnD)
 		Return $AttackMethod
 	WEnd
-EndFunc   ;==>VillageSearch
+EndFunc   ;==>Standard_Search
 
