@@ -56,7 +56,7 @@ Func LocateBarrack()
 				$barrackPos[3][0] = ""
 				$barrackPos[3][1] = ""
 			EndIf
-			If IsChecked($chkRequest) And $CCPos[0] = -1 Then LocateClanCastle()
+			If IsChecked($chkRequest) And $CCPos[0] = "" Then LocateClanCastle()
 			ExitLoop (2)
 		WEnd
 	WEnd

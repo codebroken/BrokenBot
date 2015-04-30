@@ -765,7 +765,7 @@ Func Standard_MakeSpells()
 
 	ClickP($TopLeftClient) ;Click Away
 
-	If $SpellPos[0] = "-1" Then
+	If $SpellPos[0] = "" Then
 		LocateSpellFactory()
 		SaveConfig()
 	Else
