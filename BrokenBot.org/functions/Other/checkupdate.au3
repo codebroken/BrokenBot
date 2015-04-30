@@ -7,7 +7,7 @@ Func checkupdate()
 	If $ichkUpdate = 1 Then
 		Local $sFilePath = @TempDir & "\update.dat"
 
-		Local $hMasterVersion = InetGet(https://github.com/codebroken/BrokenBot/blob/master/BrokenBot.au3", $sFilePath, 3)
+		Local $hMasterVersion = InetGet("https://github.com/codebroken/BrokenBot/blob/master/BrokenBot.au3", $sFilePath, 3)
 
 		If $hMasterVersion = 0 Then
 			SetLog("Failed to check updated version info.")
