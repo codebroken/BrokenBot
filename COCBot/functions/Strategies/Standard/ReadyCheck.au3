@@ -32,7 +32,7 @@ Func Standard_CheckArmyCamp()
 	ClickP($TopLeftClient) ;Click Away
 
 	If $ArmyPos[0] = "" Then
-		LocateCamp()
+		If Not LocateCamp() Then Return
 		SaveConfig()
 	Else
 		If _Sleep(1000) Then Return
@@ -169,7 +169,7 @@ EndFunc   ;==>Standard_TrainIt
 Func Standard_Train($reset = False)
 	resetBarracksError()
 	If $barrackPos[0][0] = "" Then
-		LocateBarrack()
+		If Not LocateBarrack() Then Return
 		SaveConfig()
 		If _Sleep(2000) Then Return
 	EndIf
@@ -778,7 +778,7 @@ Func Standard_MakeSpells()
 	ClickP($TopLeftClient) ;Click Away
 
 	If $SpellPos[0] = "" Then
-		LocateSpellFactory()
+		If Not LocateSpellFactory() Then Return
 		SaveConfig()
 	Else
 		If _Sleep(100) Then Return

@@ -1,7 +1,7 @@
 Func RequestCC()
 	If IsChecked($chkRequest) Then
 		If $CCPos[0] = "" Then
-			LocateClanCastle()
+			If Not LocateClanCastle() Then Return
 			SaveConfig()
 			If _Sleep(1000) Then Return
 		EndIf

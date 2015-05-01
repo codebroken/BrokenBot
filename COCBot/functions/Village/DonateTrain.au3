@@ -41,7 +41,7 @@ EndFunc   ;==>Donate_TrainIt
 Func Donate_Train($reset = False)
 	resetBarracksError()
 	If $barrackPos[0][0] = "" Then
-		LocateBarrack()
+		If Not LocateBarrack() Then Return
 		SaveConfig()
 		If _Sleep(2000) Then Return
 	EndIf
@@ -107,6 +107,7 @@ Func Donate_Train($reset = False)
 	$troopFirstArch = 0
 	$troopSecondArch = 0
 
+	Local $BarrackControl
 	For $i = 0 To 3
 		If _Sleep(500) Then ExitLoop
 
@@ -117,7 +118,7 @@ Func Donate_Train($reset = False)
 		Click($barrackPos[$i][0], $barrackPos[$i][1]) ;Click Barrack
 		If _Sleep(1000) Then ExitLoop
 
-		Local $TrainPos = _PixelSearch(155, 603, 694, 605, Hex(0x603818, 6), 5) ;Finds Train Troops button
+		Local $TrainPos = _PixelSearch(155, 603, 694, 605, Hex(0x9C7C37, 6), 5) ;Finds Train Troops button
 		If IsArray($TrainPos) = False Then
 			SetLog("Barrack " & $i + 1 & " is not available", $COLOR_RED)
 			handleBarracksError($i)
@@ -126,10 +127,19 @@ Func Donate_Train($reset = False)
 			Click($TrainPos[0], $TrainPos[1]) ;Click Train Troops button
 			;SetLog("Barrack " & $i + 1 & " ...", $COLOR_GREEN)
 			If _Sleep(1000) Then ExitLoop
-
 			If _GUICtrlComboBox_GetCurSel($cmbTroopComp) = 8 Then
+				Switch $i
+					Case 0
+						$BarrackControl = $cmbBarrack1
+					Case 1
+						$BarrackControl = $cmbBarrack2
+					Case 2
+						$BarrackControl = $cmbBarrack3
+					Case 3
+						$BarrackControl = $cmbBarrack4
+				EndSwitch
 				_CaptureRegion()
-				Switch $barrackTroop[$i]
+				Switch _GUICtrlComboBox_GetCurSel($BarrackControl)
 					Case 0
 						While _ColorCheck(_GetPixelColor(220, 320), Hex(0xF89683, 6), 20)
 							Click(220, 320, 75) ;Barbarian

@@ -7,7 +7,7 @@ Func Donate_CheckArmyCamp()
 	ClickP($TopLeftClient) ;Click Away
 
 	If $ArmyPos[0] = "" Then
-		LocateCamp()
+		If Not LocateCamp() Then Return
 		SaveConfig()
 	Else
 		If _Sleep(1000) Then Return

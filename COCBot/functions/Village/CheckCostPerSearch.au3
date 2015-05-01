@@ -5,7 +5,7 @@ Func CheckCostPerSearch()
 	SetLog("Checking Gold Cost Per Search.", $COLOR_GREEN)
 
 	If $TownHallPos[0] = "" Then
-		LocateTownHall()
+		If Not LocateTownHall() Then Return
 		SaveConfig()
 		If _Sleep(1000) Then Return
 	EndIf

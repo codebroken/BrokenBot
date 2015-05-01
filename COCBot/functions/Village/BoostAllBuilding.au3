@@ -4,7 +4,7 @@ Func BoostAllBuilding()
 	If (GUICtrlRead($cmbBoostBarracks) > 0) And ($boostsEnabled = 1) Then
 
 		If $barrackPos[0][0] = "" Then
-			LocateBarrack()
+		If Not LocateBarrack() Then Return
 			SaveConfig()
 			If _Sleep(2000) Then Return
 		EndIf
@@ -54,10 +54,10 @@ Func BoostAllBuilding()
 			If _Sleep(500) Then Return
 			BoostBuilding()
 		EndIf
-		
+
 		If GUICtrlRead($chkBoostKing) = 1 Then; King Altar
 			If $KingPos[0] = "" Then
-				LocateKingAltar()
+				If Not LocateKingAltar() Then Return
 				SaveConfig()
 				If _Sleep(2000) Then Return
 				ClickP($TopLeftClient) ;Click Away
@@ -70,7 +70,7 @@ Func BoostAllBuilding()
 
 		If GUICtrlRead($chkBoostQueen) = 1 Then; Queen Altar
 			If $QueenPos[0] = "" Then
-				LocateQueenAltar()
+				If Not LocateQueenAltar() Then Return
 				SaveConfig()
 				If _Sleep(2000) Then Return
 				ClickP($TopLeftClient) ;Click Away
@@ -83,7 +83,7 @@ Func BoostAllBuilding()
 
 		If GUICtrlRead($chkBoostSpell) = 1 Then; Spell Factory
 			If $SpellPos[0] = "" Then
-				LocateSpellFactory()
+				If Not LocateSpellFactory() Then Return
 				SaveConfig()
 				If _Sleep(2000) Then Return
 				ClickP($TopLeftClient) ;Click Away

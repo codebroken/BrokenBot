@@ -320,7 +320,7 @@ Func Standard_Search()
 			If Not $GoodBase Then
 				; Variables to check whether to zap Dark elixir
 				If IsChecked($chkNukeOnly) And $fullSpellFactory And $iNukeLimit > 0 Then
-					If Number($searchDark) >= Number($iNukeLimit) Then
+					If Number($BaseData[4]) >= Number($iNukeLimit) Then
 						If checkDarkElix() Then
 							$NukeAttack = True
 							SetLog("~~~~~~~Base to Zap Found!~~~~~~~", $COLOR_GREEN)
@@ -369,7 +369,7 @@ Func Standard_Search()
 		GUICtrlSetData($lblresultvillagesattacked, GUICtrlRead($lblresultvillagesattacked) + 1)
 		GUICtrlSetData($lblresultsearchcost, GUICtrlRead($lblresultsearchcost) + $SearchCost)
 		If IsChecked($chkAlertSearch) Then
-			TrayTip("Match Found!", "Gold: " & $searchGold & "; Elixir: " & $searchElixir & "; Dark: " & $searchDark & "; Trophy: " & $searchTrophy & "; Townhall: " & $searchTH & ", " & $THLoc, 0)
+			TrayTip("Match Found!", "Gold: " & $BaseData[2] & "; Elixir: " & $BaseData[3] & "; Dark: " & $BaseData[4] & "; Trophy: " & $BaseData[5] & "; Townhall: " & $BaseData[1] & ", " & $THLoc, 0)
 			If FileExists(@WindowsDir & "\media\Windows Exclamation.wav") Then
 				SoundPlay(@WindowsDir & "\media\Windows Exclamation.wav", 1)
 			Else
@@ -377,7 +377,7 @@ Func Standard_Search()
 			EndIf
 		EndIf
 		If $PushBulletEnabled = 1 And $PushBulletmatchfound = 1 Then
-			_Push("Match Found!", "[G]: " & _NumberFormat($searchGold) & "; [E]: " & _NumberFormat($searchElixir) & "; [D]: " & _NumberFormat($searchDark) & "; [T]: " & $searchTrophy & "; [TH Lvl]: " & $searchTH & ", Loc: " & $THLoc)
+			_Push("Match Found!", "[G]: " & _NumberFormat($BaseData[2]) & "; [E]: " & _NumberFormat($BaseData[3]) & "; [D]: " & _NumberFormat($BaseData[4]) & "; [T]: " & $BaseData[5] & "; [TH Lvl]: " & $BaseData[1] & ", Loc: " & $THLoc)
 			SetLog("Push: Match Found", $COLOR_GREEN)
 		EndIf
 		SetLog("===============Searching Complete===============", $COLOR_BLUE)

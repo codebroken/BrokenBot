@@ -7,7 +7,7 @@ Func CheckFullSpellFactory()
 	ClickP($TopLeftClient) ;Click Away
 
 	If $SpellPos[0] = "" Then
-		LocateSpellFactory()
+		If Not LocateSpellFactory() Then Return
 		SaveConfig()
 	Else
 		If _Sleep(100) Then Return

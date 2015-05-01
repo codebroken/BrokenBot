@@ -1,5 +1,10 @@
 
 Func LocateBarrack()
+	checkMainScreen()
+	If Not ZoomOut() Then
+		SetLog("Failed to zoom out", $COLOR_BLUE)
+		Return False
+	EndIf
 	SetLog("Locating Barracks...", $COLOR_BLUE)
 	Local $MsgBox
 	While 1
@@ -17,6 +22,7 @@ Func LocateBarrack()
 				Next
 				ExitLoop (2)
 			EndIf
+			_Sleep(500)
 			$MsgBox = MsgBox(6 + 262144, "Locate second barrack", "Click Continue then click on your second barrack. Cancel if not available. Try again to start over.", 0, $frmBot)
 			If $MsgBox = 11 Then
 				$barrackPos[1][0] = FindPos()[0]
@@ -30,6 +36,7 @@ Func LocateBarrack()
 				Next
 				ExitLoop (2)
 			EndIf
+			_Sleep(500)
 			$MsgBox = MsgBox(6 + 262144, "Locate third barrack", "Click Continue then click on your third barrack. Cancel if not available. Try again to start over.", 0, $frmBot)
 			If $MsgBox = 11 Then
 				$barrackPos[2][0] = FindPos()[0]
@@ -43,6 +50,7 @@ Func LocateBarrack()
 				Next
 				ExitLoop (2)
 			EndIf
+			_Sleep(500)
 			$MsgBox = MsgBox(6 + 262144, "Locate fourth barrack", "Click Continue then click on your fourth barrack. Cancel if not available. Try again to start over.", 0, $frmBot)
 			If $MsgBox = 11 Then
 				$barrackPos[3][0] = FindPos()[0]
@@ -53,6 +61,7 @@ Func LocateBarrack()
 				$barrackPos[3][0] = ""
 				$barrackPos[3][1] = ""
 			EndIf
+			_Sleep(500)
 			If IsChecked($chkRequest) And $CCPos[0] = "" Then LocateClanCastle()
 			ExitLoop (2)
 		WEnd
@@ -66,6 +75,11 @@ Func LocateBarrack()
 EndFunc   ;==>LocateBarrack
 
 Func LocateDarkBarrack()
+	checkMainScreen()
+	If Not ZoomOut() Then
+		SetLog("Failed to zoom out", $COLOR_BLUE)
+		Return False
+	EndIf
 	SetLog("Locating Dark Barracks...", $COLOR_BLUE)
 	Local $MsgBox
 	While 1
@@ -83,6 +97,7 @@ Func LocateDarkBarrack()
 				Next
 				ExitLoop (2)
 			EndIf
+			_Sleep(500)
 			$MsgBox = MsgBox(6 + 262144, "Locate second Dark Barrack", "Click Continue then click on your second dark barrack. Cancel if not available. Try again to start over.", 0, $frmBot)
 			If $MsgBox = 11 Then
 				$DarkBarrackPos[1][0] = FindPos()[0]
@@ -107,6 +122,11 @@ Func LocateDarkBarrack()
 EndFunc   ;==>LocateDarkBarrack
 
 Func LocateCamp()
+	checkMainScreen()
+	If Not ZoomOut() Then
+		SetLog("Failed to zoom out", $COLOR_BLUE)
+		Return False
+	EndIf
 	While 1
 		$MsgBox = MsgBox(1 + 262144, "Locate Camp", "Click OK then click on one of your camps", 0, $frmBot)
 		If $MsgBox = 1 Then
@@ -126,6 +146,11 @@ Func LocateCamp()
 EndFunc   ;==>LocateCamp
 
 Func LocateClanCastle()
+	checkMainScreen()
+	If Not ZoomOut() Then
+		SetLog("Failed to zoom out", $COLOR_BLUE)
+		Return False
+	EndIf
 	While 1
 		$MsgBox = MsgBox(1 + 262144, "Locate Clan Castle", "Click OK then click on your Clan Castle", 0, $frmBot)
 		If $MsgBox = 1 Then
@@ -138,6 +163,11 @@ Func LocateClanCastle()
 EndFunc   ;==>LocateClanCastle
 
 Func LocateTownHall()
+	checkMainScreen()
+	If Not ZoomOut() Then
+		SetLog("Failed to zoom out", $COLOR_BLUE)
+		Return False
+	EndIf
 	While 1
 		$MsgBox = MsgBox(1 + 262144, "Locate Townhall", "Click OK then click on your Townhall", 0, $frmBot)
 		If $MsgBox = 1 Then
@@ -151,6 +181,11 @@ Func LocateTownHall()
 EndFunc   ;==>LocateTownHall
 
 Func LocateKingAltar()
+	checkMainScreen()
+	If Not ZoomOut() Then
+		SetLog("Failed to zoom out", $COLOR_BLUE)
+		Return False
+	EndIf
 	While 1
 		$MsgBox = MsgBox(1 + 262144, "Locate King Altar", "Click OK then click on your King Altar", 0, $frmBot)
 		If $MsgBox = 1 Then
@@ -163,6 +198,11 @@ Func LocateKingAltar()
 EndFunc   ;==>LocateKingAltar
 
 Func LocateQueenAltar()
+	checkMainScreen()
+	If Not ZoomOut() Then
+		SetLog("Failed to zoom out", $COLOR_BLUE)
+		Return False
+	EndIf
 	While 1
 		$MsgBox = MsgBox(1 + 262144, "Locate Queen Altar", "Click OK then click on your Queen Altar", 0, $frmBot)
 		If $MsgBox = 1 Then
@@ -174,6 +214,11 @@ Func LocateQueenAltar()
 	WEnd
 EndFunc   ;==>LocateQueenAltar
 Func LocateBuilding()
+	checkMainScreen()
+	If Not ZoomOut() Then
+		SetLog("Failed to zoom out", $COLOR_BLUE)
+		Return False
+	EndIf
 	LocateUpgrade1()
 	_Sleep(500)
 	LocateUpgrade2()
@@ -189,6 +234,11 @@ Func LocateBuilding()
 
 EndFunc   ;==>LocateBuilding
 Func LocateUpgrade1()
+	checkMainScreen()
+	If Not ZoomOut() Then
+		SetLog("Failed to zoom out", $COLOR_BLUE)
+		Return False
+	EndIf
 	While 1
 		$MsgBox = MsgBox(1 + 262144, "Locate Upgrade Building 1", "Click OK then click on your Building", 0, $frmBot)
 		If $MsgBox = 1 Then
@@ -203,6 +253,11 @@ Func LocateUpgrade1()
 EndFunc   ;==>LocateUpgrade1
 
 Func LocateUpgrade2()
+	checkMainScreen()
+	If Not ZoomOut() Then
+		SetLog("Failed to zoom out", $COLOR_BLUE)
+		Return False
+	EndIf
 	While 1
 		$MsgBox = MsgBox(1 + 262144, "Locate Upgrade Building 2", "Click OK then click on your Building", 0, $frmBot)
 		If $MsgBox = 1 Then
@@ -217,6 +272,11 @@ Func LocateUpgrade2()
 EndFunc   ;==>LocateUpgrade2
 
 Func LocateUpgrade3()
+	checkMainScreen()
+	If Not ZoomOut() Then
+		SetLog("Failed to zoom out", $COLOR_BLUE)
+		Return False
+	EndIf
 	While 1
 		$MsgBox = MsgBox(1 + 262144, "Locate Upgrade Building 3", "Click OK then click on your Building", 0, $frmBot)
 		If $MsgBox = 1 Then
@@ -231,6 +291,11 @@ Func LocateUpgrade3()
 EndFunc   ;==>LocateUpgrade3
 
 Func LocateUpgrade4()
+	checkMainScreen()
+	If Not ZoomOut() Then
+		SetLog("Failed to zoom out", $COLOR_BLUE)
+		Return False
+	EndIf
 	While 1
 		$MsgBox = MsgBox(1 + 262144, "Locate Upgrade Building 4", "Click OK then click on your Building", 0, $frmBot)
 		If $MsgBox = 1 Then
@@ -245,6 +310,11 @@ Func LocateUpgrade4()
 EndFunc   ;==>LocateUpgrade4
 
 Func LocateUpgrade5()
+	checkMainScreen()
+	If Not ZoomOut() Then
+		SetLog("Failed to zoom out", $COLOR_BLUE)
+		Return False
+	EndIf
 	While 1
 		$MsgBox = MsgBox(1 + 262144, "Locate Upgrade Building 5", "Click OK then click on your Building", 0, $frmBot)
 		If $MsgBox = 1 Then
@@ -260,6 +330,11 @@ EndFunc   ;==>LocateUpgrade5
 
 
 Func LocateUpgrade6()
+	checkMainScreen()
+	If Not ZoomOut() Then
+		SetLog("Failed to zoom out", $COLOR_BLUE)
+		Return False
+	EndIf
 	While 1
 		$MsgBox = MsgBox(1 + 262144, "Locate Upgrade Building 3", "Click OK then click on your Building", 0, $frmBot)
 		If $MsgBox = 1 Then
@@ -274,6 +349,11 @@ Func LocateUpgrade6()
 EndFunc   ;==>LocateUpgrade6
 
 Func LocateSpellFactory()
+	checkMainScreen()
+	If Not ZoomOut() Then
+		SetLog("Failed to zoom out", $COLOR_BLUE)
+		Return False
+	EndIf
 	While 1
 		$MsgBox = MsgBox(1 + 262144, "Locate Spell Factory", "Click OK then click on your spell factory", 0, $frmBot)
 		If $MsgBox = 1 Then
