@@ -17,7 +17,7 @@ Func Standard_ReadyCheck()
 	If $fullarmy And IsChecked($chkDeadActivate) Then Return True
 	If $fullarmy And IsChecked($chkAnyActivate) Then Return True
 	If IsChecked($chkMakeSpells) Then
-		If $fullSpellFactory And IsChecked($chkAnyActivate) And Not IsChecked($chkNukeOnlyWithFullArmy) Then Return True
+		If $fullSpellFactory And IsChecked($chkNukeOnly) And Not IsChecked($chkNukeOnlyWithFullArmy) Then Return True
 	EndIf
 
 	Return False

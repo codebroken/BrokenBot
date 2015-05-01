@@ -3,10 +3,10 @@
 #pragma compile(Icon, "BrokenBot.org\images\icons\brokenbot.ico")
 #pragma compile(FileDescription, BrokenBot.org - Clash of Clans Bot)
 #pragma compile(ProductName, BrokenBot.org - Clash of Clans Bot)
-#pragma compile(ProductVersion, 2.0.5)
-#pragma compile(FileVersion, 2.0.5)
+#pragma compile(ProductVersion, 2.0.6)
+#pragma compile(FileVersion, 2.0.6)
 
-$sBotVersion = "2.0.5 Beta"
+$sBotVersion = "2.0.6 Beta"
 $sBotTitle = "BrokenBot.org - Break FREE - v" & $sBotVersion
 #include <GUIConstants.au3>
 
