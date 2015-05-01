@@ -147,6 +147,7 @@ Func btnStart()
 	If BitAND(GUICtrlGetState($btnStart), $GUI_SHOW) Then
 
 		GUICtrlSetState($btnStart, $GUI_HIDE)
+		GUICtrlSetState($btnHide, $GUI_ENABLE)
 		GUICtrlSetState($btnPause, $GUI_ENABLE)
 		GUICtrlSetData($btnPause, "Pause")
 		GUICtrlSetState($btnStop, $GUI_SHOW)
@@ -220,14 +221,27 @@ Func btnStop()
 
 		FileClose($hLogFileHandle)
 		SetLog("BrokenBot has stopped", $COLOR_ORANGE)
+		GUICtrlSetState($btnHide, $GUI_DISABLE)
 	EndIf
 EndFunc   ;==>btnStop
 
 Func btnPause()
 	If GUICtrlRead($btnPause) = "Pause" Then
 		GUICtrlSetData($btnPause, "Resume")
+		If _GUICtrlTab_GetCurSel($tabMain) = 1 Then
+			GUISetState(@SW_HIDE, $frmAttackConfig)
+			DllCall("user32.dll", "int", "AnimateWindow", "hwnd", $frmAttackConfig, "int", 500, "long", $slideOut)
+			GUISetState(@SW_SHOW, $frmAttackConfig)
+			GUICtrlSetState($DefaultTab, $GUI_SHOW)
+		EndIf
 	Else
 		GUICtrlSetData($btnPause, "Pause")
+		If _GUICtrlTab_GetCurSel($tabMain) = 1 Then
+			_btnSaveStrat(GUICtrlRead($lstStrategies))
+			DllCall("user32.dll", "int", "AnimateWindow", "hwnd", $frmAttackConfig, "int", 500, "long", $slideIn)
+			GUISetState(@SW_HIDE, $frmAttackConfig)
+		EndIf
+		GUICtrlSetState($pageGeneral, $GUI_SHOW)
 	EndIf
 EndFunc   ;==>btnPause
 
@@ -471,12 +485,12 @@ Func tabMain()
 	Else
 		ControlHide("", "", $txtLog)
 	EndIf
-	If _GUICtrlTab_GetCurSel($tabMain) = 1 And BotStopped(False) Then
+	If _GUICtrlTab_GetCurSel($tabMain) = 1 And (BotStopped(False) Or GUICtrlRead($btnPause)="Resume") Then
 		GUISetState(@SW_HIDE, $frmAttackConfig)
 		DllCall("user32.dll", "int", "AnimateWindow", "hwnd", $frmAttackConfig, "int", 500, "long", $slideOut)
 		GUISetState(@SW_SHOW, $frmAttackConfig)
 		GUICtrlSetState($DefaultTab, $GUI_SHOW)
-	ElseIf $prevTab = 1 And BotStopped(False) Then
+	ElseIf $prevTab = 1 And (BotStopped(False) Or GUICtrlRead($btnPause)="Resume") Then
 		_btnSaveStrat(GUICtrlRead($lstStrategies))
 		DllCall("user32.dll", "int", "AnimateWindow", "hwnd", $frmAttackConfig, "int", 500, "long", $slideIn)
 		GUISetState(@SW_HIDE, $frmAttackConfig)

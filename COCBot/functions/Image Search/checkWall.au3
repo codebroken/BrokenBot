@@ -46,7 +46,7 @@ Func FindWall()
 			$Tolerance2 = 75
 	EndSwitch
 
-	If _Sleep(500) Then Return
+	_Sleep(500)
 	For $i = 0 To 3
 		_CaptureRegion()
 		$WallLoc = _ImageSearch($Wall[$icmbWalls], 1, $WallX, $WallY, $Tolerance2) ; Getting Wall Location

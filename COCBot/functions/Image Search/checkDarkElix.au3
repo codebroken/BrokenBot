@@ -1,7 +1,7 @@
 Func checkDarkElix()
 	Local $bumpTolerance
 	Local $maxTolerance
-	If $DESearchMode = 1 Then
+	If IsChecked($rdoMaybeSkip) Then
 		$maxTolerance = 70
 		$bumpTolerance = 60
 	Else
@@ -35,10 +35,10 @@ Func checkDarkElix()
 						$hClone = _GDIPlus_BitmapCloneArea($hBitmap, $DEx - 30, $DEy - 30, 60, 60, _GDIPlus_ImageGetPixelFormat($hBitmap))
 						$j = 1
 						Do
-							If Not FileExists($dirDebug & (($DESearchMode = 1) ? ("") : ("LowACC-")) & "PosDE-" & $i & "-" & $bumpTolerance & " (" & $j & ").jpg") Then ExitLoop
+							If Not FileExists($dirDebug & (IsChecked($rdoMaybeSkip) ? ("") : ("LowACC-")) & "PosDE-" & $i & "-" & $bumpTolerance & " (" & $j & ").jpg") Then ExitLoop
 							$j = $j + 1
 						Until $j = 1000
-						_GDIPlus_ImageSaveToFile($hClone, $dirDebug & (($DESearchMode = 1) ? ("") : ("LowACC-")) & "PosDE-" & $i & "-" & $bumpTolerance & " (" & $j & ").jpg")
+						_GDIPlus_ImageSaveToFile($hClone, $dirDebug & (IsChecked($rdoMaybeSkip) ? ("") : ("LowACC-")) & "PosDE-" & $i & "-" & $bumpTolerance & " (" & $j & ").jpg")
 						_GDIPlus_ImageDispose($hClone)
 					EndIf
 					Return True
@@ -50,7 +50,7 @@ Func checkDarkElix()
 
 	If $DarkElixLocation = 0 Then
 		SetLog("No dark elixir storage was found!", $COLOR_RED)
-		If $DebugMode = 1 Then _GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & (($DESearchMode = 1) ? ("") : ("LowACC-")) & "NegDE-" & @HOUR & @MIN & @SEC & ".png")
+		If $DebugMode = 1 Then _GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & (IsChecked($rdoMaybeSkip) ? ("") : ("LowACC-")) & "NegDE-" & @HOUR & @MIN & @SEC & ".png")
 		$DEx = 0
 		$DEy = 0
 		Return False ; return 0

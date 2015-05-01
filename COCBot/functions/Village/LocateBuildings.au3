@@ -83,7 +83,6 @@ Func LocateDarkBarrack()
 				Next
 				ExitLoop (2)
 			EndIf
-			If _Sleep(500) Then ExitLoop
 			$MsgBox = MsgBox(6 + 262144, "Locate second Dark Barrack", "Click Continue then click on your second dark barrack. Cancel if not available. Try again to start over.", 0, $frmBot)
 			If $MsgBox = 11 Then
 				$DarkBarrackPos[1][0] = FindPos()[0]
