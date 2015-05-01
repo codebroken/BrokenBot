@@ -36,5 +36,6 @@ Func DropTrophy()
 				SetLog("Trophy Drop Complete", $COLOR_BLUE)
 			EndIf
 		WEnd
+		Return True
 	EndIf
 EndFunc   ;==>DropTrophy

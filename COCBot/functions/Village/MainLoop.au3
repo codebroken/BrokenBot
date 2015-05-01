@@ -51,6 +51,9 @@ Func runBot() ;Bot that runs everything in order
 				Idle($strPlugInInUse)
 				If StatusCheck() Then Return
 
+				If DropTrophy() Then ContinueLoop
+				If StatusCheck() Then Return False
+
 				Call($strPlugInInUse & "_PrepNextBattle")
 
 				While True
