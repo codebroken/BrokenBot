@@ -17,7 +17,7 @@ Func Standard_Search()
 	$MinElixir = GUICtrlRead($txtMinElixir)
 	$MinDark = GUICtrlRead($txtMinDarkElixir)
 	$MinTrophy = GUICtrlRead($txtMinTrophy)
-	$MaxTH = _GUICtrlComboBox_GetCurSel($cmbDeadTH)
+	$MaxTH = _GUICtrlComboBox_GetCurSel($cmbTH)
 	$iNukeLimit = GUICtrlRead($txtDENukeLimit)
 
 	While 1
