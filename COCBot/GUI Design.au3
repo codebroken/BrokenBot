@@ -199,6 +199,13 @@ GUICtrlSetOnEvent(-1, "btnLocateUp6")
 GUICtrlSetState(-1, $GUI_DISABLE)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
+$grpLaboratory = GUICtrlCreateGroup("Laboratory", 20, 295, 375, 55)
+$chkLab = GUICtrlCreateCheckbox("Enable", 30, 320, 100, 17)
+GUICtrlCreateLabel("What to upgrade:", 185, 320, 100, 17)
+$cmbLaboratory = GUICtrlCreateCombo("", 285, 317, 100, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+GUICtrlSetData(-1, "Barbarians|Archers|Giants|Goblin|Ballon|W.Breaker|Wizard|Healer|Dragon|Pekka|Lightning|Healing|Rage|Jump Spell|Freeze|Minion|HogRider|Valkrye|Golem|Witch|Lava|Nothing", "Archers")
+GUICtrlCreateGroup("", -99, -99, 1, 1)
+
 ; ---------------------------------------------------------------------------------------------------------------------
 ; PushBullet ----------------------------------------------------------------------------------------------------------
 ; ---------------------------------------------------------------------------------------------------------------------

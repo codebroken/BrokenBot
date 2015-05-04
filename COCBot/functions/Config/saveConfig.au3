@@ -91,22 +91,22 @@ Func saveConfig() ;Saves the controls settings to the config
 	;---------------------------------------------------------------------------------------
 	; Upgrade settings ---------------------------------------------------------------------
 	;---------------------------------------------------------------------------------------
-	If GUICtrlRead($chkWalls) = $GUI_CHECKED Then
-		IniWrite($config, "other", "auto-wall", 1)
+	If IsChecked($chkWalls) Then
+		IniWrite($config, "upgrade", "auto-wall", 1)
 	Else
-		IniWrite($config, "other", "auto-wall", 0)
+		IniWrite($config, "upgrade", "auto-wall", 0)
 	EndIf
-	IniWrite($config, "other", "walllvl", _GUICtrlComboBox_GetCurSel($cmbWalls))
-	IniWrite($config, "other", "walltolerance", _GUICtrlComboBox_GetCurSel($cmbTolerance))
-	If GUICtrlRead($UseGold) = $GUI_CHECKED Then
-		IniWrite($config, "other", "use-storage", 0)
-	ElseIf GUICtrlRead($UseElixir) = $GUI_CHECKED Then
-		IniWrite($config, "other", "use-storage", 1)
-	ElseIf GUICtrlRead($UseGoldElix) = $GUI_CHECKED Then
-		IniWrite($config, "other", "use-storage", 2)
+	IniWrite($config, "upgrade", "walllvl", _GUICtrlComboBox_GetCurSel($cmbWalls))
+	IniWrite($config, "upgrade", "walltolerance", _GUICtrlComboBox_GetCurSel($cmbTolerance))
+	If IsChecked($UseGold) Then
+		IniWrite($config, "upgrade", "use-storage", 0)
+	ElseIf IsChecked($UseElixir) Then
+		IniWrite($config, "upgrade", "use-storage", 1)
+	ElseIf IsChecked($UseGoldElix) Then
+		IniWrite($config, "upgrade", "use-storage", 2)
 	EndIf
-	IniWrite($config, "other", "minwallgold", GUICtrlRead($txtWallMinGold))
-	IniWrite($config, "other", "minwallelixir", GUICtrlRead($txtWallMinElixir))
+	IniWrite($config, "upgrade", "minwallgold", GUICtrlRead($txtWallMinGold))
+	IniWrite($config, "upgrade", "minwallelixir", GUICtrlRead($txtWallMinElixir))
 
 	; Relics below...in save but not read
 	If IsChecked($chkUpgrade1) Then
@@ -151,6 +151,14 @@ Func saveConfig() ;Saves the controls settings to the config
 	IniWrite($config, "upgrade", "PosY6", GUICtrlRead($txtUpgradeY6))
 	IniWrite($config, "upgrade", "PosX6", GUICtrlRead($txtUpgradeX6))
 
+	If IsChecked($chkLab) Then
+        IniWrite($config, "upgrade", "auto-uptroops", 1)
+    Else
+        IniWrite($config, "upgrade", "auto-uptroops", 0)
+    EndIf
+    IniWrite($config, "upgrade", "troops-name", _GUICtrlComboBox_GetCurSel($cmbLaboratory))
+    IniWrite($config, "upgrade", "LabPosX", $itxtLabX)
+    IniWrite($config, "upgrade", "LabPosY", $itxtLabY)
 	;---------------------------------------------------------------------------------------
 	; Notification settings ----------------------------------------------------------------
 	;---------------------------------------------------------------------------------------

@@ -41,6 +41,7 @@
 #include "functions\Other\LootLogCleanup.au3"
 #include "functions\Other\Pause.au3"
 #include "functions\Other\RedLineDeploy.au3"
+#include "functions\Other\ClickDrag.au3"
 
 #include "functions\Pixels\_CaptureRegion.au3"
 #include "functions\Pixels\_ColorCheck.au3"
@@ -88,3 +89,4 @@
 #include "functions\Village\UpgradeBuilding.au3"
 #include "functions\Village\VillageReport.au3"
 #include "functions\Village\CheckCostPerSearch.au3"
+#include "functions\Village\UpTroops.au3"

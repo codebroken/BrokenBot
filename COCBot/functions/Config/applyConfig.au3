@@ -91,6 +91,14 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	EndIf
 	Randomspeedatk()
 
+;Lab
+    If $ichkLab = 1 Then
+        GUICtrlSetState($chkLab, $GUI_CHECKED)
+    Else
+        GUICtrlSetState($chkLab, $GUI_UNCHECKED)
+    EndIf
+    _GUICtrlComboBox_SetCurSel($cmbLaboratory, $icmbLaboratory)
+
 	;General Settings--------------------------------------------------------------------------
 	If $frmBotPosX <> -32000 Then
 		WinMove($sBotTitle, "", $frmBotPosX, $frmBotPosY)

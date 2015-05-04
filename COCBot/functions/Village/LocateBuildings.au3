@@ -371,3 +371,19 @@ Func LocateSpellFactory()
 		MsgBox(4096, "Error", "Please input the correct value")
 	EndIf
 EndFunc   ;==>LocateSpellFactory
+
+Func LocateLab()
+	checkMainScreen()
+	If Not ZoomOut() Then
+		SetLog("Failed to zoom out", $COLOR_BLUE)
+		Return False
+	EndIf
+	$MsgBox = MsgBox(1 + 262144, "Locate Laboratory", "Click OK then click on your Building", 0, $frmBot)
+	If $MsgBox = 1 Then
+		$LabPos[0] = FindPos()[0]
+		$LabPos[1] = FindPos()[1]
+		SetLog("-Locate Laboratory =  " & "(" & $LabPos[0] & "," & $LabPos[1] & ")", $COLOR_GREEN)
+		$itxtLabX = $LabPos[0]
+		$itxtLabY = $LabPos[1]
+	EndIf
+EndFunc

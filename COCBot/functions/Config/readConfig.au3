@@ -44,6 +44,12 @@ Func readConfig() ;Reads config and sets it to the variables
 	$itxtWallMinElixir = IniRead($config, "upgrade", "minwallelixir", "0")
 	$icmbTolerance = IniRead($config, "upgrade", "walltolerance", "0")
 
+	;Laboratory
+	$ichkLab = IniRead($config, "upgrade", "auto-uptroops", "0")
+	$icmbLaboratory = IniRead($config, "upgrade", "troops-name", "0")
+	$itxtLabX = IniRead($config, "upgrade", "LabPosX", "")
+	$itxtLabY = IniRead($config, "upgrade", "LabPosY", "")
+
 	;---------------------------------------------------------------------------------------
 	; Notification settings ----------------------------------------------------------------
 	;---------------------------------------------------------------------------------------

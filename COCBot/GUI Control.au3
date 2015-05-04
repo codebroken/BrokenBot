@@ -718,3 +718,6 @@ Func _lstStrategies()
 	EndIf
 EndFunc   ;==>_lstStrategies
 
+Func btnLab()
+	LocateLab()
+EndFunc

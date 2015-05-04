@@ -17,10 +17,8 @@ Func runBot() ;Bot that runs everything in order
 		VillageReport()
 		If StatusCheck() Then Return
 
-		; Commented until such time as fixed
-		;
-		; CheckCostPerSearch()
-		; If StatusCheck() Then Return
+		CheckCostPerSearch()
+		If StatusCheck() Then Return
 
 		If $Checkrearm Then
 			ReArm()
@@ -38,6 +36,9 @@ Func runBot() ;Bot that runs everything in order
 		If StatusCheck() Then Return
 
 		Collect()
+		If StatusCheck() Then Return
+
+		Laboratory()
 		If StatusCheck() Then Return
 
 		UpgradeBuilding()
