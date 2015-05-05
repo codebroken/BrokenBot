@@ -209,8 +209,8 @@ EndFunc   ;==>CheckDonate
 
 Func DonateTroops($Troop, $i, $Row, $number)
 	Local $x, $y
-	If _ColorCheck(_GetPixelColor($DonatePixel[0], $DonatePixel[1]), Hex(0x262926, 6), 10) Then
-		Click($DonatePixel[0], $DonatePixel[1] + 11)
+	If IsArray(_PixelSearch(119, $DonatePixel[1], 204, $DonatePixel[1]+4, Hex(0x262926, 6), 10)) Then
+		Click($DonatePixel[0], $DonatePixel[1] + 15)
 	Else
 		SetLog("No donate button exists to click")
 		SetLog("Donate pixel was: " & $DonatePixel[0] & ", " & $DonatePixel[1])
