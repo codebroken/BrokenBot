@@ -1,8 +1,8 @@
 Func SetTime()
 	Local $time = _TicksToTime(Int(TimerDiff($sTimer)), $hour, $min, $sec)
-	If _GUICtrlTab_GetCurSel($tabMain) = 10 Then GUICtrlSetData($lblresultruntime, StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
+	If _GUICtrlTab_GetCurSel($tabMain) = 7 Then GUICtrlSetData($lblresultruntime, StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
 	If IsChecked($lblpushbulletremote) Then
-		If StringFormat("%02i", $sec) = "50" Then
+		If StringRight(StringFormat("%02i", $sec),1) = "0" Then
 			_RemoteControl()
 		EndIf
 	EndIf
