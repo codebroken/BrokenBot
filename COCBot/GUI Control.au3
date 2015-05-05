@@ -134,7 +134,6 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 			For $i = 1 To $PluginEvents[0][0]
 				If $nID = $PluginEvents[$i][0] And $nNotifyCode = $PluginEvents[$i][1] Then
 					$strPlugInInUse = IniRead($dirStrat & GUICtrlRead($lstStrategies) & ".ini", "plugin", "name", "")
-					SetLOG($strPlugInInUse & $PluginEvents[$i][2])
 					Call($strPlugInInUse & $PluginEvents[$i][2])
 				EndIf
 			Next
@@ -147,7 +146,7 @@ Func btnStart()
 	If BitAND(GUICtrlGetState($btnStart), $GUI_SHOW) Then
 
 		GUICtrlSetState($btnStart, $GUI_HIDE)
-		GUICtrlSetState($btnHide, $GUI_ENABLE)
+		If IsChecked($chkBackground) Then GUICtrlSetState($btnHide, $GUI_ENABLE)
 		GUICtrlSetState($btnPause, $GUI_ENABLE)
 		GUICtrlSetData($btnPause, "Pause")
 		GUICtrlSetState($btnStop, $GUI_SHOW)

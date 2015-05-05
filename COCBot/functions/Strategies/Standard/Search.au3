@@ -104,6 +104,7 @@ Func Standard_Search()
 		_BlockInputEx(3, "", "", $HWnD)
 		While 1
 			If Not _WaitForColor(30, 505, Hex(0xE80008, 6), 50, 10) Then Return -1
+			If _Sleep($speedBump) Then Return -1
 			GUICtrlSetState($btnAtkNow, $GUI_ENABLE)
 
 			If IsChecked($chkTakeTownSS) Then
@@ -351,6 +352,19 @@ Func Standard_Search()
 					If _Sleep(500) Then Return -1
 				ElseIf _ColorCheck(_GetPixelColor(71, 530), Hex(0xC00000, 6), 20) Then
 					SetLog("Cannot locate Next button, try to return home...", $COLOR_RED)
+					Local $dummyX = 0
+					Local $dummyY = 0
+					If _ImageSearch(@ScriptDir & "\images\Client.bmp", 1, $dummyX, $dummyY, 50) = 1 Then
+						If $dummyX > 290 And $dummyX < 310 And $dummyY > 325 And $dummyY < 340 Then
+							$speedBump += 500
+							If $speedBump > 5000 Then
+								$speedBump = 5000
+								SetLog("Out of sync! Already searching slowly, not changing anything.", $COLOR_RED)
+							Else
+								SetLog("Out of sync! Slowing search speed by 0.5 secs.", $COLOR_RED)
+							EndIf
+						EndIf
+					EndIf
 					If $DebugMode = 1 Then _GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "NoNext-" & @HOUR & @MIN & @SEC & ".png")
 					If $PushBulletEnabled = 1 Then
 						_Push("Disconnected", "Your bot got disconnected while searching for enemy..")
@@ -358,6 +372,19 @@ Func Standard_Search()
 					Return -1
 				Else
 					SetLog("Cannot locate Next button & Surrender button, Restarting Bot", $COLOR_RED)
+					Local $dummyX = 0
+					Local $dummyY = 0
+					If _ImageSearch(@ScriptDir & "\images\Client.bmp", 1, $dummyX, $dummyY, 50) = 1 Then
+						If $dummyX > 290 And $dummyX < 310 And $dummyY > 325 And $dummyY < 340 Then
+							$speedBump += 500
+							If $speedBump > 5000 Then
+								$speedBump = 5000
+								SetLog("Out of sync! Already searching slowly, not changing anything.", $COLOR_RED)
+							Else
+								SetLog("Out of sync! Slowing search speed by 0.5 secs.", $COLOR_RED)
+							EndIf
+						EndIf
+					EndIf
 					If $DebugMode = 1 Then _GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "NoNextSurr-" & @HOUR & @MIN & @SEC & ".png")
 					If $PushBulletEnabled = 1 Then
 						_Push("Disconnected", "Your bot got disconnected while searching for enemy..")

@@ -6,7 +6,7 @@ Func DonateCC()
 	Global $AmountArchers = Number(GUICtrlRead($NoOfArchers))
 	Global $AmountGiants = Number(GUICtrlRead($NoOfGiants))
 
-	Global $Donate = $ichkDonateBarbarians = 1 Or $ichkDonateArchers = 1 Or $ichkDonateGiants = 1 Or $ichkDonateAllBarbarians = 1 Or $ichkDonateAllArchers = 1 Or $ichkDonateAllGiants = 1
+	Global $Donate = IsChecked($chkDonateAllBarbarians) Or IsChecked($chkDonateBarbarians) Or IsChecked($chkDonateAllArchers) Or IsChecked($chkDonateArchers) Or IsChecked($chkDonateAllGiants) Or IsChecked($chkDonateGiants)
 	If $Donate = False Then Return
 	Local $y = 119
 	SetLog("Donating Troops", $COLOR_BLUE)
@@ -25,7 +25,7 @@ Func DonateCC()
 			Global $DonatePixel = _MultiPixelSearch(202, $y, 203, 670, 1, 1, Hex(0x262926, 6), $offColors, 30)
 			If IsArray($DonatePixel) Then
 				$Donate = False
-				If ($ichkDonateAllBarbarians = 0 And $ichkDonateAllArchers = 0 And $ichkDonateAllGiants = 0) And ($ichkDonateBarbarians = 1 Or $ichkDonateArchers = 1 Or $ichkDonateGiants = 1) Then
+				If Not (IsChecked($chkDonateAllBarbarians) Or IsChecked($chkDonateAllArchers) Or IsChecked($chkDonateAllGiants)) Then
 					_CaptureRegion(0, 0, 435, $DonatePixel[1] + 50)
 					Local $String = getString($DonatePixel[1] - 28)
 					If $String = "" Then
@@ -36,65 +36,88 @@ Func DonateCC()
 
 					SetLog("Chat Text: " & $String, $COLOR_GREEN)
 
-					If $ichkDonateBarbarians = 1 Then
-						Local $Barbs = StringSplit($itxtDonateBarbarians, @CRLF)
-						For $i = 0 To UBound($Barbs) - 1
-							If CheckDonate($Barbs[$i], $String) Then
-								$Troop = GUICtrlRead($cmbDonateBarbarians)
-								GetTroopCoord()
-								DonateTroops($Troop, $ColDist, $RowDist, $AmountBarbarians)
-								ExitLoop
+					If IsChecked($chkDonateBarbarians) Then
+						Local $Barbs = StringSplit(StringStripWS($itxtDonateBarbarians, 3), @CRLF)
+						If IsArray($Barbs) Then
+							For $i = 1 to $Barbs[0]
+								If CheckDonate($Barbs[$i], $String) Then
+									$Troop = GUICtrlRead($cmbDonateBarbarians)
+									GetTroopCoord()
+									DonateTroops($Troop, $ColDist, $RowDist, $AmountBarbarians)
+									ExitLoop
+								EndIf
+							Next
+							If $Donate Then
+								If _Sleep(500) Then ExitLoop
+								$y = $DonatePixel[1] + 10
 							EndIf
-						Next
-						If $Donate Then
-							If _Sleep(500) Then ExitLoop
-							$y = $DonatePixel[1] + 10
+						Else
+							SetLog("Unable to read troop 1 donate rules.")
+							Return
 						EndIf
 					EndIf
-					If $ichkDonateArchers = 1 Then
-						Local $Archers = StringSplit($itxtDonateArchers, @CRLF)
-						For $i = 0 To UBound($Archers) - 1
-							If CheckDonate($Archers[$i], $String) Then
-								$Troop = GUICtrlRead($cmbDonateArchers)
-								GetTroopCoord()
-								DonateTroops($Troop, $ColDist, $RowDist, $AmountArchers)
-								ExitLoop
+					If IsChecked($chkDonateArchers) Then
+						Local $Archers = StringSplit(StringStripWS($itxtDonateArchers, 3), @CRLF)
+						If IsArray($Archers) Then
+							For $i = 1 To $Archers[0]
+								If CheckDonate($Archers[$i], $String) Then
+									$Troop = GUICtrlRead($cmbDonateArchers)
+									GetTroopCoord()
+									DonateTroops($Troop, $ColDist, $RowDist, $AmountArchers)
+									ExitLoop
+								EndIf
+							Next
+							If $Donate Then
+								If _Sleep(500) Then ExitLoop
+								$y = $DonatePixel[1] + 10
 							EndIf
-						Next
-						If $Donate Then
-							If _Sleep(500) Then ExitLoop
-							$y = $DonatePixel[1] + 10
+						Else
+							SetLog("Unable to read troop 2 donate rules.")
+							Return
 						EndIf
 					EndIf
-					If $ichkDonateGiants = 1 Then
-						Local $Giants = StringSplit($itxtDonateGiants, @CRLF)
-						For $i = 0 To UBound($Giants) - 1
-							If CheckDonate($Giants[$i], $String) Then
-								$Troop = GUICtrlRead($cmbDonateGiants)
-								GetTroopCoord()
-								DonateTroops($Troop, $ColDist, $RowDist, $AmountGiants)
-								ExitLoop
+					If IsChecked($chkDonateGiants) Then
+						Local $Giants = StringSplit(StringStripWS($itxtDonateGiants, 3), @CRLF)
+						If IsArray($Giants) Then
+							For $i = 1 to $Giants[0]
+								If CheckDonate($Giants[$i], $String) Then
+									$Troop = GUICtrlRead($cmbDonateGiants)
+									GetTroopCoord()
+									DonateTroops($Troop, $ColDist, $RowDist, $AmountGiants)
+									ExitLoop
+								EndIf
+							Next
+							If $Donate Then
+								If _Sleep(500) Then ExitLoop
+								$y = $DonatePixel[1] + 10
 							EndIf
-						Next
-						If $Donate Then
-							If _Sleep(500) Then ExitLoop
-							$y = $DonatePixel[1] + 10
+						Else
+							SetLog("Unable to read troop 3 donate rules.")
+							Return
 						EndIf
 					EndIf
 				Else
-					Select
-						Case $ichkDonateAllBarbarians = 1
-							$Troop = GUICtrlRead($cmbDonateBarbarians)
-							$TroopAmount = Number(GUICtrlRead($NoOfBarbarians))
-						Case $ichkDonateAllArchers = 1
-							$Troop = GUICtrlRead($cmbDonateArchers)
-							$TroopAmount = Number(GUICtrlRead($NoOfArchers))
-						Case $ichkDonateAllGiants = 1
-							$Troop = GUICtrlRead($cmbDonateGiants)
-							$TroopAmount = Number(GUICtrlRead($NoOfGiants))
-					EndSelect
+					If IsChecked($chkDonateAllBarbarians) Then
+						$Troop = GUICtrlRead($cmbDonateBarbarians)
+						$TroopAmount = Number(GUICtrlRead($NoOfBarbarians))
+					ElseIf IsChecked($chkDonateAllArchers) Then
+						$Troop = GUICtrlRead($cmbDonateArchers)
+						$TroopAmount = Number(GUICtrlRead($NoOfArchers))
+					ElseIf IsChecked($chkDonateAllGiants) Then
+						$Troop = GUICtrlRead($cmbDonateGiants)
+						$TroopAmount = Number(GUICtrlRead($NoOfGiants))
+					EndIf
 					GetTroopCoord()
-					DonateTroops($Troop, $ColDist, $RowDist, $TroopAmount)
+					If $RowDist = -1 or $ColDist = -1 Then
+						SetLog("Unable to determine how to donate " & $Troop & "(s)")
+						ExitLoop
+					Else
+						DonateTroops($Troop, $ColDist, $RowDist, $TroopAmount)
+						If $Donate Then
+							If _Sleep(500) Then ExitLoop
+							$y = $DonatePixel[1] + 10
+						EndIf
+					EndIf
 				EndIf
 			Else
 				ExitLoop
@@ -186,7 +209,13 @@ EndFunc   ;==>CheckDonate
 
 Func DonateTroops($Troop, $i, $Row, $number)
 	Local $x, $y
-	If _ColorCheck(_GetPixelColor($DonatePixel[0], $DonatePixel[1]), Hex(0x262926, 6), 10) Then Click($DonatePixel[0], $DonatePixel[1] + 11)
+	If _ColorCheck(_GetPixelColor($DonatePixel[0], $DonatePixel[1]), Hex(0x262926, 6), 10) Then
+		Click($DonatePixel[0], $DonatePixel[1] + 11)
+	Else
+		SetLog("No donate button exists to click")
+		SetLog("Donate pixel was: " & $DonatePixel[0] & ", " & $DonatePixel[1])
+		SetLog("Color was: " & _GetPixelColor($DonatePixel[0], $DonatePixel[1]))
+	EndIf
 	If _Sleep(1000) Then Return
 	_CaptureRegion(0, 0, 860, $DonatePixel[1] + 200)
 	If $i >= 0 Then $x = 237 + $i * 80
@@ -253,7 +282,6 @@ Func GetTroopCoord()
 		Case "Wizard", "Golem"
 			$ColDist = 6
 		Case Else
-			SetLog("Unable to determine troop ($i) to donate. Shutting down PC...", $COLOR_RED)
 			$ColDist = -1
 	EndSwitch
 
@@ -265,7 +293,6 @@ Func GetTroopCoord()
 		Case "Witch", "Lava"
 			$RowDist = 2
 		Case Else
-			SetLog("Unable to determine troop ($row) to donate. Shutting down PC...", $COLOR_RED)
 			$RowDist = -1
 	EndSwitch
 EndFunc   ;==>GetTroopCoord

@@ -53,12 +53,12 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	GUICtrlSetData($txtDonateGiants, $itxtDonateGiants)
 
 	GUICtrlSetData($txtRequest, $itxtRequest)
-	GUICtrlSetData($cmbDonateBarbarians, IniRead($config, "donate", "donate1", "Barbarians"), "Barbarians")
-	GUICtrlSetData($cmbDonateArchers, IniRead($config, "donate", "donate2", "Archers"), "Archers")
-	GUICtrlSetData($cmbDonateGiants, IniRead($config, "donate", "donate3", "Giants"), "Giants")
-	GUICtrlSetData($NoOfBarbarians, IniRead($config, "donate", "amount1", 5), 5)
-	GUICtrlSetData($NoOfArchers, IniRead($config, "donate", "amount2", 5), 5)
-	GUICtrlSetData($NoOfGiants, IniRead($config, "donate", "amount3", 5), 5)
+	_GUICtrlComboBox_SetCurSel($cmbDonateBarbarians, IniRead($config, "donate", "donate1", "0"))
+	_GUICtrlComboBox_SetCurSel($cmbDonateArchers, IniRead($config, "donate", "donate2", "1"))
+	_GUICtrlComboBox_SetCurSel($cmbDonateGiants, IniRead($config, "donate", "donate3", "2"))
+	GUICtrlSetData($NoOfBarbarians, IniRead($config, "donate", "amount1", 5))
+	GUICtrlSetData($NoOfArchers, IniRead($config, "donate", "amount2", 5))
+	GUICtrlSetData($NoOfGiants, IniRead($config, "donate", "amount3", 5))
 	chkRequest()
 	;Other Settings--------------------------------------------------------------------------
 	If $ichkWalls = 1 Then

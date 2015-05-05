@@ -81,9 +81,9 @@ Func saveConfig() ;Saves the controls settings to the config
 	Else
 		IniWrite($config, "donate", "gtfo", 0)
 	EndIf
-	IniWrite($config, "donate", "donate1", GUICtrlRead($cmbDonateBarbarians))
-	IniWrite($config, "donate", "donate2", GUICtrlRead($cmbDonateArchers))
-	IniWrite($config, "donate", "donate3", GUICtrlRead($cmbDonateGiants))
+	IniWrite($config, "donate", "donate1", _GUICtrlComboBox_GetCurSel($cmbDonateBarbarians))
+	IniWrite($config, "donate", "donate2", _GUICtrlComboBox_GetCurSel($cmbDonateArchers))
+	IniWrite($config, "donate", "donate3", _GUICtrlComboBox_GetCurSel($cmbDonateGiants))
 	IniWrite($config, "donate", "amount1", GUICtrlRead($NoOfBarbarians))
 	IniWrite($config, "donate", "amount2", GUICtrlRead($NoOfArchers))
 	IniWrite($config, "donate", "amount3", GUICtrlRead($NoOfGiants))

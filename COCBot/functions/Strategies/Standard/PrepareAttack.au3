@@ -13,54 +13,89 @@ Func Standard_PrepareAttack($remaining = False, $AttackMethod = 1) ;Assigns troo
 	Local $BarrackControl
 	For $i = 0 To 8
 		Local $troopKind = IdentifyTroopKind($i)
-		If $iAlgorithm = 8 Then
-			For $x = 0 To 3
-				Switch $i
-					Case 0
-						$BarrackControl = $cmbBarrack1
-					Case 1
-						$BarrackControl = $cmbBarrack2
-					Case 2
-						$BarrackControl = $cmbBarrack3
-					Case 3
-						$BarrackControl = $cmbBarrack4
-				EndSwitch
-				$troopKind = IdentifyTroopKind($i)
-				If $troopKind = $eBarbarian And _GUICtrlComboBox_GetCurSel($BarrackControl) = 0 Then
-					$atkTroops[$i][0] = $troopKind
-					ExitLoop
-				ElseIf $troopKind = $eArcher And _GUICtrlComboBox_GetCurSel($BarrackControl) = 1 Then
-					$atkTroops[$i][0] = $troopKind
-					ExitLoop
-				ElseIf $troopKind = $eGiant And _GUICtrlComboBox_GetCurSel($BarrackControl) = 2 Then
-					$atkTroops[$i][0] = $troopKind
-					ExitLoop
-				ElseIf $troopKind = $eGoblin And _GUICtrlComboBox_GetCurSel($BarrackControl) = 3 Then
-					$atkTroops[$i][0] = $troopKind
-					ExitLoop
-				ElseIf $troopKind = $eWallbreaker And _GUICtrlComboBox_GetCurSel($BarrackControl) = 4 Then
-					$atkTroops[$i][0] = $troopKind
-					ExitLoop
-				ElseIf $troopKind = $eMinion And ($DarkBarrackTroop[0] = 0 Or $DarkBarrackTroop[1] = 0) Then
-					$atkTroops[$i][0] = $troopKind
-					ExitLoop
-				ElseIf $troopKind = $eHog And ($DarkBarrackTroop[0] = 1 Or $DarkBarrackTroop[1] = 1) Then
-					$atkTroops[$i][0] = $troopKind
-					ExitLoop
-				ElseIf $troopKind = $eValkyrie And ($DarkBarrackTroop[0] = 2 Or $DarkBarrackTroop[1] = 2) Then
-					$atkTroops[$i][0] = $troopKind
-					ExitLoop
-				ElseIf $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
+		Switch $iAlgorithm
+			Case 0
+				; Archers only
+				If $troopKind <> $eArcher And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
 					$troopKind = -1
 				EndIf
-			Next
-		ElseIf Not $fullarmy Then
-			If $troopKind <> $eLSpell Then
-				$troopKind = -1
-			EndIf
-		ElseIf $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell And ($troopKind = $eBarbarian And ($iAlgorithm = 0 Or $iAlgorithm = 2)) Or ($troopKind = $eArcher And ($iAlgorithm = 1 Or $iAlgorithm = 2)) Or ($troopKind = $eGiant And ($iAlgorithm = 0 Or $iAlgorithm = 1 Or $iAlgorithm = 2 Or $iAlgorithm = 3 Or $iAlgorithm = 6)) Or ($troopKind = $eGoblin And ($iAlgorithm = 0 Or $iAlgorithm = 1 Or $iAlgorithm = 3 Or $iAlgorithm = 5)) Or ($troopKind = $eWallbreaker And ($iAlgorithm <> 7 And $iAlgorithm <> 8 And $iAlgorithm <> 9)) Or ($troopKind = $eMinion And ($iAlgorithm <> 8 And $iAlgorithm <> 9)) Or ($troopKind = $eHog And ($iAlgorithm <> 8 And $iAlgorithm <> 9)) Or ($troopKind = $eValkyrie And ($iAlgorithm <> 8 And $iAlgorithm <> 9)) Then
-			$troopKind = -1
-		EndIf
+			Case 1
+				; Barbarians only
+				If $troopKind <> $eBarbarian And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
+					$troopKind = -1
+				EndIf
+			Case 2
+				; Goblins only
+				If $troopKind <> $eGoblin And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
+					$troopKind = -1
+				EndIf
+			Case 3
+				; Barch
+				If $troopKind <> $eBarbarian And $troopKind <> $eArcher And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
+					$troopKind = -1
+				EndIf
+			Case 4
+				; BAGG
+				If $troopKind <> $eBarbarian And $troopKind <> $eArcher And $troopKind <> $eGiant And $troopKind <> $eGoblin And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
+					$troopKind = -1
+				EndIf
+			Case 5
+				; BAGiant
+				If $troopKind <> $eBarbarian And $troopKind <> $eArcher And $troopKind <> $eGiant And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
+					$troopKind = -1
+				EndIf
+			Case 6
+				; BAGob
+				If $troopKind <> $eBarbarian And $troopKind <> $eArcher And $troopKind <> $eGoblin And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
+					$troopKind = -1
+				EndIf
+			Case 7
+				; BAGGWB
+				If $troopKind <> $eBarbarian And $troopKind <> $eArcher And $troopKind <> $eGiant And $troopKind <> $eGoblin And $troopKind <> $eWallbreaker And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
+					$troopKind = -1
+				EndIf
+			Case 8
+				For $x = 0 To 3
+					Switch $i
+						Case 0
+							$BarrackControl = $cmbBarrack1
+						Case 1
+							$BarrackControl = $cmbBarrack2
+						Case 2
+							$BarrackControl = $cmbBarrack3
+						Case 3
+							$BarrackControl = $cmbBarrack4
+					EndSwitch
+					$troopKind = IdentifyTroopKind($i)
+					If $troopKind = $eBarbarian And _GUICtrlComboBox_GetCurSel($BarrackControl) = 0 Then
+						$atkTroops[$i][0] = $troopKind
+						ExitLoop
+					ElseIf $troopKind = $eArcher And _GUICtrlComboBox_GetCurSel($BarrackControl) = 1 Then
+						$atkTroops[$i][0] = $troopKind
+						ExitLoop
+					ElseIf $troopKind = $eGiant And _GUICtrlComboBox_GetCurSel($BarrackControl) = 2 Then
+						$atkTroops[$i][0] = $troopKind
+						ExitLoop
+					ElseIf $troopKind = $eGoblin And _GUICtrlComboBox_GetCurSel($BarrackControl) = 3 Then
+						$atkTroops[$i][0] = $troopKind
+						ExitLoop
+					ElseIf $troopKind = $eWallbreaker And _GUICtrlComboBox_GetCurSel($BarrackControl) = 4 Then
+						$atkTroops[$i][0] = $troopKind
+						ExitLoop
+					ElseIf $troopKind = $eMinion And ($DarkBarrackTroop[0] = 0 Or $DarkBarrackTroop[1] = 0) Then
+						$atkTroops[$i][0] = $troopKind
+						ExitLoop
+					ElseIf $troopKind = $eHog And ($DarkBarrackTroop[0] = 1 Or $DarkBarrackTroop[1] = 1) Then
+						$atkTroops[$i][0] = $troopKind
+						ExitLoop
+					ElseIf $troopKind = $eValkyrie And ($DarkBarrackTroop[0] = 2 Or $DarkBarrackTroop[1] = 2) Then
+						$atkTroops[$i][0] = $troopKind
+						ExitLoop
+					ElseIf $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
+						$troopKind = -1
+					EndIf
+				Next
+		EndSwitch
 
 		If ($troopKind == -1) Then
 			$atkTroops[$i][1] = 0
