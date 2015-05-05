@@ -17,46 +17,54 @@ Func Standard_PrepareAttack($remaining = False, $AttackMethod = 1) ;Assigns troo
 			Case 0
 				; Archers only
 				If $troopKind <> $eArcher And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
+					SetLog("Attack method: " & $iAlgorithm & " -- Ignoring " & NameOfTroop($troopKind))
 					$troopKind = -1
 				EndIf
 			Case 1
 				; Barbarians only
 				If $troopKind <> $eBarbarian And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
+					SetLog("Attack method: " & $iAlgorithm & " -- Ignoring " & NameOfTroop($troopKind))
 					$troopKind = -1
 				EndIf
 			Case 2
 				; Goblins only
 				If $troopKind <> $eGoblin And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
+					SetLog("Attack method: " & $iAlgorithm & " -- Ignoring " & NameOfTroop($troopKind))
 					$troopKind = -1
 				EndIf
 			Case 3
 				; Barch
 				If $troopKind <> $eBarbarian And $troopKind <> $eArcher And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
+					SetLog("Attack method: " & $iAlgorithm & " -- Ignoring " & NameOfTroop($troopKind))
 					$troopKind = -1
 				EndIf
 			Case 4
 				; BAGG
 				If $troopKind <> $eBarbarian And $troopKind <> $eArcher And $troopKind <> $eGiant And $troopKind <> $eGoblin And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
+					SetLog("Attack method: " & $iAlgorithm & " -- Ignoring " & NameOfTroop($troopKind))
 					$troopKind = -1
 				EndIf
 			Case 5
 				; BAGiant
 				If $troopKind <> $eBarbarian And $troopKind <> $eArcher And $troopKind <> $eGiant And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
+					SetLog("Attack method: " & $iAlgorithm & " -- Ignoring " & NameOfTroop($troopKind))
 					$troopKind = -1
 				EndIf
 			Case 6
 				; BAGob
 				If $troopKind <> $eBarbarian And $troopKind <> $eArcher And $troopKind <> $eGoblin And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
+					SetLog("Attack method: " & $iAlgorithm & " -- Ignoring " & NameOfTroop($troopKind))
 					$troopKind = -1
 				EndIf
 			Case 7
 				; BAGGWB
 				If $troopKind <> $eBarbarian And $troopKind <> $eArcher And $troopKind <> $eGiant And $troopKind <> $eGoblin And $troopKind <> $eWallbreaker And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
+					SetLog("Attack method: " & $iAlgorithm & " -- Ignoring " & NameOfTroop($troopKind))
 					$troopKind = -1
 				EndIf
 			Case 8
 				For $x = 0 To 3
-					Switch $i
+					Switch $x
 						Case 0
 							$BarrackControl = $cmbBarrack1
 						Case 1
@@ -92,6 +100,7 @@ Func Standard_PrepareAttack($remaining = False, $AttackMethod = 1) ;Assigns troo
 						$atkTroops[$i][0] = $troopKind
 						ExitLoop
 					ElseIf $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
+						SetLog("Attack method: " & $iAlgorithm & " -- Ignoring " & NameOfTroop($troopKind))
 						$troopKind = -1
 					EndIf
 				Next

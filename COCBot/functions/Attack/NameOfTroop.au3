@@ -25,6 +25,6 @@ Func NameOfTroop($kind, $plurial = 0)
 		Case $eLSpell
 			Return "Lightning Spell"
 		Case Else
-			Return ""
+			Return "Unknown"
 	EndSwitch
 EndFunc   ;==>NameOfTroop
