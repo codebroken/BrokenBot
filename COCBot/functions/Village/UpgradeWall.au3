@@ -77,21 +77,19 @@ Func UpgradeWallelix()
 		Click($WallX, $WallY)
 		_Sleep(600)
 		_CaptureRegion()
-		If _ColorCheck(_GetPixelColor(596, 570), Hex(0xFFFFFF, 6), 20) = False Then
+		If _ColorCheck(_GetPixelColor(595, 568), Hex(0xFFFFFF, 6), 20) = False Then
 			SetLog("Not enough Elixir or your Wall is lower than level 8 ", $COLOR_ORANGE)
+			Click(1, 1) ; Click away
+			_Sleep(1000)
 		Else
-			If _ColorCheck(_GetPixelColor(596, 570), Hex(0xFFFFFF, 6), 20) = True Or _ColorCheck(_GetPixelColor(583, 570), Hex(0xFFFFFF, 6), 20) Then
-				Click(560, 599) ; Click Upgrade
-				_Sleep(2000)
-				Click(472, 482) ; Click Okay
-				SetLog("Upgrading Done !!!", $COLOR_BLUE) ; Done upgrade
-				$WallUpgrade += 1
-				GUICtrlSetData($lblwallupgradecount, $WallUpgrade)
-				_Sleep(1000)
-			Else
-				Click(1, 1) ; Click away
-				_Sleep(1000)
-			EndIf
+			Click(560, 599) ; Click Upgrade
+			_Sleep(2000)
+			Click(472, 482) ; Click Okay
+			SetLog("Upgrading Done !!!", $COLOR_BLUE) ; Done upgrade
+			$WallUpgrade += 1
+			GUICtrlSetData($lblwallupgradecount, $WallUpgrade)
+			Click(1, 1) ; Click away
+			_Sleep(1000)
 		EndIf
 	EndIf
 	Click(1, 1) ; Click Away
@@ -114,41 +112,33 @@ Func UpgradeWallGold()
 		_CaptureRegion()
 		If _ColorCheck(_GetPixelColor(523, 641), Hex(0x000000, 6), 20) = False Then ; checking wall level high than level 8
 			$walllowlevel = 0
-			If _ColorCheck(_GetPixelColor(500, 570), Hex(0xE70A12, 6), 20) Or _ColorCheck(_GetPixelColor(496, 570), Hex(0xE70A12, 6), 20) Then
+			If Not _ColorCheck(_GetPixelColor(500, 570), Hex(0xFEFEFE, 6), 20) Then
 				SetLog("Not enough Gold...", $COLOR_ORANGE)
 				Click(1, 1) ; Click Away
 				$wallbuild = 0
 			Else
-				If _ColorCheck(_GetPixelColor(500, 570), Hex(0xFFFFFF, 6), 20) = True Or _ColorCheck(_GetPixelColor(583, 570), Hex(0xFFFFFF, 6), 20) = True Then
-					Click(505, 596) ; Click Upgrade
-					_Sleep(2000)
-					Click(472, 482) ; Click Okay
-					SetLog("Upgrading Done !!!", $COLOR_BLUE) ; Done upgrade
-					GUICtrlSetData($lblwallupgradecount, GUICtrlRead($lblwallupgradecount) + 1)
-					_Sleep(1000)
-				Else
-					Click(1, 1) ; Click away
-					_Sleep(1000)
-				EndIf
+				Click(505, 596) ; Click Upgrade
+				_Sleep(2000)
+				Click(472, 482) ; Click Okay
+				SetLog("Upgrading Done !!!", $COLOR_BLUE) ; Done upgrade
+				GUICtrlSetData($lblwallupgradecount, GUICtrlRead($lblwallupgradecount) + 1)
+				_Sleep(1000)
+				Click(1, 1) ; Click Away
 			EndIf
 		Else ; check wall level lower than 8
 			$walllowlevel = 1
-			If _ColorCheck(_GetPixelColor(549, 570), Hex(0xE70A12, 6), 20) Or _ColorCheck(_GetPixelColor(540, 570), Hex(0xE70A12, 6), 20) Then
+			If Not _ColorCheck(_GetPixelColor(547, 570), Hex(0xFFFFFF, 6), 20) Then
 				SetLog("Not enough Gold...", $COLOR_ORANGE)
 				Click(1, 1) ; Click Away
 				$wallbuild = 0
 			Else
-				If _ColorCheck(_GetPixelColor(549, 570), Hex(0xFFFFFF, 6), 20) Or _ColorCheck(_GetPixelColor(540, 570), Hex(0xFFFFFF, 6), 20) Then
-					Click(505, 596) ; Click Upgrade
-					_Sleep(2000)
-					Click(472, 482) ; Click Okay
-					SetLog("Upgrading Done !!!", $COLOR_BLUE) ; Done upgrade
-					GUICtrlSetData($lblwallupgradecount, GUICtrlRead($lblwallupgradecount) + 1)
-					_Sleep(1000)
-				Else
-					Click(1, 1) ; Click away
-					_Sleep(1000)
-				EndIf
+				Click(505, 596) ; Click Upgrade
+				_Sleep(2000)
+				Click(472, 482) ; Click Okay
+				SetLog("Upgrading Done !!!", $COLOR_BLUE) ; Done upgrade
+				GUICtrlSetData($lblwallupgradecount, GUICtrlRead($lblwallupgradecount) + 1)
+				_Sleep(1000)
+				Click(1, 1) ; Click Away
 			EndIf
 		EndIf
 	EndIf
