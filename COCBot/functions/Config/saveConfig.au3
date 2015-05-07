@@ -157,8 +157,6 @@ Func saveConfig() ;Saves the controls settings to the config
         IniWrite($config, "upgrade", "auto-uptroops", 0)
     EndIf
     IniWrite($config, "upgrade", "troops-name", _GUICtrlComboBox_GetCurSel($cmbLaboratory))
-    IniWrite($config, "upgrade", "LabPosX", $itxtLabX)
-    IniWrite($config, "upgrade", "LabPosY", $itxtLabY)
 	;---------------------------------------------------------------------------------------
 	; Notification settings ----------------------------------------------------------------
 	;---------------------------------------------------------------------------------------
@@ -317,4 +315,6 @@ Func saveConfig() ;Saves the controls settings to the config
 		IniWrite($config, "position", "xBarrack" & $i + 1, $barrackPos[$i][0])
 		IniWrite($config, "position", "yBarrack" & $i + 1, $barrackPos[$i][1])
 	Next
+    IniWrite($config, "position", "LabPosX", $LabPos[0])
+    IniWrite($config, "position", "LabPosY", $LabPos[1])
 EndFunc   ;==>saveConfig

@@ -47,8 +47,6 @@ Func readConfig() ;Reads config and sets it to the variables
 	;Laboratory
 	$ichkLab = IniRead($config, "upgrade", "auto-uptroops", "0")
 	$icmbLaboratory = IniRead($config, "upgrade", "troops-name", "0")
-	$itxtLabX = IniRead($config, "upgrade", "LabPosX", "")
-	$itxtLabY = IniRead($config, "upgrade", "LabPosY", "")
 
 	;---------------------------------------------------------------------------------------
 	; Notification settings ----------------------------------------------------------------
@@ -131,4 +129,6 @@ Func readConfig() ;Reads config and sets it to the variables
 		$collectorPos[$i][0] = IniRead($config, "position", "xCollector" & $i + 1, "")
 		$collectorPos[$i][1] = IniRead($config, "position", "yCollector" & $i + 1, "")
 	Next
+	$LabPos[0] = IniRead($config, "position", "LabPosX", "")
+	$LabPos[1] = IniRead($config, "position", "LabPosY", "")
 EndFunc   ;==>readConfig

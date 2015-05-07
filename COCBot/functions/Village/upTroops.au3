@@ -93,12 +93,12 @@ Func Laboratory()
         ClickP($TopLeftClient) ; Click Away
         Return
     EndIf
-	If $itxtLabX = "" Or $itxtLabY = "" Then
+	If $LabPos[0] = "" Or $LabPos[1] = "" Then
         SetLog("Building location not set, skipping upgrade...", $COLOR_RED)
         ClickP($TopLeftClient) ; Click Away
         Return
     EndIf
-	Click($itxtLabX, $itxtLabY);Click Laboratory
+	Click($LabPos[0], $LabPos[1]);Click Laboratory
 	If _Sleep(1000) Then Return
     SetLog("Searching for Troops " & GUICtrlRead($cmbLaboratory) & "...", $COLOR_BLUE)
     Click(527, 597) ; Click Button Research

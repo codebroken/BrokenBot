@@ -8,7 +8,7 @@ Func checkMainScreen($Check = False, $maxDelay = 1) ;Checks if in main screen
 	If Not _WaitForColor(284, 28, Hex(0x41B1CD, 6), 20, $maxDelay) Then
 		While _ColorCheck(_GetPixelColor(284, 28), Hex(0x41B1CD, 6), 20) = False
 			$HWnD = WinGetHandle($Title)
-			If Not checkObstacles() Then
+			If (Not checkObstacles()) And (BitAND(GUICtrlGetState($btnStart), $GUI_HIDE)) Then
 				Click(126, 700, 1, 500)
 				Local $RunApp = StringReplace(_WinAPI_GetProcessFileName(WinGetProcess($Title)), "Frontend", "RunApp")
 				Run($RunApp & " Android com.supercell.clashofclans com.supercell.clashofclans.GameApp")

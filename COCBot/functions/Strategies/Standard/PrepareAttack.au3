@@ -100,7 +100,7 @@ Func Standard_PrepareAttack($remaining = False, $AttackMethod = 1) ;Assigns troo
 						$atkTroops[$i][0] = $troopKind
 						ExitLoop
 					ElseIf $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
-						SetLog("Attack method: " & $iAlgorithm & " -- Ignoring " & NameOfTroop($troopKind))
+						If NameOfTroop($troopKind) <> "Unknown" Then SetLog("--Ignoring " & NameOfTroop($troopKind))
 						$troopKind = -1
 					EndIf
 				Next

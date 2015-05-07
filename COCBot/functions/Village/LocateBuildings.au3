@@ -383,7 +383,5 @@ Func LocateLab()
 		$LabPos[0] = FindPos()[0]
 		$LabPos[1] = FindPos()[1]
 		SetLog("-Locate Laboratory =  " & "(" & $LabPos[0] & "," & $LabPos[1] & ")", $COLOR_GREEN)
-		$itxtLabX = $LabPos[0]
-		$itxtLabY = $LabPos[1]
 	EndIf
 EndFunc

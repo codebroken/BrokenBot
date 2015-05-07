@@ -7,6 +7,11 @@ Func _Sleep($iDelay, $iSleep = True, $ReturnIfStopped = True)
 		If $ReturnIfStopped Then
 			If BitAND(GUICtrlGetState($btnStop), $GUI_HIDE) Then Return True
 		EndIf
+		If _GUICtrlTab_GetCurSel($tabMain) = 0 Then
+			ControlShow("", "", $txtLog)
+		Else
+			ControlHide("", "", $txtLog)
+		EndIf
 		If $iSleep = True Then Sleep(50)
 	WEnd
 	Return False
