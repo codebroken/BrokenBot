@@ -8,30 +8,17 @@ Func GetResources($MidAttack = False) ;Reads resources
 	Local $x = 0
 	Local $txtDead = "Live"
 	If Not $MidAttack Then
-		While getGold(51, 66) = "" ; Loops until gold is readable
+		While getGold(51, 66) = ""  ; Loops until gold is readable
 			If _Sleep(500) Then Return False
 			$i += 1
-			If $i >= 20 Then ; If gold cannot be read by 10 seconds
+			Local $discon =  ChkDisconnection()
+			If $i >= 20 or $discon = True Then ; If gold cannot be read by 10 seconds or disconnected
 				If checkNextButton() And $x <= 20 Then ;Checks for Out of Sync or Connection Error during search
 					Click(750, 500) ;Click Next
 					If _Sleep(1000) Then Return False
 					$x += 1
 				Else
 					SetLog("Cannot locate Next button, Restarting Bot", $COLOR_RED)
-					_CaptureRegion()
-					Local $dummyX = 0
-					Local $dummyY = 0
-					If _ImageSearch(@ScriptDir & "\images\Client.bmp", 1, $dummyX, $dummyY, 50) = 1 Then
-						If $dummyX > 290 And $dummyX < 310 And $dummyY > 325 And $dummyY < 340 Then
-							$speedBump += 500
-							If $speedBump > 5000 Then
-								$speedBump = 5000
-								SetLog("Out of sync! Already searching slowly, not changing anything.", $COLOR_RED)
-							Else
-								SetLog("Out of sync! Slowing search speed by 0.5 secs.", $COLOR_RED)
-							EndIf
-						EndIf
-					EndIf
 					If $DebugMode = 1 Then
 						_GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "NoNextRes-" & @HOUR & @MIN & @SEC & ".png")
 					EndIf
@@ -48,6 +35,7 @@ Func GetResources($MidAttack = False) ;Reads resources
 	If $MidAttack Then
 		$RetVal[0] = ""
 	Else
+		$fdiffReadGold = TimerDiff($hTimerClickNext)
 		$RetVal[0] = checkDeadBase()
 	EndIf
 	If $MidAttack Then
@@ -107,7 +95,11 @@ Func GetResources($MidAttack = False) ;Reads resources
 		If $THquadrant >= 6 And $THquadrant <= 9 Then $THLoc = "Out"
 	EndIf
 
-	$SearchCount += 1 ; Counter for number of searches
-	SetLog("(" & $SearchCount & ") [G]: " & $RetVal[2] & Tab($RetVal[2], 7) & "[E]: " & $RetVal[3] & Tab($RetVal[3], 7) & "[D]: " & $RetVal[4] & Tab($RetVal[4], 4) & "[T]: " & $RetVal[5] & Tab($RetVal[5], 3) & "[TH]: " & $RetVal[1] & (($RetVal[1] <> "-") ? ("-Q" & $THquadrant) : ("")) & ", " & $THLoc & ", " & $txtDead, $COLOR_BLUE)
+	If $MidAttack Then
+        SetLog("MidAttack ResChk: [G]: " & $RetVal[2] & Tab($RetVal[2], 7) & "[E]: " & $RetVal[3] & Tab($RetVal[3], 7) & "[D]: " & $RetVal[4] & Tab($RetVal[4], 4) & "[T]: " & $RetVal[5] & Tab($RetVal[5], 3) & "[TH]: " & $RetVal[1] & (($RetVal[1] <> "-") ? ("-Q" & $THquadrant) : ("")) & ", " & $THLoc & ", " & $txtDead, $COLOR_BLUE)
+	Else
+		$SearchCount += 1 ; Counter for number of searches
+		SetLog("(" & $SearchCount & ") [G]: " & $RetVal[2] & Tab($RetVal[2], 7) & "[E]: " & $RetVal[3] & Tab($RetVal[3], 7) & "[D]: " & $RetVal[4] & Tab($RetVal[4], 4) & "[T]: " & $RetVal[5] & Tab($RetVal[5], 3) & "[TH]: " & $RetVal[1] & (($RetVal[1] <> "-") ? ("-Q" & $THquadrant) : ("")) & ", " & $THLoc & ", " & $txtDead, $COLOR_BLUE)
+	EndIf
 	Return $RetVal
 EndFunc   ;==>GetResources
