@@ -91,6 +91,8 @@ Global $prevSelection = ""
 Global $DefaultTab = 0
 
 Global $speedBump = 0
+Global $hTimerClickNext, $fdiffReadGold
+
 Global $prevTab = 0
 Global $slideOut = 0
 Global $slideIn = 0

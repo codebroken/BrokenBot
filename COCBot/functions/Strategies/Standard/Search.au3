@@ -8,6 +8,8 @@ Func Standard_Search()
 
 	_WinAPI_EmptyWorkingSet(WinGetProcess($Title)) ; Reduce BlueStacks Memory Usage
 
+	$hTimerClickNext = TimerInit() ;Next button already pressed before call here
+
 	$MinDeadGold = GUICtrlRead($txtDeadMinGold)
 	$MinDeadElixir = GUICtrlRead($txtDeadMinElixir)
 	$MinDeadDark = GUICtrlRead($txtDeadMinDarkElixir)
@@ -102,8 +104,13 @@ Func Standard_Search()
 		If $TakeAllTownSnapShot = 1 Then SetLog("Will save all of the towns when searching", $COLOR_GREEN)
 		$SearchCount = 0
 		_BlockInputEx(3, "", "", $HWnD)
+
+
 		While 1
-			If Not _WaitForColor(30, 505, Hex(0xE80008, 6), 50, 10) Then Return -1
+			If Not _WaitForColor(30, 505, Hex(0xE80008, 6), 50, 10) Then
+				ChkDisconnection()
+				Return -1
+			EndIf
 			If _Sleep($speedBump) Then Return -1
 			GUICtrlSetState($btnAtkNow, $GUI_ENABLE)
 
@@ -345,46 +352,28 @@ Func Standard_Search()
 			Else
 				_CaptureRegion()
 				If _ColorCheck(_GetPixelColor(703, 520), Hex(0xD84400, 6), 20) Then
-					_Sleep($speedBump)
+					Local $fDiffNow = TimerDiff($hTimerClickNext) - $fdiffReadGold  ;How long in attack prep mode
+					if $fDiffNow < $speedBump*2 + $icmbSearchsp * 1500 Then ; Wait accoridng to search speed + speedBump
+						if _Sleep($speedBump*2 + $icmbSearchsp * 1500 - $fDiffNow) Then ExitLoop (2)
+					EndIf
 					Click(750, 500) ;Click Next
+					$hTimerClickNext = TimerInit()
+					;Take time to do search
 					GUICtrlSetData($lblresultvillagesskipped, GUICtrlRead($lblresultvillagesskipped) + 1)
 					GUICtrlSetData($lblresultsearchcost, GUICtrlRead($lblresultsearchcost) + $SearchCost)
-					If _Sleep(500) Then Return -1
-				ElseIf _ColorCheck(_GetPixelColor(71, 530), Hex(0xC00000, 6), 20) Then
+					If _Sleep(1000) Then Return -1
+				ElseIf _ColorCheck(_GetPixelColor(71, 530), Hex(0xC00000, 6), 20) Then ;If End battle is available
 					SetLog("Cannot locate Next button, try to return home...", $COLOR_RED)
-					Local $dummyX = 0
-					Local $dummyY = 0
-					If _ImageSearch(@ScriptDir & "\images\Client.bmp", 1, $dummyX, $dummyY, 50) = 1 Then
-						If $dummyX > 290 And $dummyX < 310 And $dummyY > 325 And $dummyY < 340 Then
-							$speedBump += 500
-							If $speedBump > 5000 Then
-								$speedBump = 5000
-								SetLog("Out of sync! Already searching slowly, not changing anything.", $COLOR_RED)
-							Else
-								SetLog("Out of sync! Slowing search speed by 0.5 secs.", $COLOR_RED)
-							EndIf
-						EndIf
-					EndIf
+					ChkDisconnection()
 					If $DebugMode = 1 Then _GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "NoNext-" & @HOUR & @MIN & @SEC & ".png")
+					ReturnHome(False, False, True)
 					If $PushBulletEnabled = 1 Then
 						_Push("Disconnected", "Your bot got disconnected while searching for enemy..")
 					EndIf
 					Return -1
 				Else
 					SetLog("Cannot locate Next button & Surrender button, Restarting Bot", $COLOR_RED)
-					Local $dummyX = 0
-					Local $dummyY = 0
-					If _ImageSearch(@ScriptDir & "\images\Client.bmp", 1, $dummyX, $dummyY, 50) = 1 Then
-						If $dummyX > 290 And $dummyX < 310 And $dummyY > 325 And $dummyY < 340 Then
-							$speedBump += 500
-							If $speedBump > 5000 Then
-								$speedBump = 5000
-								SetLog("Out of sync! Already searching slowly, not changing anything.", $COLOR_RED)
-							Else
-								SetLog("Out of sync! Slowing search speed by 0.5 secs.", $COLOR_RED)
-							EndIf
-						EndIf
-					EndIf
+					ChkDisconnection()
 					If $DebugMode = 1 Then _GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "NoNextSurr-" & @HOUR & @MIN & @SEC & ".png")
 					If $PushBulletEnabled = 1 Then
 						_Push("Disconnected", "Your bot got disconnected while searching for enemy..")

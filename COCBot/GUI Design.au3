@@ -259,8 +259,8 @@ GUICtrlSetTip(-1, "Auto rearm for Traps, Crossbows & Inferno Towers")
 $lblSearchsp = GUICtrlCreateLabel("Seach Base Speed:", 30, 92, 100, 17)
 GUICtrlSetTip(-1, "Set search base speed to higher number if having frequent server sync issue")
 $cmbSearchsp = GUICtrlCreateCombo("", 130, 87, 45, 21, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-GUICtrlSetData(-1, "0|1|2|3|4|5", "0") ; Search Base Speed
-$lblSearchspd = GUICtrlCreateLabel("Tips: 0 = Fast, 5 = Slow", 182, 92, 200, 17)
+GUICtrlSetData(-1, "0|1|2|3|4|5|6|7|8|9|10", "0") ; Search Base Speed
+$lblSearchspd = GUICtrlCreateLabel("Tips: 0 = Fast, 10 = 15 seconds wait", 182, 92, 200, 17)
 
 $lblReturnh = GUICtrlCreateLabel("Return Home Delay:", 30, 146, 100, 17)
 GUICtrlSetTip(-1, "Set delay timing for return home during raid")
