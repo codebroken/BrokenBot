@@ -102,7 +102,11 @@ Func Standard_Search()
 		EndIf
 		GUICtrlSetData($lblresultsearchcost, GUICtrlRead($lblresultsearchcost) + $SearchCost)
 		If $TakeAllTownSnapShot = 1 Then SetLog("Will save all of the towns when searching", $COLOR_GREEN)
-		$SearchCount = 0
+
+		If $SearchFailed = False Then ;reset SearchCount only when last search wasn't failed
+			$SearchCount = 0
+		EndIf
+		$SearchFailed = False
 		_BlockInputEx(3, "", "", $HWnD)
 
 
@@ -111,7 +115,7 @@ Func Standard_Search()
 				ChkDisconnection()
 				Return -1
 			EndIf
-			If _Sleep($speedBump) Then Return -1
+			;If _Sleep($speedBump) Then Return -1
 			GUICtrlSetState($btnAtkNow, $GUI_ENABLE)
 
 			If IsChecked($chkTakeTownSS) Then
@@ -353,8 +357,8 @@ Func Standard_Search()
 				_CaptureRegion()
 				If _ColorCheck(_GetPixelColor(703, 520), Hex(0xD84400, 6), 20) Then
 					Local $fDiffNow = TimerDiff($hTimerClickNext) - $fdiffReadGold  ;How long in attack prep mode
-					if $fDiffNow < $speedBump*2 + $icmbSearchsp * 1500 Then ; Wait accoridng to search speed + speedBump
-						if _Sleep($speedBump*2 + $icmbSearchsp * 1500 - $fDiffNow) Then ExitLoop (2)
+					if $fDiffNow < $speedBump + $icmbSearchsp * 1500 Then ; Wait accoridng to search speed + speedBump
+						if _Sleep($speedBump + $icmbSearchsp * 1500 - $fDiffNow) Then ExitLoop (2)
 					EndIf
 					Click(750, 500) ;Click Next
 					$hTimerClickNext = TimerInit()
@@ -364,20 +368,12 @@ Func Standard_Search()
 					If _Sleep(1000) Then Return -1
 				ElseIf _ColorCheck(_GetPixelColor(71, 530), Hex(0xC00000, 6), 20) Then ;If End battle is available
 					SetLog("Cannot locate Next button, try to return home...", $COLOR_RED)
-					ChkDisconnection()
-					If $DebugMode = 1 Then _GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "NoNext-" & @HOUR & @MIN & @SEC & ".png")
+					ChkDisconnection(True)
 					ReturnHome(False, False, True)
-					If $PushBulletEnabled = 1 Then
-						_Push("Disconnected", "Your bot got disconnected while searching for enemy..")
-					EndIf
 					Return -1
 				Else
 					SetLog("Cannot locate Next button & Surrender button, Restarting Bot", $COLOR_RED)
 					ChkDisconnection()
-					If $DebugMode = 1 Then _GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "NoNextSurr-" & @HOUR & @MIN & @SEC & ".png")
-					If $PushBulletEnabled = 1 Then
-						_Push("Disconnected", "Your bot got disconnected while searching for enemy..")
-					EndIf
 					Return -1
 				EndIf
 			EndIf

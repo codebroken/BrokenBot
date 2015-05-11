@@ -85,6 +85,7 @@ $THText[2] = "8"
 $THText[3] = "9"
 $THText[4] = "10"
 Global $SearchCount = 0 ;Number of searches
+Global $SearchFailed = False ; Last search failed or not
 Global $THaddtiles, $THside, $THi
 Global $StratNames = ""
 Global $prevSelection = ""

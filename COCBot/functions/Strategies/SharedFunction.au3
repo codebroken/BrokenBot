@@ -2,8 +2,7 @@
 
 
 ;Check Out of Sync or Disconnection, if detected, bump speedBump by 0.5 seconds
-Func ChkDisconnection()
-	Local $disconnected = False
+Func ChkDisconnection($disconnected = False)
 	_CaptureRegion()
 	Local $dummyX = 0
 	Local $dummyY = 0
@@ -29,6 +28,23 @@ Func ChkDisconnection()
 			Else
 				SetLog("Lost Connection! Slowing search speed by 0.5 secs.", $COLOR_RED)
 			EndIf
+		EndIf
+	EndIf
+
+	If $disconnected = True Then
+		;increase disconnect counts
+		GUICtrlSetData($lblresultsearchdisconnected, GUICtrlRead($lblresultsearchdisconnected) + 1)
+		If $DebugMode = 1 Then _GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "DisConnt-" & @HOUR & @MIN & @SEC & ".png")
+		If $PushBulletEnabled = 1 Then
+
+			Local $iCount = _FileCountLines($sLogPath)
+			Local $myLines = ""
+			Local $i
+			For $i = 1 to 5
+				$myLines = $myLines &  FileReadLine($sLogPath, ($iCount - 5 + $i)) & "\n"
+			Next
+			_Push("Disconnected", "Your bot got disconnected while searching for enemy, total disconnections:" & GUICtrlRead($lblresultsearchdisconnected) & "\n" & _
+				"Last 5 lines of log:\n" & $myLines)
 		EndIf
 	EndIf
 	Return $disconnected
