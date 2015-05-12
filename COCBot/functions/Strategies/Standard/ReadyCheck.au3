@@ -781,13 +781,13 @@ Func Standard_MakeSpells()
 		If Not LocateSpellFactory() Then Return
 		SaveConfig()
 	Else
-		If _Sleep(100) Then Return
+		If _Sleep(500) Then Return
 		Click($SpellPos[0], $SpellPos[1]) ;Click Spell Factory
 	EndIf
 
-	If _Sleep(1000) Then Return ;Do a bit slower
+	If _Sleep(500) Then Return ;Do a bit slower
 	_CaptureRegion()
-	Local $BSpellPos = _PixelSearch(214, 581, 368, 583, Hex(0x4084B8, 6), 5) ;Finds Info button
+	Local $BSpellPos = _WaitForPixel(214, 581, 368, 583, Hex(0x4084B8, 6), 5, 3) ;Finds Info button, wait max 3 seconds
 	If IsArray($BSpellPos) = False Then
 		SetLog("Your Spell Factory is not available", $COLOR_RED)
 		If $DebugMode = 2 Then _GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "SpellNA-" & @HOUR & @MIN & @SEC & ".png")
