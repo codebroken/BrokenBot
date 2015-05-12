@@ -19,7 +19,6 @@ Func GetResources($MidAttack = False) ;Reads resources
 					$x += 1
 				Else
 					SetLog("Cannot locate Next button, Restarting Bot", $COLOR_RED)
-					ChkDisconnection(True)
 					Return False
 				EndIf
 				$i = 0
