@@ -1,0 +1,8 @@
+## Change Log:
+
+### v2.5.0
+* Initially tracked release.  Future releases to include full changelog to track all progress.
+* Modification of red-line attacking.  Near instantaneous now.  Additionally added GUI control that allows you to set how certain you want to be of deployment.  All the way to the left will be closer but generate more errors, while all the way to the right will launch troops at the edges of the map.
+* Addition of multilingual support.  Simply add a new language.ini file to the BrokenBot.org\languages folder.  The bot will automatically recognize the addition.  Make a translation for each key listed in the English.ini file.  Anytime you are using a different language and a key is not found it will automatically default back to English.
+* Incorporation of bug fixes and stability improvements from Cool7su.
+* Improved wall images.
