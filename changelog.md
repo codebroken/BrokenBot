@@ -1,5 +1,8 @@
 ## Change Log:
 
+### v2.5.1
+* Added DLL dependancy for some machines that may be missing it.
+
 ### v2.5.0
 * Initially tracked release.  Future releases to include full changelog to track all progress.
 * Modification of red-line attacking.  Near instantaneous now.  Additionally added GUI control that allows you to set how certain you want to be of deployment.  All the way to the left will be closer but generate more errors, while all the way to the right will launch troops at the edges of the map.
