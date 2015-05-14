@@ -334,3 +334,5 @@ Global $SpellLightningY = 461
 Global $SpellRageX = 650
 Global $SpellRageY = 372
 Global $LabPos[2]
+
+Global $FontSize

@@ -28,8 +28,8 @@ Func CheckPixel($tab)
 		Return True
 	Else
 		SetLog(GetLangText("msgLocationX") & $tab[0] & " Y:" & $tab[1], $COLOR_RED)
-		SetLog(GetLangText("msgWanted") & _GetPixelColor($tab[0], $tab[1]), $COLOR_RED)
-		SetLog(GetLangText("msgGot") & Hex($tab[2], 6), $COLOR_RED)
+		SetLog(GetLangText("msgGot") & _GetPixelColor($tab[0], $tab[1]), $COLOR_RED)
+		SetLog(GetLangText("msgWanted") & Hex($tab[2], 6), $COLOR_RED)
 		SetLog(GetLangText("msgVariance") & $tab[3], $COLOR_RED)
 		Return False
 	EndIf

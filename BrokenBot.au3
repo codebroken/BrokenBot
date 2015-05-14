@@ -3,12 +3,12 @@
 #pragma compile(Icon, "BrokenBot.org\images\icons\brokenbot.ico")
 #pragma compile(FileDescription, BrokenBot.org - Clash of Clans Bot)
 #pragma compile(ProductName, BrokenBot.org - Clash of Clans Bot)
-#pragma compile(ProductVersion, 2.5.2)
-#pragma compile(FileVersion, 2.5.2)
+#pragma compile(ProductVersion, 2.5.3)
+#pragma compile(FileVersion, 2.5.3)
 
 #include <GUIConstants.au3>
 
-$sBotVersion = "2.5.2"
+$sBotVersion = "2.5.3"
 $sBotTitle = "BrokenBot.org - Break FREE - v" & $sBotVersion
 
 Global $StartupLanguage = IniRead(@ScriptDir & "\config\default.ini", "config", "language", "English")
@@ -70,8 +70,7 @@ If IsArray($CmdLine) Then
 	EndIf
 EndIf
 
-_CaptureRegion()
-Local $hHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)
+$hHBitmap = _ScreenCapture_Capture("", 0, 0, 860, 720)
 $ret = DllCall(@ScriptDir & "\BrokenBot.org\BrokenBot32.dll", "str", "BrokenBotRedLineCheck", "ptr", $hHBitmap, "int", 1, "int", 1, "int", 0, "int", 0, "int", 0)
 _WinAPI_DeleteObject($hHBitmap)
 If Not IsArray($ret) Then

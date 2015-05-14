@@ -1,5 +1,10 @@
 ## Change Log:
 
+### v2.5.3
+* Fixed display of townhall levels in search results.
+* Fixed color recognition for archers.
+* Added hidden setting for adjusting font size of log.  Add it to the [hidden] section of your ini file.  For example: "fontsize=6"
+
 ### v2.5.2
 * Improved auto-update.  Now bot actually can download and apply the update for you.
 * Improved DLL error detection. Informs the user if they are missing the proper version and directs them about how to resolve. Falls back to dropping troops at the edge if DLL isn't working.

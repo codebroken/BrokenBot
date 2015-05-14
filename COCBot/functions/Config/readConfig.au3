@@ -146,4 +146,10 @@ Func readConfig() ;Reads config and sets it to the variables
 	Next
 	$LabPos[0] = IniRead($config, "position", "LabPosX", "")
 	$LabPos[1] = IniRead($config, "position", "LabPosY", "")
+
+	;---------------------------------------------------------------------------------------
+	; Hidden settings ----------------------------------------------------------------------
+	;---------------------------------------------------------------------------------------
+	; These settings can be read in from config but aren't found in the GUI
+	$FontSize = IniRead($config, "hidden", "fontsize", "8.5")
 EndFunc   ;==>readConfig

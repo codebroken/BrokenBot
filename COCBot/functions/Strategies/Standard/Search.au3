@@ -93,7 +93,7 @@ Func Standard_Search()
 						If $conditionlogstr <> "Dead Base (" Then
 							$conditionlogstr = $conditionlogstr & ";"
 						EndIf
-						$conditionlogstr = $conditionlogstr & " Max Townhall: " & $MaxDeadTH
+						$conditionlogstr = $conditionlogstr & " Max Townhall: " & $THText[$MaxDeadTH]
 					EndIf
 					If IsChecked($chkDeadMeetTHO) Then
 						If $conditionlogstr <> "Dead Base (" Then
@@ -129,7 +129,7 @@ Func Standard_Search()
 						If $conditionlogstr <> "Live Base (" Then
 							$conditionlogstr = $conditionlogstr & ";"
 						EndIf
-						$conditionlogstr = $conditionlogstr & " Max Townhall: " & $MaxTH
+						$conditionlogstr = $conditionlogstr & " Max Townhall: " & $THText[$MaxTH]
 					EndIf
 					If IsChecked($chkMeetTHO) Then
 						If $conditionlogstr <> "Live Base (" Then
