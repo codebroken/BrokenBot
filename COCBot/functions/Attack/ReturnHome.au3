@@ -10,7 +10,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True, $AbortSearch = False) ;Ret
 
 	$checkKPower = False
 	$checkQPower = False
-	SetLog("Returning Home", $COLOR_BLUE)
+	SetLog(GetLangText("msgReturnHome"), $COLOR_BLUE)
 	If $Running = False Then Return
 	Click(62, 519) ;Click Surrender
 	If _Sleep(500) Then Return
@@ -35,7 +35,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True, $AbortSearch = False) ;Ret
 		EndIf
 
 		If $TakeSS = 1 Then
-			SetLog("Taking snapshot of your loot", $COLOR_ORANGE)
+			SetLog(GetLangText("msgTakingLootSS"), $COLOR_ORANGE)
 			Local $Date = @MDAY & "." & @MON & "." & @YEAR
 			Local $Time = @HOUR & "." & @MIN
 			$FileName = $Date & "_at_" & $Time & ".jpg"
@@ -63,7 +63,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True, $AbortSearch = False) ;Ret
 		$counter += 1
 
 		If $counter >= 50 Then
-			SetLog("Cannot return home.", $COLOR_RED)
+			SetLog(GetLangText("msgCannotReturn"), $COLOR_RED)
 			checkMainScreen()
 			Return
 		EndIf

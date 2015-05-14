@@ -31,20 +31,20 @@ Func GoldElixirChange()
 			$ElixirChange = $Elixir2
 		EndIf
 		If ($Gold2 = "" And $Elixir2 = "") Then
-			SetLog("Battle has finished", $COLOR_GREEN)
+			SetLog(GetLangText("msgBattleFinished"), $COLOR_GREEN)
 			Return False
 		ElseIf ($Gold2 = 0 And $Elixir2 = 0 And ((getTrophy(51, 66 + 90) = "") ? (True) : ($Dark2 = 0))) Then
-			SetLog("No resource detected, returning in " & $itxtReturnh & " seconds", $COLOR_GREEN)
+			SetLog(GetLangText("msgNoResource") & $itxtReturnh & GetLangText("msgSeconds"), $COLOR_GREEN)
 			If _Sleep($itxtReturnh * 1000) Then Return
 			GUICtrlSetData($lblresultvillagesattacked, GUICtrlRead($lblresultvillagesattacked) + 1)
 			Return False
 		ElseIf ($Gold1 = $Gold2 And $Elixir1 = $Elixir2 And $Dark1 = $Dark2) Then
-			SetLog("No Income detected, returning in " & $itxtReturnh & " seconds", $COLOR_BLUE)
+			SetLog(GetLangText("msgNoIncome") & $itxtReturnh & GetLangText("msgSeconds"), $COLOR_BLUE)
 			If _Sleep($itxtReturnh * 1000) Then Return
 			GUICtrlSetData($lblresultvillagesattacked, GUICtrlRead($lblresultvillagesattacked) + 1)
 			Return False
 		Else
-			SetLog("Loot change detected, waiting...", $COLOR_GREEN)
+			SetLog(GetLangText("msgLootChange"), $COLOR_GREEN)
 			Return True
 		EndIf
 		ExitLoop

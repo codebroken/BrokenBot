@@ -5,7 +5,7 @@ Func waitMainScreen() ;Waits for main screen to popup
 	If ($ichkForceBS) = 1 Then
 		WinActivate($HWnD)
 	EndIf
-	SetLog("Waiting for Main Screen", $COLOR_ORANGE)
+	SetLog(GetLangText("msgWaitMS"), $COLOR_ORANGE)
 	For $i = 0 To 150 ;150*2000 = 5 Minutes
 		_CaptureRegion()
 		If Not _ColorCheck(_GetPixelColor(284, 28), Hex(0x41B1CD, 6), 20) Then ;Checks for Main Screen
@@ -16,7 +16,7 @@ Func waitMainScreen() ;Waits for main screen to popup
 		EndIf
 	Next
 
-	SetLog("Unable to load Clash Of Clans, Restarting...", $COLOR_RED)
+	SetLog(GetLangText("msgUnableLoad"), $COLOR_RED)
 	Local $RestartApp = StringReplace(_WinAPI_GetProcessFileName(WinGetProcess($Title)), "Frontend", "Restart")
 	Run($RestartApp & " Android")
 	If _Sleep(10000) Then Return

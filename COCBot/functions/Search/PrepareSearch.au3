@@ -2,7 +2,7 @@
 ; Returns True if successful, otherwise False after 10 failed attempts
 Func PrepareSearch() ;Click attack button and find match button, will break shield
 	Click(60, 614);Click Attack Button
-	SetLog("Searching for match...")
+	SetLog(GetLangText("msgSearchingMatch"))
 	If _WaitForColor(287, 494, Hex(0xEEAC28, 6), 50) Then
 		Click(217, 510);Click Find a Match Button
 		; Is shield active?

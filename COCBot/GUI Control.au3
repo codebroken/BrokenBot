@@ -23,7 +23,7 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 			Case 273
 				Switch $nID
 					Case $GUI_EVENT_CLOSE
-						SetLog("Exiting !!!", $COLOR_ORANGE)
+						SetLog(GetLangText("msgExit"), $COLOR_ORANGE)
 						_GDIPlus_Shutdown()
 						_GUICtrlRichEdit_Destroy($txtLog)
 						SaveConfig()
@@ -45,7 +45,7 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 					Case $chkNoAttack
 						If IsChecked($chkNoAttack) Then
 							If IsChecked($lblpushbulletenabled) Then
-								SetLog("PushBullet is disabled !!!", $COLOR_RED)
+								SetLog(GetLangText("msgPBDisabled"), $COLOR_RED)
 							EndIf
 							GUICtrlSetState($chkDonateOnly, $GUI_UNCHECKED)
 							GUICtrlSetState($expMode, $GUI_UNCHECKED)
@@ -58,7 +58,7 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 					Case $chkDonateOnly
 						If IsChecked($chkDonateOnly) Then
 							If IsChecked($lblpushbulletenabled) Then
-								SetLog("PushBullet is disabled !!!", $COLOR_RED)
+								SetLog(GetLangText("msgPBDisabled"), $COLOR_RED)
 							EndIf
 							GUICtrlSetState($chkNoAttack, $GUI_UNCHECKED)
 							GUICtrlSetState($expMode, $GUI_UNCHECKED)
@@ -71,7 +71,7 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 					Case $expMode
 						If IsChecked($expMode) Then
 							If IsChecked($lblpushbulletenabled) Then
-								SetLog("PushBullet is disabled !!!", $COLOR_RED)
+								SetLog(GetLangText("msgPBDisabled"), $COLOR_RED)
 							EndIf
 							GUICtrlSetState($chkNoAttack, $GUI_UNCHECKED)
 							GUICtrlSetState($chkDonateOnly, $GUI_UNCHECKED)
@@ -100,7 +100,7 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 					Case $lblpushbulletenabled
 						lblpushbulletenabled()
 					Case $btnGitHub
-						ShellExecute("http://http://www.brokenbot.org/forum/index.php?u=/category/support-forums")
+						ShellExecute("http://www.brokenbot.org/forum/index.php?u=/category/support-forums")
 					Case $btnCloseBR
 						GUISetState(@SW_ENABLE, $frmBot)
 						GUISetState(@SW_HIDE, $frmBugReport)
@@ -111,6 +111,8 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 						_btnSaveStrat()
 					Case $lstStrategies
 						If $nNotifyCode = 1 Then _lstStrategies()
+					Case $cmbLanguage
+						If $nNotifyCode = 1 Then cmbLanguage()
 					Case 10000
 						If _GUICtrlTab_GetCurSel($tabMain) = 0 Then
 							ControlShow("", "", $txtLog)
@@ -122,7 +124,7 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 			Case 274
 				Switch $wParam
 					Case 0xf060
-						SetLog("Exiting !!!", $COLOR_ORANGE)
+						SetLog(GetLangText("msgExit"), $COLOR_ORANGE)
 						_GDIPlus_Shutdown()
 						_GUICtrlRichEdit_Destroy($txtLog)
 						SaveConfig()
@@ -219,7 +221,7 @@ Func btnStop()
 		_BlockInputEx(0, "", "", $HWnD)
 
 		FileClose($hLogFileHandle)
-		SetLog("BrokenBot has stopped", $COLOR_ORANGE)
+		SetLog(GetLangText("msgStopped"), $COLOR_ORANGE)
 		GUICtrlSetState($btnHide, $GUI_DISABLE)
 	EndIf
 EndFunc   ;==>btnStop
@@ -438,19 +440,19 @@ EndFunc   ;==>btnHide
 Func chkNoAttack()
 	If IsChecked($chkNoAttack) Then
 		$CurrentMode = $modeDonateTrain
-		SetLog("~~~Donate / Train Only Activated~~~", $COLOR_PURPLE)
+		SetLog(GetLangText("msgDonateTrainMode"), $COLOR_PURPLE)
 	ElseIf IsChecked($chkDonateOnly) Then
 		If IsChecked($lblpushbulletenabled) Then
-			SetLog("PushBullet is disabled !!!", $COLOR_RED)
+			SetLog(GetLangText("msgPBDisabled"), $COLOR_RED)
 		EndIf
 		$CurrentMode = $modeDonate
-		SetLog("~~~Donate Only Activated~~~", $COLOR_PURPLE)
+		SetLog(GetLangText("msgDonateMode"), $COLOR_PURPLE)
 	ElseIf IsChecked($expMode) Then
 		If IsChecked($lblpushbulletenabled) Then
-			SetLog("PushBullet is disabled !!!", $COLOR_RED)
+			SetLog(GetLangText("msgPBDisabled"), $COLOR_RED)
 		EndIf
 		$CurrentMode = $modeExperience
-		SetLog("~~~Goblin Mode Activated~~~", $COLOR_PURPLE)
+		SetLog(GetLangText("msgGoblinMode"), $COLOR_PURPLE)
 	Else
 		$CurrentMode = $modeNormal
 	EndIf
@@ -502,7 +504,7 @@ EndFunc   ;==>tabMain
 Func btnLoad($configfile)
 	Local $sFileOpenDialog = FileOpenDialog("Open config", @ScriptDir & "\", "Config (*.ini;)", $FD_FILEMUSTEXIST)
 	If @error Then
-		MsgBox($MB_SYSTEMMODAL, "", "Error opening file!")
+		MsgBox($MB_SYSTEMMODAL, "", GetLangText("boxErrorOpening"))
 		FileChangeDir(@ScriptDir)
 	Else
 		FileChangeDir(@ScriptDir)
@@ -511,7 +513,7 @@ Func btnLoad($configfile)
 		readConfig()
 		applyConfig()
 		saveConfig()
-		MsgBox($MB_SYSTEMMODAL, "", "Config loaded successfully!" & @CRLF & $sFileOpenDialog)
+		MsgBox($MB_SYSTEMMODAL, "", GetLangText("boxLoadSuccess") & @CRLF & $sFileOpenDialog)
 		GUICtrlSetData($lblConfig, getfilename($config))
 	EndIf
 EndFunc   ;==>btnLoad
@@ -519,7 +521,7 @@ EndFunc   ;==>btnLoad
 Func btnSave($configfile)
 	Local $sFileSaveDialog = FileSaveDialog("Save current config as..", "::{450D8FBA-AD25-11D0-98A8-0800361B1103}", "Config (*.ini)", $FD_PATHMUSTEXIST)
 	If @error Then
-		MsgBox($MB_SYSTEMMODAL, "", "Config save failed!")
+		MsgBox($MB_SYSTEMMODAL, "", GetLangText("boxSaveFailed"))
 	Else
 		Local $sFileName = StringTrimLeft($sFileSaveDialog, StringInStr($sFileSaveDialog, "\", $STR_NOCASESENSE, -1))
 
@@ -532,7 +534,7 @@ Func btnSave($configfile)
 		EndIf
 		$config = $sFileSaveDialog
 		saveConfig()
-		MsgBox($MB_SYSTEMMODAL, "", "Successfully saved the current configuration!" & @CRLF & $sFileSaveDialog)
+		MsgBox($MB_SYSTEMMODAL, "", GetLangText("boxSaveSuccess") & @CRLF & $sFileSaveDialog)
 		GUICtrlSetData($lblConfig, getfilename($config))
 	EndIf
 EndFunc   ;==>btnSave
@@ -688,18 +690,18 @@ EndFunc   ;==>_btnRefresh
 Func _btnSaveStrat($Name = "")
 	$strPlugInInUse = IniRead($dirStrat & GUICtrlRead($lstStrategies) & ".ini", "plugin", "name", "")
 	If $Name <> "" Then
-		SetLOG("Saved: " & $Name)
+		SetLOG(GetLangText("msgSaved") & $Name)
 		Call($strPlugInInUse & "_SaveConfig", $dirStrat & $Name & ".ini")
 	Else
-		$strNewName = InputBox("New config name", "Please provide a new name for your configuration:", GUICtrlRead($lstStrategies), " M")
+		$strNewName = InputBox(GetLangText("inpConfig"), GetLangText("inpConfigb"), GUICtrlRead($lstStrategies), " M")
 		If $strNewName <> "" Then
 			If StringRegExp($strNewName, "^[A-Za-z0-9_ -\.]+$", 0) Then
 				Call($strPlugInInUse & "_SaveConfig", $dirStrat & $strNewName & ".ini")
-				SetLOG("Saved: " & $strNewName)
+				SetLOG(GetLangText("msgSaved") & $strNewName)
 				_btnRefresh()
 				_GUICtrlListBox_SetCurSel($lstStrategies, _GUICtrlListBox_FindString($lstStrategies, $strNewName))
 			Else
-				MsgBox($MB_ICONERROR, $sBotTitle, "Invalid filename!")
+				MsgBox($MB_ICONERROR, $sBotTitle, GetLangText("boxInvalidName"))
 				_btnSaveStrat()
 			EndIf
 		EndIf
@@ -719,4 +721,9 @@ EndFunc   ;==>_lstStrategies
 
 Func btnLab()
 	LocateLab()
+EndFunc
+
+Func cmbLanguage()
+	$array = _GUICtrlComboBox_GetListArray($cmbLanguage)
+	If $array[_GUICtrlComboBox_GetCurSel($cmbLanguage)+1] <> $StartupLanguage Then MsgBox(0, $array[_GUICtrlComboBox_GetCurSel($cmbLanguage)+1], GetLangText("msgRestartNeeded"))
 EndFunc

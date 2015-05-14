@@ -2,7 +2,7 @@
 ;If it is not available, it calls checkObstacles and also waitMainScreen.
 
 Func checkMainScreen($Check = False, $maxDelay = 1) ;Checks if in main screen
-	If $Check = True Then SetLog("Trying to locate Main Screen", $COLOR_BLUE)
+	If $Check = True Then SetLog(GetLangText("msgMSTry"), $COLOR_BLUE)
 	_WinAPI_EmptyWorkingSet(WinGetProcess($Title)) ; Reduce BlueStacks Memory Usage
 
 	If Not _WaitForColor(284, 28, Hex(0x41B1CD, 6), 20, $maxDelay) Then
@@ -17,9 +17,9 @@ Func checkMainScreen($Check = False, $maxDelay = 1) ;Checks if in main screen
 			waitMainScreen()
 		WEnd
 	EndIf
-	If $Check = True Then SetLog("Main Screen Located", $COLOR_BLUE)
+	If $Check = True Then SetLog(GetLangText("msgMSLocated"), $COLOR_BLUE)
 	If Not ZoomOut() Then
-		SetLog("Failed to zoom out", $COLOR_BLUE)
+		SetLog(GetLangText("msgMSFailed"), $COLOR_BLUE)
 		Return False
 	Else
 		Return True

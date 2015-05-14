@@ -7,7 +7,7 @@ Func handleBarracksError($i) ;Sets the text for the log
 	If $i = 3 Then $brerror[3] = True
 
 	If $brerror[0] = True And $brerror[1] = True And $brerror[2] = True And $brerror[3] = True Then
-		SetLog("Restarting BlueStack to fix Barrack is not available error!", $COLOR_RED)
+		SetLog(GetLangText("msgRestartBarracks"), $COLOR_RED)
 		Local $RestartApp = StringReplace(_WinAPI_GetProcessFileName(WinGetProcess($Title)), "Frontend", "Restart")
 		Run($RestartApp & " Android")
 		If _Sleep(10000) Then Return

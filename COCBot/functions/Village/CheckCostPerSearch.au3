@@ -2,7 +2,7 @@
 
 Func CheckCostPerSearch()
 
-	SetLog("Checking Gold Cost Per Search.", $COLOR_GREEN)
+	SetLog(GetLangText("msgCheckGold"), $COLOR_GREEN)
 
 	If $TownHallPos[0] = "" Then
 		If Not LocateTownHall() Then Return
@@ -25,7 +25,7 @@ Func CheckCostPerSearch()
 	Until TimerDiff($time) > 1500
 
 	If IsArray($Location) = False Then
-		SetLog("Failed to find townhall!", $COLOR_RED)
+		SetLog(GetLangText("msgFailedTH"), $COLOR_RED)
 		If _Sleep(500) Then Return
 	Else
 		Click($Location[0], $Location[1])
@@ -55,7 +55,7 @@ Func CheckCostPerSearch()
 			$SearchCost = 1000
 		EndIf
 
-		SetLog("Townhall Level " & $THLevel & ", Gold Cost Per Search: " & $SearchCost, $COLOR_GREEN)
+		SetLog(GetLangText("msgTHLevel") & $THLevel & GetLangText("msgGoldCPS") & $SearchCost, $COLOR_GREEN)
 	EndIf
 	ClickP($TopLeftClient, 2, 250); Click away twice with 250ms delay
 

@@ -3,7 +3,7 @@ Func LootLogCleanup($no_rotator)
 	For $l = 0 To UBound($dir_list) - 1
 		Local $dir = @ScriptDir & "\" & $dir_list[$l]
 		If FileExists($dir) == 0 Then
-			SetLog("dir not found - " & $dir, $COLOR_RED)
+			SetLog(GetLangText("msgDirNotFound") & $dir, $COLOR_RED)
 			ContinueLoop
 		EndIf
 		Local $fArray = _FileListToArrayRec($dir, "*", $FLTAR_FILESFOLDERS, $FLTAR_RECUR, $FLTAR_SORT, $FLTAR_FULLPATH)
@@ -13,7 +13,7 @@ Func LootLogCleanup($no_rotator)
 			For $i = 1 To Number($data_size - $no_rotator)
 				Local $file_path = $fArray[$i]
 				If Not FileDelete($file_path) Then
-					SetLog("Fail to del " & $file_path, $COLOR_RED)
+					SetLog(GetLangText("msgFailDel") & $file_path, $COLOR_RED)
 				EndIf
 			Next
 		EndIf

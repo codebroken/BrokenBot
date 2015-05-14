@@ -13,9 +13,9 @@ Func ChkDisconnection()
 			$speedBump += 500
 			If $speedBump > 5000 Then
 				$speedBump = 5000
-				SetLog("Out of sync! Already searching slowly, not changing anything.", $COLOR_RED)
+				SetLog(GetLangText("msgOOSAlreadySlow"), $COLOR_RED)
 			Else
-				SetLog("Out of sync! Slowing search speed by 0.5 secs.", $COLOR_RED)
+				SetLog(GetLangText("msgOOSSlowingSearch"), $COLOR_RED)
 			EndIf
 		EndIf
 	EndIf
@@ -25,9 +25,9 @@ Func ChkDisconnection()
 			$speedBump += 500
 			If $speedBump > 5000 Then
 				$speedBump=5000
-				SetLog("Lost Connection! Already searching slowly, not changing anything.", $COLOR_RED)
+				SetLog(GetLangText("msgLCAlreadySlow"), $COLOR_RED)
 			Else
-				SetLog("Lost Connection! Slowing search speed by 0.5 secs.", $COLOR_RED)
+				SetLog(GetLangText("msgLCSlowingSearch"), $COLOR_RED)
 			EndIf
 		EndIf
 	EndIf

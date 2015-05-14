@@ -17,8 +17,8 @@ Func runBot() ;Bot that runs everything in order
 		VillageReport()
 		If StatusCheck() Then Return
 
-		CheckCostPerSearch()
-		If StatusCheck() Then Return
+;~ 		CheckCostPerSearch()
+;~ 		If StatusCheck() Then Return
 
 		If $Checkrearm Then
 			ReArm()
@@ -67,7 +67,7 @@ Func runBot() ;Bot that runs everything in order
 						Call($strPlugInInUse & "_PrepareAttack", $AttackType)
 						If BotStopped(False) Then Return
 
-						SetLog("======Beginning Attack======")
+						SetLog(GetLangText("msgBeginAttack"))
 						Call($strPlugInInUse & "_Attack", $AttackType)
 						If BotStopped(False) Then Return
 
@@ -101,7 +101,7 @@ Func Idle($Plugin) ;Sequence that runs until Full Army
 	Local $hTimer = TimerInit()
 	While Not Call($Plugin & "_ReadyCheck")
 		If StatusCheck() Then Return
-		SetLog("~~~Waiting for full army~~~", $COLOR_PURPLE)
+		SetLog(GetLangText("msgWaitingFull"), $COLOR_PURPLE)
 		If $iCollectCounter > $COLLECTATCOUNT Then ; This is prevent from collecting all the time which isn't needed anyway
 			Collect()
 			If StatusCheck() Then Return
@@ -112,7 +112,7 @@ Func Idle($Plugin) ;Sequence that runs until Full Army
 		If StatusCheck() Then Return
 		_BumpMouse()
 		$TimeIdle = Round(TimerDiff($hTimer) / 1000, 2) ;In Seconds
-		SetLog("Time Idle: " & Floor(Floor($TimeIdle / 60) / 60) & " hours " & Floor(Mod(Floor($TimeIdle / 60), 60)) & " minutes " & Floor(Mod($TimeIdle, 60)) & " seconds", $COLOR_ORANGE)
+		SetLog(GetLangText("msgTimeIdle") & Floor(Floor($TimeIdle / 60) / 60) & GetLangText("msgTimeIdleHours")& Floor(Mod(Floor($TimeIdle / 60), 60)) & GetLangText("msgTimeIdleMin") & Floor(Mod($TimeIdle, 60)) & GetLangText("msgTimeIdleSec"), $COLOR_ORANGE)
 		If _Sleep(30000) Then ExitLoop
 	WEnd
 EndFunc   ;==>Idle

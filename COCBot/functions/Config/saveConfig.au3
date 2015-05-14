@@ -215,11 +215,7 @@ Func saveConfig() ;Saves the controls settings to the config
 	;---------------------------------------------------------------------------------------
 	; Misc settings ------------------------------------------------------------------------
 	;---------------------------------------------------------------------------------------
-	If IsChecked($chkAvoidEdge) Then
-		IniWrite($config, "misc", "AvoidEdge", 1)
-	Else
-		IniWrite($config, "misc", "AvoidEdge", 0)
-	EndIf
+	IniWrite($config, "misc", "RedLineAcc", GUICtrlRead($sldAcc))
 	If IsChecked($chkTakeAttackSS) Then
 		IniWrite($config, "misc", "TakeAttackSnapShot", 1)
 	Else
@@ -269,6 +265,8 @@ Func saveConfig() ;Saves the controls settings to the config
 	;---------------------------------------------------------------------------------------
 	; Config settings ----------------------------------------------------------------------
 	;---------------------------------------------------------------------------------------
+	$array = _GUICtrlComboBox_GetListArray($cmbLanguage)
+	IniWrite($config, "config", "language", $array[_GUICtrlComboBox_GetCurSel($cmbLanguage)+1])
 	If IsChecked($chkBackground) Then
 		IniWrite($config, "config", "Background", 1)
 	Else

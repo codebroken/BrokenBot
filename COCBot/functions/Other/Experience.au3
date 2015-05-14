@@ -13,7 +13,7 @@ Func experience()
 		Click(674, 208);choose 2nd goblin base
 		If _Sleep(500) Then ExitLoop
 		Click(665, 247);attack goblin button
-		SetLog("Attacking goblin", $COLOR_BLUE)
+		SetLog(GetLangText("msgAttackingGoblin"), $COLOR_BLUE)
 
 		_CaptureRegion()
 		While 1
@@ -55,7 +55,7 @@ Func experience()
 		;DonateCC()
 		;Sleep(1000)
 		;Train()
-		SetLog("Victory!", $COLOR_BLUE)
+		SetLog(GetLangText("msgVictory"), $COLOR_BLUE)
 		If _Sleep(1000) Then ExitLoop
 	WEnd
 EndFunc   ;==>experience

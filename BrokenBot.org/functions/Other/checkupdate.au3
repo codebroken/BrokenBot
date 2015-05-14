@@ -10,7 +10,7 @@ Func checkupdate()
 		Local $hMasterVersion = InetGet("https://github.com/codebroken/BrokenBot/blob/master/BrokenBot.au3", $sFilePath, 3)
 
 		If $hMasterVersion = 0 Then
-			SetLog("Failed to check updated version info.")
+			SetLog(GetLangText("msgFailedVersion"))
 		Else
 			$hReadFile = FileOpen($sFilePath)
 			While True
@@ -18,26 +18,26 @@ Func checkupdate()
 				If @error Then ExitLoop
 				If StringInStr($strReadLine, "$sBotVersion") Then
 					$split = StringSplit($strReadLine, "&quot;", 1)
-					SetLog("Version of master branch online: " & $split[2])
+					SetLog(GetLangText("msgVersionOnline") & $split[2])
 					If $sBotVersion < $split[2] Then
-						SetLog("Update needed.")
-						If MsgBox($MB_OKCANCEL, "Update needed!", "There is a newer version available online." & @CRLF & @CRLF & "Press OK to open GitHub website and shutdown bot." & @CRLF & "You will need to install and compile the new version." & @CRLF & @CRLF & "Or click cancel to skip.", 0, $frmBot) = $IDOK Then
+						SetLog(GetLangText("msgUpdateNeeded"))
+						If MsgBox($MB_OKCANCEL, GetLangText("boxUpdate"), GetLangText("boxUpdate2") & @CRLF & @CRLF & GetLangText("boxUpdate3") & @CRLF & GetLangText("boxUpdate4") & @CRLF & @CRLF & GetLangText("boxUpdate5"), 0, $frmBot) = $IDOK Then
 							ShellExecute("https://github.com/codebroken/BrokenBot")
 							_GDIPlus_Shutdown()
 							_GUICtrlRichEdit_Destroy($txtLog)
 							Exit
 						EndIf
 					ElseIf $sBotVersion > $split[2] Then
-						SetLog("You appear to be ahead of master.")
+						SetLog(GetLangText("msgAheadMaster"))
 					Else
-						SetLog("No update needed.")
+						SetLog(GetLangText("msgNoUpdateNeeded"))
 					EndIf
 					FileClose($hReadFile)
 					FileDelete($sFilePath)
 					Return
 				EndIf
 			WEnd
-			SetLog("Failed to check updated version info.")
+			SetLog(GetLangText("msgFailedVersion"))
 			FileClose($hReadFile)
 			FileDelete($sFilePath)
 		EndIf

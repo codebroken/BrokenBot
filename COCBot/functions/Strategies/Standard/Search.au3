@@ -23,7 +23,7 @@ Func Standard_Search()
 	$iNukeLimit = GUICtrlRead($txtDENukeLimit)
 
 	While 1
-		SetLog("Search Condition:", $COLOR_RED)
+		SetLog(GetLangText("msgSearchCond"), $COLOR_RED)
 		If IsChecked($chkDeadActivate) And $fullArmy Then
 			$conditionlogstr = "Dead Base ("
 			If IsChecked($chkDeadGE) Then
@@ -101,7 +101,7 @@ Func Standard_Search()
 			SetLog($conditionlogstr, $COLOR_GREEN)
 		EndIf
 		GUICtrlSetData($lblresultsearchcost, GUICtrlRead($lblresultsearchcost) + $SearchCost)
-		If $TakeAllTownSnapShot = 1 Then SetLog("Will save all of the towns when searching", $COLOR_GREEN)
+		If $TakeAllTownSnapShot = 1 Then SetLog(GetLangText("msgWillSaveAll"), $COLOR_GREEN)
 		$SearchCount = 0
 		_BlockInputEx(3, "", "", $HWnD)
 
@@ -124,6 +124,7 @@ Func Standard_Search()
 			If _Sleep($icmbSearchsp * 1500) Then Return -1
 
 			If $SearchCount <> 0 And Mod($SearchCount, 30) = 0 Then
+				_BumpMouse()
 				If $MinDeadGold - 5000 >= 0 Then $MinDeadGold -= 5000
 				If $MinDeadElixir - 5000 >= 0 Then $MinDeadElixir -= 5000
 				If $MinDeadDark - 100 >= 0 Then $MinDeadDark -= 100
@@ -133,7 +134,7 @@ Func Standard_Search()
 				If $MinDark - 100 >= 0 Then $MinDark -= 100
 				If $MinTrophy - 2 >= 0 Then $MinTrophy -= 2
 				If $iNukeLimit - 300 >= 0 Then $iNukeLimit -= 100
-				SetLog("Search Condition:", $COLOR_RED)
+				SetLog(GetLangText("msgSearchCond"), $COLOR_RED)
 				If IsChecked($chkDeadActivate) And $fullArmy Then
 					$conditionlogstr = "Dead Base ("
 					If IsChecked($chkDeadGE) Then
@@ -244,10 +245,10 @@ Func Standard_Search()
 			EndSwitch
 
 			If $THLoc = "Out" And IsChecked($chkDeadActivate) And IsChecked($chkDeadSnipe) And $BaseData[0] Then
-				SetLog("~~~~~~~Outside Townhall in Dead Base Found!~~~~~~~", $COLOR_PURPLE)
+				SetLog(GetLangText("msgOutDeadFound"), $COLOR_PURPLE)
 				Return 0
 			ElseIf $THLoc = "Out" And IsChecked($chkAnyActivate) And IsChecked($chkSnipe) And Not $BaseData[0] Then
-				SetLog("~~~~~~~Outside Townhall in Live Base Found!~~~~~~~", $COLOR_PURPLE)
+				SetLog(GetLangText("msgOutLiveFound"), $COLOR_PURPLE)
 				Return 1
 			EndIf
 
@@ -281,7 +282,7 @@ Func Standard_Search()
 				EndIf
 
 				If $BaseData[0] And $conditionDeadPass Then
-					SetLog("~~~~~~~Dead Base Found!~~~~~~~", $COLOR_GREEN)
+					SetLog(GetLangText("msgDeadFound"), $COLOR_GREEN)
 					$GoodBase = True
 					$AttackMethod = 0
 				EndIf
@@ -318,7 +319,7 @@ Func Standard_Search()
 					EndIf
 
 					If $conditionAnyPass Then
-						SetLog("~~~~~~~Other Base Found!~~~~~~~", $COLOR_GREEN)
+						SetLog(GetLangText("msgOtherFound"), $COLOR_GREEN)
 						$GoodBase = True
 						$AttackMethod = 1
 					EndIf
@@ -331,7 +332,7 @@ Func Standard_Search()
 					If Number($BaseData[4]) >= Number($iNukeLimit) Then
 						If checkDarkElix() Then
 							$NukeAttack = True
-							SetLog("~~~~~~~Base to Zap Found!~~~~~~~", $COLOR_GREEN)
+							SetLog(GetLangText("msgZapFound"), $COLOR_GREEN)
 							$GoodBase = True
 							$AttackMethod = 2
 						EndIf
@@ -343,7 +344,7 @@ Func Standard_Search()
 			GUICtrlSetState($btnAtkNow, $GUI_DISABLE)
 			If $AttackNow Then
 				$AttackNow = False
-				SetLog("~~~~~~~Attack Now Clicked!~~~~~~~", $COLOR_GREEN)
+				SetLog(GetLangText("msgAttackNowClicked"), $COLOR_GREEN)
 				ExitLoop
 			EndIf
 
@@ -363,20 +364,20 @@ Func Standard_Search()
 					GUICtrlSetData($lblresultsearchcost, GUICtrlRead($lblresultsearchcost) + $SearchCost)
 					If _Sleep(1000) Then Return -1
 				ElseIf _ColorCheck(_GetPixelColor(71, 530), Hex(0xC00000, 6), 20) Then ;If End battle is available
-					SetLog("Cannot locate Next button, try to return home...", $COLOR_RED)
+					SetLog(GetLangText("msgNoNextReturn"), $COLOR_RED)
 					ChkDisconnection()
 					If $DebugMode = 1 Then _GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "NoNext-" & @HOUR & @MIN & @SEC & ".png")
 					ReturnHome(False, False, True)
 					If $PushBulletEnabled = 1 Then
-						_Push("Disconnected", "Your bot got disconnected while searching for enemy..")
+						_Push(GetLangText("pushDisca"), GetLangText("pushDiscb"))
 					EndIf
 					Return -1
 				Else
-					SetLog("Cannot locate Next button & Surrender button, Restarting Bot", $COLOR_RED)
+					SetLog(GetLangText("msgNoNextRestart"), $COLOR_RED)
 					ChkDisconnection()
 					If $DebugMode = 1 Then _GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "NoNextSurr-" & @HOUR & @MIN & @SEC & ".png")
 					If $PushBulletEnabled = 1 Then
-						_Push("Disconnected", "Your bot got disconnected while searching for enemy..")
+						_Push(GetLangText("pushDisca"), GetLangText("pushDiscb"))
 					EndIf
 					Return -1
 				EndIf
@@ -393,10 +394,10 @@ Func Standard_Search()
 			EndIf
 		EndIf
 		If $PushBulletEnabled = 1 And $PushBulletmatchfound = 1 Then
-			_Push("Match Found!", "[G]: " & _NumberFormat($BaseData[2]) & "; [E]: " & _NumberFormat($BaseData[3]) & "; [D]: " & _NumberFormat($BaseData[4]) & "; [T]: " & $BaseData[5] & "; [TH Lvl]: " & $BaseData[1] & ", Loc: " & $THLoc)
-			SetLog("Push: Match Found", $COLOR_GREEN)
+			_Push(GetLangText("pushMatch"), "[" & GetLangText("msgGoldinitial") & "]: " & _NumberFormat($BaseData[2]) & "; [" & GetLangText("msgElixirinitial") & "]: " & _NumberFormat($BaseData[3]) & "; [" & GetLangText("msgDarkElixinitial") & "]: " & _NumberFormat($BaseData[4]) & "; [" & GetLangText("msgTrophyInitial") & "]: " & $BaseData[5] & "; [TH Lvl]: " & $BaseData[1] & ", Loc: " & $THLoc)
+			SetLog(GetLangText("msgPushMatch"), $COLOR_GREEN)
 		EndIf
-		SetLog("===============Searching Complete===============", $COLOR_BLUE)
+		SetLog(GetLangText("msgSearchComplete"), $COLOR_BLUE)
 		_BlockInputEx(0, "", "", $HWnD)
 		Return $AttackMethod
 	WEnd

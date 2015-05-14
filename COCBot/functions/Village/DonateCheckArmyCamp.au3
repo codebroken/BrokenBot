@@ -1,5 +1,5 @@
 Func Donate_CheckArmyCamp()
-	SetLog("Checking Army Camp...", $COLOR_BLUE)
+	SetLog(GetLangText("msgCheckingCamp"), $COLOR_BLUE)
 	$fullArmy = False
 
 	If _Sleep(100) Then Return
@@ -18,14 +18,14 @@ Func Donate_CheckArmyCamp()
 	If _Sleep(1000) Then Return
 	Local $BArmyPos = _WaitForPixel(309, 581, 433, 583, Hex(0x4084B8, 6), 5) ;Finds Info button
 	If IsArray($BArmyPos) = False Then
-		SetLog("Your Army Camp is not available", $COLOR_RED)
+		SetLog(GetLangText("msgCampNA"), $COLOR_RED)
 	Else
 		Click($BArmyPos[0], $BArmyPos[1]) ;Click Info button
 		If _Sleep(2000) Then Return
 		_CaptureRegion()
 		$CurCamp = Number(getOther(586, 193, "Camp"))
 		If $CurCamp > 0 Then
-			SetLog("Total Troop Capacity: " & $CurCamp & "/" & $itxtcampCap, $COLOR_GREEN)
+			SetLog(GetLangText("msgTotalCampCap") & $CurCamp & "/" & $itxtcampCap, $COLOR_GREEN)
 		EndIf
 		If $CurCamp >= ($itxtcampCap * (GUICtrlRead($cmbRaidcap) / 100)) Then
 			$fullArmy = True

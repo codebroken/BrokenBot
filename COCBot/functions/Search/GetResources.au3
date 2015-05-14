@@ -18,12 +18,12 @@ Func GetResources($MidAttack = False) ;Reads resources
 					If _Sleep(1000) Then Return False
 					$x += 1
 				Else
-					SetLog("Cannot locate Next button, Restarting Bot", $COLOR_RED)
+					SetLog(GetLangText("msgNoNextButton"), $COLOR_RED)
 					If $DebugMode = 1 Then
 						_GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "NoNextRes-" & @HOUR & @MIN & @SEC & ".png")
 					EndIf
 					If $PushBulletEnabled = 1 Then
-						_Push("Disconnected", "Your bot got disconnected while searching for enemy..")
+						_Push(GetLangText("pushDisca"), GetLangText("pushDiscb"))
 					EndIf
 					Return False
 				EndIf
@@ -47,7 +47,7 @@ Func GetResources($MidAttack = False) ;Reads resources
 	$RetVal[3] = getElixir(51, 66 + 29)
 	$RetVal[5] = getTrophy(51, 66 + 90)
 
-	If $RetVal[0] Then $txtDead = "Dead"
+	If $RetVal[0] Then $txtDead = GetLangText("msgDeadInitial")
 
 	If $RetVal[5] <> "" Then
 		$RetVal[4] = getDarkElixir(51, 66 + 57)
@@ -96,10 +96,10 @@ Func GetResources($MidAttack = False) ;Reads resources
 	EndIf
 
 	If $MidAttack Then
-        SetLog("MidAttack ResChk: [G]: " & $RetVal[2] & Tab($RetVal[2], 7) & "[E]: " & $RetVal[3] & Tab($RetVal[3], 7) & "[D]: " & $RetVal[4] & Tab($RetVal[4], 4) & "[T]: " & $RetVal[5] & Tab($RetVal[5], 3) & "[TH]: " & $RetVal[1] & (($RetVal[1] <> "-") ? ("-Q" & $THquadrant) : ("")) & ", " & $THLoc & ", " & $txtDead, $COLOR_BLUE)
+        SetLog(GetLangText("msgMidAttack") & " [" & GetLangText("msgGoldinitial") & "]: " & $RetVal[2] & Tab($RetVal[2], 7) & "[" & GetLangText("msgElixirinitial") & "]: " & $RetVal[3] & Tab($RetVal[3], 7) & "[" & GetLangText("msgDarkElixinitial") & "]: " & $RetVal[4] & Tab($RetVal[4], 4) & "[" & GetLangText("msgTrophyInitial") & "]: " & $RetVal[5] & Tab($RetVal[5], 3) & "[" & GetLangText("msgTHInitial") & "]: " & $RetVal[1] & (($RetVal[1] <> "-") ? ("-Q" & $THquadrant) : ("")) & ", " & $THLoc & ", " & $txtDead, $COLOR_BLUE)
 	Else
 		$SearchCount += 1 ; Counter for number of searches
-		SetLog("(" & $SearchCount & ") [G]: " & $RetVal[2] & Tab($RetVal[2], 7) & "[E]: " & $RetVal[3] & Tab($RetVal[3], 7) & "[D]: " & $RetVal[4] & Tab($RetVal[4], 4) & "[T]: " & $RetVal[5] & Tab($RetVal[5], 3) & "[TH]: " & $RetVal[1] & (($RetVal[1] <> "-") ? ("-Q" & $THquadrant) : ("")) & ", " & $THLoc & ", " & $txtDead, $COLOR_BLUE)
+		SetLog("(" & $SearchCount & ") [" & GetLangText("msgGoldinitial") & "]: " & $RetVal[2] & Tab($RetVal[2], 7) & "[" & GetLangText("msgElixirinitial") & "]: " & $RetVal[3] & Tab($RetVal[3], 7) & "[" & GetLangText("msgDarkElixinitial") & "]: " & $RetVal[4] & Tab($RetVal[4], 4) & "[" & GetLangText("msgTrophyInitial") & "]: " & $RetVal[5] & Tab($RetVal[5], 3) & "[" & GetLangText("msgTHInitial") & "]: " & $RetVal[1] & (($RetVal[1] <> "-") ? ("-Q" & $THquadrant) : ("")) & ", " & $THLoc & ", " & $txtDead, $COLOR_BLUE)
 	EndIf
 	Return $RetVal
 EndFunc   ;==>GetResources

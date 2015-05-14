@@ -1,19 +1,4 @@
 ;Red border finding
-Global $numEdges = 81
-Global $EdgeColors[81][3] = [[218, 116, 44], [207, 97, 37], [199, 104, 41], [201, 119, 45], [193, 130, 47], _
-		[203, 134, 55], [208, 138, 55], [211, 143, 59], [196, 128, 50], [195, 159, 38], [199, 143, 57], _
-		[173, 124, 50], [214, 108, 40], [193, 101, 38], [211, 111, 44], [203, 112, 42], [123, 73, 26], _
-		[143, 89, 31], [157, 100, 41], [180, 116, 45], [133, 82, 32], [125, 65, 20], [172, 117, 48], _
-		[120, 92, 36], [106, 76, 30], [159, 105, 42], [172, 103, 40], [193, 124, 44], [189, 119, 46], _
-		[206, 155, 64], [190, 137, 46], [187, 138, 56], [192, 155, 58], [203, 131, 47], [196, 147, 52], _
-		[199, 140, 53], [193, 135, 52], [195, 159, 58], [196, 128, 50], [193, 136, 53], [211, 143, 59], _
-		[203, 131, 47], [215, 142, 50], [205, 145, 53], [187, 129, 53], [151, 85, 34], [154, 75, 26], _
-		[168, 80, 32], [105, 68, 20], [172, 117, 46], [193, 119, 47], [192, 111, 45], [126, 88, 34], _
-		[165, 88, 29], [158, 71, 25], [166, 91, 34], [127, 59, 23], [212, 119, 47], [206, 119, 42], _
-		[211, 119, 45], [200, 112, 41], [202, 108, 40], [180, 113, 39], [211, 119, 45], [202, 127, 49], _
-		[168, 126, 46], [126, 50, 16], [165, 81, 27], [163, 74, 26], [207, 129, 53], [183, 129, 44], _
-		[196, 139, 52], [180, 126, 48], [156, 81, 31], [142, 77, 28], [160, 104, 37], _
-		[157, 83, 29], [128, 71, 25], [157, 80, 37], [158, 93, 33], [198, 115, 43]]
 Global $Grid[43][43][3]
 $Grid[0][0][0] = 35
 $Grid[0][0][1] = 314
@@ -41,11 +26,11 @@ For $j = 0 To 42
 		$Grid[$j][$i][1] = Round($Grid[$j][$i][1])
 	Next
 Next
-$EdgeLevel = 1
 $AimCenter = 1
 $AimTH = 2
 
 Func RedLineDeploy($x, $y, $times = 1, $speed = 0, $CenteredOn = 0, $BufferDist = 20)
+	$BufferDist = GUICtrlRead($sldAcc) + 10
 	If $CenteredOn = $AimCenter Then
 		$AimX = Round((($Grid[42][42][0] - $Grid[0][0][0]) / 2) + $Grid[0][0][0])
 		$AimY = Round((($Grid[42][42][1] - $Grid[0][0][1]) / 2) + $Grid[0][0][1])
@@ -53,7 +38,7 @@ Func RedLineDeploy($x, $y, $times = 1, $speed = 0, $CenteredOn = 0, $BufferDist 
 		$AimX = $THx
 		$AimY = $THy
 	Else
-		SetLog("Bad call, unknown where to center attack")
+		SetLog(GetLangText("msgBadCall"))
 		Return
 	EndIf
 	For $i = 0 To 41
@@ -171,153 +156,42 @@ Func RedLineDeploy($x, $y, $times = 1, $speed = 0, $CenteredOn = 0, $BufferDist 
 EndFunc   ;==>RedLineDeploy
 
 Func SeekEdges()
+	Local $mH, $mS, $cl, $cr, $ci
+
+	$cl = 1
+	$cr = 1
+	$ci = 0
+
+	If GUICtrlRead($sldAcc) < 10 Then
+		$mH = 65 + GUICtrlRead($sldAcc)
+		$mS = 135 - GUICtrlRead($sldAcc)
+	ElseIf GUICtrlRead($sldAcc) = 100 Then
+		$mH = 1024
+		$mS = 8
+	Else
+		$mH = 75 + 10*((GUICtrlRead($sldAcc)-10)/90)
+		$mS = 125 - 10*((GUICtrlRead($sldAcc)-10)/90)
+	EndIf
+
 	; Clear edge data
-	SetLog("Analyzing base...", $COLOR_BLUE)
-	For $j = 0 To 42
-		For $i = 0 To 42
-			$Grid[$j][$i][2] = 0
+	SetLog(GetLangText("msgAnalyzingBase"), $COLOR_BLUE)
+	For $i = 0 To 42
+		For $j = 0 To 42
+			$Grid[$i][$j][2] = 0
 		Next
 	Next
 
-	$BitmapData = _GDIPlus_BitmapLockBits($hAttackBitmap, 0, 0, _GDIPlus_ImageGetWidth($hAttackBitmap), _GDIPlus_ImageGetHeight($hAttackBitmap), $GDIP_ILMREAD, $GDIP_PXF32RGB)
-	$Stride = DllStructGetData($BitmapData, "Stride")
-	$Scan0 = DllStructGetData($BitmapData, "Scan0")
-	For $i = 0 To 41
-		For $j = 0 To 41
-			$YesEdge = False
-			$m = ($Grid[$i][$j + 1][1] - $Grid[$i][$j][1]) / ($Grid[$i][$j + 1][0] - $Grid[$i][$j][0])
-			For $x = $Grid[$i][$j][0] To $Grid[$i][$j + 1][0]
-				$y = Round($m * ($x - $Grid[$i][$j][0]) + $Grid[$i][$j][1])
-				$pixel = DllStructCreate("dword", $Scan0 + $y * $Stride + $x * 4)
-				If CompareColor(BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF0000), 16), BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF00), 8), BitAND(DllStructGetData($pixel, 1), 0xFF)) Then $YesEdge = True
-				If $EdgeLevel > 1 Then
-					$pixel = DllStructCreate("dword", $Scan0 + $y * $Stride + ($x - 1) * 4)
-					If CompareColor(BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF0000), 16), BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF00), 8), BitAND(DllStructGetData($pixel, 1), 0xFF)) Then $YesEdge = True
-					If $EdgeLevel > 2 Then
-						$pixel = DllStructCreate("dword", $Scan0 + $y * $Stride + ($x + 1) * 4)
-						If CompareColor(BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF0000), 16), BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF00), 8), BitAND(DllStructGetData($pixel, 1), 0xFF)) Then $YesEdge = True
-					EndIf
-				EndIf
-			Next
-			If $YesEdge Then
-				$Grid[$i][$j][2] = 1
-				$Grid[$i][$j + 1][2] = 1
-			EndIf
-			$YesEdge = False
-			$m = ($Grid[$i + 1][$j][1] - $Grid[$i][$j][1]) / ($Grid[$i + 1][$j][0] - $Grid[$i][$j][0])
-			For $x = $Grid[$i][$j][0] To $Grid[$i + 1][$j][0]
-				$y = Round($m * ($x - $Grid[$i][$j][0]) + $Grid[$i][$j][1])
-				$pixel = DllStructCreate("dword", $Scan0 + $y * $Stride + $x * 4)
-				If CompareColor(BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF0000), 16), BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF00), 8), BitAND(DllStructGetData($pixel, 1), 0xFF)) Then $YesEdge = True
-				If $EdgeLevel > 1 Then
-					$pixel = DllStructCreate("dword", $Scan0 + $y * $Stride + ($x - 1) * 4)
-					If CompareColor(BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF0000), 16), BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF00), 8), BitAND(DllStructGetData($pixel, 1), 0xFF)) Then $YesEdge = True
-					If $EdgeLevel > 2 Then
-						$pixel = DllStructCreate("dword", $Scan0 + $y * $Stride + ($x + 1) * 4)
-						If CompareColor(BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF0000), 16), BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF00), 8), BitAND(DllStructGetData($pixel, 1), 0xFF)) Then $YesEdge = True
-					EndIf
-				EndIf
-			Next
-			If $YesEdge Then
-				$Grid[$i][$j][2] = 1
-				$Grid[$i + 1][$j][2] = 1
-			EndIf
-		Next
-	Next
-	$i = 42
-	For $j = 0 To 41
-		$YesEdge = False
-		$m = ($Grid[$i][$j + 1][1] - $Grid[$i][$j][1]) / ($Grid[$i][$j + 1][0] - $Grid[$i][$j][0])
-		For $x = $Grid[$i][$j][0] To $Grid[$i][$j + 1][0]
-			$y = Round($m * ($x - $Grid[$i][$j][0]) + $Grid[$i][$j][1])
-			$pixel = DllStructCreate("dword", $Scan0 + $y * $Stride + $x * 4)
-			If CompareColor(BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF0000), 16), BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF00), 8), BitAND(DllStructGetData($pixel, 1), 0xFF)) Then $YesEdge = True
-			If $EdgeLevel > 1 Then
-				$pixel = DllStructCreate("dword", $Scan0 + $y * $Stride + ($x - 1) * 4)
-				If CompareColor(BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF0000), 16), BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF00), 8), BitAND(DllStructGetData($pixel, 1), 0xFF)) Then $YesEdge = True
-				If $EdgeLevel > 2 Then
-					$pixel = DllStructCreate("dword", $Scan0 + $y * $Stride + ($x + 1) * 4)
-					If CompareColor(BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF0000), 16), BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF00), 8), BitAND(DllStructGetData($pixel, 1), 0xFF)) Then $YesEdge = True
-				EndIf
-			EndIf
-		Next
-		If $YesEdge Then
-			$Grid[$i][$j][2] = 1
-			$Grid[$i][$j + 1][2] = 1
-		EndIf
-	Next
-	$j = 42
-	For $i = 0 To 41
-		$YesEdge = False
-		$m = ($Grid[$i + 1][$j][1] - $Grid[$i][$j][1]) / ($Grid[$i + 1][$j][0] - $Grid[$i][$j][0])
-		For $x = $Grid[$i][$j][0] To $Grid[$i + 1][$j][0]
-			$y = Round($m * ($x - $Grid[$i][$j][0]) + $Grid[$i][$j][1])
-			$pixel = DllStructCreate("dword", $Scan0 + $y * $Stride + $x * 4)
-			If CompareColor(BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF0000), 16), BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF00), 8), BitAND(DllStructGetData($pixel, 1), 0xFF)) Then $YesEdge = True
-			If $EdgeLevel > 1 Then
-				$pixel = DllStructCreate("dword", $Scan0 + $y * $Stride + ($x - 1) * 4)
-				If CompareColor(BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF0000), 16), BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF00), 8), BitAND(DllStructGetData($pixel, 1), 0xFF)) Then $YesEdge = True
-				If $EdgeLevel > 2 Then
-					$pixel = DllStructCreate("dword", $Scan0 + $y * $Stride + ($x + 1) * 4)
-					If CompareColor(BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF0000), 16), BitShift(BitAND(DllStructGetData($pixel, 1), 0xFF00), 8), BitAND(DllStructGetData($pixel, 1), 0xFF)) Then $YesEdge = True
-				EndIf
-			EndIf
-		Next
-		If $YesEdge Then
-			$Grid[$i][$j][2] = 1
-			$Grid[$i + 1][$j][2] = 1
-		EndIf
-	Next
-	_GDIPlus_BitmapUnlockBits($hAttackBitmap, $BitmapData)
+	Local $hHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hAttackBitmap)
+	$ret = ""
+	$ret = DllCall(@ScriptDir & "\BrokenBot.org\BrokenBot32.dll", "str", "BrokenBotRedLineCheck", "ptr", $hHBitmap, "int", $mH, "int", $mS, "int", $ci, "int", $cl, "int", $cr)
+	_WinAPI_DeleteObject($hHBitmap)
 
-	; Clean it up
-	$j = 0
-	For $i = 1 To 41
-		$Neighbors = 0
-		If $Grid[$i - 1][$j][2] = 1 Then $Neighbors += 1
-		If $Grid[$i + 1][$j][2] = 1 Then $Neighbors += 1
-		If $Grid[$i][$j + 1][2] = 1 Then $Neighbors += 1
-		If $Neighbors < 2 Then $Grid[$i][$j][2] = 0
+	$Array = StringSplit($ret[0], "|", 2)
+	For $i = 0 to (43*43)-1
+		$Grid[Floor($i/43)][Mod($i, 43)][2] = $Array[$i]
 	Next
-	$i = 0
-	For $j = 1 To 41
-		$Neighbors = 0
-		If $Grid[$i][$j - 1][2] = 1 Then $Neighbors += 1
-		If $Grid[$i][$j + 1][2] = 1 Then $Neighbors += 1
-		If $Grid[$i + 1][$j][2] = 1 Then $Neighbors += 1
-		If $Neighbors < 2 Then $Grid[$i][$j][2] = 0
-	Next
-	For $i = 1 To 41
-		For $j = 1 To 41
-			If $Grid[$i][$j][2] = 0 And $Grid[$i + 1][$j][2] = 1 And $Grid[$i][$j + 1][2] = 1 And $Grid[$i + 1][$j + 1][2] = 1 Then $Grid[$i][$j][2] = 2
-			If $Grid[$i][$j][2] = 0 And $Grid[$i][$j - 1][2] = 1 And $Grid[$i + 1][$j - 1][2] = 1 And $Grid[$i + 1][$j][2] = 1 Then $Grid[$i][$j][2] = 2
-			If $Grid[$i][$j][2] = 0 And $Grid[$i - 1][$j][2] = 1 And $Grid[$i][$j - 1][2] = 1 And $Grid[$i - 1][$j - 1][2] = 1 Then $Grid[$i][$j][2] = 2
-			If $Grid[$i][$j][2] = 0 And $Grid[$i - 1][$j][2] = 1 And $Grid[$i][$j + 1][2] = 1 And $Grid[$i - 1][$j + 1][2] = 1 Then $Grid[$i][$j][2] = 2
-			$Neighbors = 0
-			If $Grid[$i][$j - 1][2] = 1 Then $Neighbors += 1
-			If $Grid[$i][$j + 1][2] = 1 Then $Neighbors += 1
-			If $Grid[$i - 1][$j][2] = 1 Then $Neighbors += 1
-			If $Grid[$i + 1][$j][2] = 1 Then $Neighbors += 1
-			If $Neighbors < 2 Then $Grid[$i][$j][2] = 0
-		Next
-	Next
-	$j = 42
-	For $i = 1 To 41
-		$Neighbors = 0
-		If $Grid[$i - 1][$j][2] = 1 Then $Neighbors += 1
-		If $Grid[$i + 1][$j][2] = 1 Then $Neighbors += 1
-		If $Grid[$i][$j - 1][2] = 1 Then $Neighbors += 1
-		If $Neighbors = 1 Then $Grid[$i][$j][2] = 0
-	Next
-	$i = 42
-	For $j = 1 To 41
-		$Neighbors = 0
-		If $Grid[$i][$j - 1][2] = 1 Then $Neighbors += 1
-		If $Grid[$i][$j + 1][2] = 1 Then $Neighbors += 1
-		If $Grid[$i - 1][$j][2] = 1 Then $Neighbors += 1
-		If $Neighbors = 1 Then $Grid[$i][$j][2] = 0
-	Next
-	SetLog("Done!", $COLOR_BLUE)
+
+	SetLog(GetLangText("msgDone"), $COLOR_BLUE)
 EndFunc   ;==>SeekEdges
 
 Func CompareColor($cRed, $cGreen, $cBlue, $tol = 7)

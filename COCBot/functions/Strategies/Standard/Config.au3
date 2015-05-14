@@ -374,7 +374,7 @@ Func Standard_SaveConfig($configFile)
 				$newArch = 100 - $newBarb
 				GUICtrlSetData($txtBarbarians, $newBarb)
 				GUICtrlSetData($txtArchers, $newArch)
-				SetLog("Automatically adjusting troops : B-" & $newBarb & "%, A-" & $newArch & "%", $COLOR_RED)
+				SetLog(GetLangText("msgAdjustingB") & $newBarb & GetLangText("msgAdjustingA") & $newArch & "%", $COLOR_RED)
 			EndIf
 		Case 4
 			If (GUICtrlRead($txtBarbarians) + GUICtrlRead($txtArchers) + GUICtrlRead($txtGoblins)) <> 100 Then
@@ -384,7 +384,7 @@ Func Standard_SaveConfig($configFile)
 				GUICtrlSetData($txtBarbarians, $newBarb)
 				GUICtrlSetData($txtArchers, $newArch)
 				GUICtrlSetData($txtGoblins, $newGob)
-				SetLog("Automatically adjusting troops : B-" & $newBarb & "%, A-" & $newArch & "%, G-" & $newGob & "%", $COLOR_RED)
+				SetLog(GetLangText("msgAdjustingB") & $newBarb & GetLangText("msgAdjustingA") & $newArch & GetLangText("msgAdjustingG") & $newGob & "%", $COLOR_RED)
 			EndIf
 		Case 5
 			If (GUICtrlRead($txtBarbarians) + GUICtrlRead($txtArchers)) <> 100 Then
@@ -392,7 +392,7 @@ Func Standard_SaveConfig($configFile)
 				$newArch = 100 - $newBarb
 				GUICtrlSetData($txtBarbarians, $newBarb)
 				GUICtrlSetData($txtArchers, $newArch)
-				SetLog("Automatically adjusting troops : B-" & $newBarb & "%, A-" & $newArch & "%", $COLOR_RED)
+				SetLog(GetLangText("msgAdjustingB") & $newBarb & GetLangText("msgAdjustingA") & $newArch & "%", $COLOR_RED)
 			EndIf
 		Case 6
 			If (GUICtrlRead($txtBarbarians) + GUICtrlRead($txtArchers) + GUICtrlRead($txtGoblins)) <> 100 Then
@@ -402,7 +402,7 @@ Func Standard_SaveConfig($configFile)
 				GUICtrlSetData($txtBarbarians, $newBarb)
 				GUICtrlSetData($txtArchers, $newArch)
 				GUICtrlSetData($txtGoblins, $newGob)
-				SetLog("Automatically adjusting troops : B-" & $newBarb & "%, A-" & $newArch & "%, G-" & $newGob & "%", $COLOR_RED)
+				SetLog(GetLangText("msgAdjustingB") & $newBarb & GetLangText("msgAdjustingA") & $newArch & GetLangText("msgAdjustingG") & $newGob & "%", $COLOR_RED)
 			EndIf
 		Case 7
 			If (GUICtrlRead($txtBarbarians) + GUICtrlRead($txtArchers) + GUICtrlRead($txtGoblins)) <> 100 Then
@@ -412,7 +412,7 @@ Func Standard_SaveConfig($configFile)
 				GUICtrlSetData($txtBarbarians, $newBarb)
 				GUICtrlSetData($txtArchers, $newArch)
 				GUICtrlSetData($txtGoblins, $newGob)
-				SetLog("Automatically adjusting troops : B-" & $newBarb & "%, A-" & $newArch & "%, G-" & $newGob & "%", $COLOR_RED)
+				SetLog(GetLangText("msgAdjustingB") & $newBarb & GetLangText("msgAdjustingA") & $newArch & GetLangText("msgAdjustingG") & $newGob & "%", $COLOR_RED)
 			EndIf
 	EndSwitch
 	IniWrite($configFile, "troop", "barbarian", GUICtrlRead($txtBarbarians))

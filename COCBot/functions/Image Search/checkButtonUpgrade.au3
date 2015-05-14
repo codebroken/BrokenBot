@@ -35,12 +35,12 @@ Func checkButtonUpgrade()
 		;	$WallLoc = _ImageSearch($Building[$icmbWalls], 1, $WallX, $WallY, $Tolerance2) ; Getting Wall Location
 		$BuildLoc = _ImageSearch($Building[$i], 1, $txtUpgradeX1, $txtUpgradeY1, $Tolerance2) ; Getting Button upgrade Location
 
-		SetLog("Upgrading...", $COLOR_ORANGE)
+		SetLog(GetLangText("msgUpgrading"), $COLOR_ORANGE)
 		$checkUpgradelogic = True
 		Return True
 
 	Next
 	$checkUpgradelogic = False
-	SetLog("Cannot find Button Upgrade, Skip upgrade...", $COLOR_RED)
+	SetLog(GetLangText("msgNoUpgradeButton"), $COLOR_RED)
 	Return False
 EndFunc   ;==>checkButtonUpgrade

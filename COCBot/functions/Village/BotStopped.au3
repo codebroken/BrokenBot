@@ -50,16 +50,16 @@ Func BotStopped($CheckLimits = True)
 				EndIf
 				Switch $icmbBotCommand
 					Case 0
-						SetLog("Halt Attack, Stay Online and Donate...", $COLOR_BLUE)
+						SetLog(GetLangText("msgHaltDonate"), $COLOR_BLUE)
 						$CurrentMode = $modeDonateTrain ; Halt Attack
 						If _Sleep(500) Then Return
 					Case 1
-						SetLog("Force Shutdown your PC...", $COLOR_BLUE)
+						SetLog(GetLangText("msgForceShutdown"), $COLOR_BLUE)
 						If _Sleep(500) Then Return
 						Shutdown(5) ; Force Shutdown
 						btnStop()
 					Case 2
-						SetLog("Sleep your PC...", $COLOR_BLUE)
+						SetLog(GetLangText("msgSleep"), $COLOR_BLUE)
 						If _Sleep(500) Then Return
 						Shutdown(32) ; Sleep / Stand by
 						btnStop()

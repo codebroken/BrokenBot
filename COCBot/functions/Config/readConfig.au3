@@ -80,6 +80,16 @@ Func readConfig() ;Reads config and sets it to the variables
 	$ichkAvoidEdge = IniRead($config, "misc", "AvoidEdge", "0")
 	$itxtcampCap = IniRead($config, "misc", "capacity", "0")
 	$itxtspellCap = IniRead($config, "misc", "spellcap", "3")
+	; Import old setting to new method
+	If $ichkAvoidEdge = "0" Then
+		GUICtrlSetData($sldAcc, 100)
+		IniWrite($config, "misc", "AvoidEdge", "-1")
+	ElseIf $ichkAvoidEdge = "1" Then
+		GUICtrlSetData($sldAcc, 10)
+		IniWrite($config, "misc", "AvoidEdge", "-1")
+	Else
+		GUICtrlSetData($sldAcc, IniRead($config, "misc", "RedLineAcc", "10"))
+	EndIf
 
 	;---------------------------------------------------------------------------------------
 	; Config settings ----------------------------------------------------------------------

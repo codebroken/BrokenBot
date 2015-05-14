@@ -3,9 +3,9 @@
 
 Func Standard_PrepareAttack($remaining = False, $AttackMethod = 1) ;Assigns troops
 	If $remaining Then
-		SetLog("Checking remaining unlaunched troops", $COLOR_ORANGE)
+		SetLog(GetLangText("msgCheckingRem"), $COLOR_ORANGE)
 	Else
-		SetLog("Preparing to attack", $COLOR_BLUE)
+		SetLog(GetLangText("msgPreparingAtt"), $COLOR_BLUE)
 	EndIf
 	_CaptureRegion()
 
@@ -17,49 +17,65 @@ Func Standard_PrepareAttack($remaining = False, $AttackMethod = 1) ;Assigns troo
 			Case 0
 				; Archers only
 				If $troopKind <> $eArcher And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
-					If NameOfTroop($troopKind) <> "Unknown" Then SetLog("--Ignoring " & NameOfTroop($troopKind))
+					If Not $remaining Then
+						If NameOfTroop($troopKind) <> "Unknown" Then SetLog(GetLangText("msgIgnoring") & NameOfTroop($troopKind))
+					EndIf
 					$troopKind = -1
 				EndIf
 			Case 1
 				; Barbarians only
 				If $troopKind <> $eBarbarian And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
-					If NameOfTroop($troopKind) <> "Unknown" Then SetLog("--Ignoring " & NameOfTroop($troopKind))
+					If Not $remaining Then
+						If NameOfTroop($troopKind) <> "Unknown" Then SetLog(GetLangText("msgIgnoring") & NameOfTroop($troopKind))
+					EndIf
 					$troopKind = -1
 				EndIf
 			Case 2
 				; Goblins only
 				If $troopKind <> $eGoblin And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
-					If NameOfTroop($troopKind) <> "Unknown" Then SetLog("--Ignoring " & NameOfTroop($troopKind))
+					If Not $remaining Then
+						If NameOfTroop($troopKind) <> "Unknown" Then SetLog(GetLangText("msgIgnoring") & NameOfTroop($troopKind))
+					EndIf
 					$troopKind = -1
 				EndIf
 			Case 3
 				; Barch
 				If $troopKind <> $eBarbarian And $troopKind <> $eArcher And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
-					If NameOfTroop($troopKind) <> "Unknown" Then SetLog("--Ignoring " & NameOfTroop($troopKind))
+					If Not $remaining Then
+						If NameOfTroop($troopKind) <> "Unknown" Then SetLog(GetLangText("msgIgnoring") & NameOfTroop($troopKind))
+					EndIf
 					$troopKind = -1
 				EndIf
 			Case 4
 				; BAGG
 				If $troopKind <> $eBarbarian And $troopKind <> $eArcher And $troopKind <> $eGiant And $troopKind <> $eGoblin And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
-					If NameOfTroop($troopKind) <> "Unknown" Then SetLog("--Ignoring " & NameOfTroop($troopKind))
+					If Not $remaining Then
+						If NameOfTroop($troopKind) <> "Unknown" Then SetLog(GetLangText("msgIgnoring") & NameOfTroop($troopKind))
+					EndIf
 					$troopKind = -1
 				EndIf
 			Case 5
 				; BAGiant
 				If $troopKind <> $eBarbarian And $troopKind <> $eArcher And $troopKind <> $eGiant And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
-					If NameOfTroop($troopKind) <> "Unknown" Then SetLog("--Ignoring " & NameOfTroop($troopKind))
+					If Not $remaining Then
+						If NameOfTroop($troopKind) <> "Unknown" Then SetLog(GetLangText("msgIgnoring") & NameOfTroop($troopKind))
+					EndIf
 					$troopKind = -1
 				EndIf
 			Case 6
 				; BAGob
 				If $troopKind <> $eBarbarian And $troopKind <> $eArcher And $troopKind <> $eGoblin And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
-					If NameOfTroop($troopKind) <> "Unknown" Then SetLog("--Ignoring " & NameOfTroop($troopKind))
+					If Not $remaining Then
+						If NameOfTroop($troopKind) <> "Unknown" Then SetLog(GetLangText("msgIgnoring") & NameOfTroop($troopKind))
+					EndIf
 					$troopKind = -1
 				EndIf
 			Case 7
 				; BAGGWB
 				If $troopKind <> $eBarbarian And $troopKind <> $eArcher And $troopKind <> $eGiant And $troopKind <> $eGoblin And $troopKind <> $eWallbreaker And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
-					If NameOfTroop($troopKind) <> "Unknown" Then SetLog("--Ignoring " & NameOfTroop($troopKind))
+					If Not $remaining Then
+						If NameOfTroop($troopKind) <> "Unknown" Then SetLog(GetLangText("msgIgnoring") & NameOfTroop($troopKind))
+					EndIf
 					$troopKind = -1
 				EndIf
 			Case 8
@@ -100,11 +116,22 @@ Func Standard_PrepareAttack($remaining = False, $AttackMethod = 1) ;Assigns troo
 						$atkTroops[$i][0] = $troopKind
 						ExitLoop
 					ElseIf $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
-						If NameOfTroop($troopKind) <> "Unknown" Then SetLog("--Ignoring " & NameOfTroop($troopKind))
+						If Not $remaining Then
+							If NameOfTroop($troopKind) <> "Unknown" Then SetLog(GetLangText("msgIgnoring") & NameOfTroop($troopKind))
+						EndIf
 						$troopKind = -1
 					EndIf
 				Next
 		EndSwitch
+
+		Local $useCastle = ($AttackMethod = 0) ? (IsChecked($chkDeadUseClanCastle) ? (True) : (False)) : (IsChecked($chkUseClanCastle) ? (True) : (False))
+		Local $useKing = ($AttackMethod = 0) ? (IsChecked($chkDeadUseKing) ? (True) : (False)) : (IsChecked($chkUseKing) ? (True) : (False))
+		Local $useQueen = ($AttackMethod = 0) ? (IsChecked($chkDeadUseQueen) ? (True) : (False)) : (IsChecked($chkUseQueen) ? (True) : (False))
+
+		If Not $useCastle and $troopKind = $eCastle Then $troopKind = -1
+		If Not $useKing and $troopKind = $eKing Then $troopKind = -1
+		If Not $useQueen and $troopKind = $eQueen Then $troopKind = -1
+		If $remaining and $troopKind = $eLSpell Then $troopKind = -1
 
 		If ($troopKind == -1) Then
 			$atkTroops[$i][1] = 0
