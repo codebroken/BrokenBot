@@ -109,6 +109,11 @@ Func readConfig() ;Reads config and sets it to the variables
 	Else
 		GUICtrlSetState($chkUpdate, $GUI_UNCHECKED)
 	EndIf
+	If IniRead($config, "config", "stayalive", "0") = 1 Then
+		GUICtrlSetState($chkStayAlive, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkStayAlive, $GUI_UNCHECKED)
+	EndIf
 
 	;---------------------------------------------------------------------------------------
 	; Base location settings ---------------------------------------------------------------

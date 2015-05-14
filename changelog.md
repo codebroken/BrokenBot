@@ -1,5 +1,9 @@
 ## Change Log:
 
+### v2.5.2
+* Improved auto-update.  Now bot actually can download and apply the update for you.
+* Improved DLL error detection. Informs the user if they are missing the proper version and directs them about how to resolve. Falls back to dropping troops at the edge if DLL isn't working.
+
 ### v2.5.1
 * Added DLL dependancy for some machines that may be missing it.
 

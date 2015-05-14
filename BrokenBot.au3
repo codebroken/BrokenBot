@@ -3,12 +3,12 @@
 #pragma compile(Icon, "BrokenBot.org\images\icons\brokenbot.ico")
 #pragma compile(FileDescription, BrokenBot.org - Clash of Clans Bot)
 #pragma compile(ProductName, BrokenBot.org - Clash of Clans Bot)
-#pragma compile(ProductVersion, 2.5.1)
-#pragma compile(FileVersion, 2.5.1)
+#pragma compile(ProductVersion, 2.5.2)
+#pragma compile(FileVersion, 2.5.2)
 
 #include <GUIConstants.au3>
 
-$sBotVersion = "2.5.1"
+$sBotVersion = "2.5.2"
 $sBotTitle = "BrokenBot.org - Break FREE - v" & $sBotVersion
 
 Global $StartupLanguage = IniRead(@ScriptDir & "\config\default.ini", "config", "language", "English")
@@ -67,6 +67,19 @@ If IsArray($CmdLine) Then
 	If $CmdLine[0] = 1 Then $StartImmediately = True
 	If $CmdLine[0] = 2 Then
 		; Add option to start with specific profile
+	EndIf
+EndIf
+
+_CaptureRegion()
+Local $hHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)
+$ret = DllCall(@ScriptDir & "\BrokenBot.org\BrokenBot32.dll", "str", "BrokenBotRedLineCheck", "ptr", $hHBitmap, "int", 1, "int", 1, "int", 0, "int", 0, "int", 0)
+_WinAPI_DeleteObject($hHBitmap)
+If Not IsArray($ret) Then
+	If MsgBox($MB_ICONWARNING + $MB_OKCANCEL, GetLangText("msgMissing"), GetLangText("msgMissing1") & @CRLF & @CRLF & GetLangText("msgMissing2") & @CRLF & @CRLF & GetLangText("msgMissing3") & " " & GetLangText("msgMissing4") & " " & GetLangText("msgMissing5") & @CRLF & @CRLF & GetLangText("msgMissing6")) = $IDOK Then
+		ShellExecute("https://www.microsoft.com/en-us/download/details.aspx?id=40784")
+		_GDIPlus_Shutdown()
+		_GUICtrlRichEdit_Destroy($txtLog)
+		Exit
 	EndIf
 EndIf
 

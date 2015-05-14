@@ -186,10 +186,18 @@ Func SeekEdges()
 	$ret = DllCall(@ScriptDir & "\BrokenBot.org\BrokenBot32.dll", "str", "BrokenBotRedLineCheck", "ptr", $hHBitmap, "int", $mH, "int", $mS, "int", $ci, "int", $cl, "int", $cr)
 	_WinAPI_DeleteObject($hHBitmap)
 
-	$Array = StringSplit($ret[0], "|", 2)
-	For $i = 0 to (43*43)-1
-		$Grid[Floor($i/43)][Mod($i, 43)][2] = $Array[$i]
-	Next
+	If IsArray($ret) Then
+		$Array = StringSplit($ret[0], "|", 2)
+		For $i = 0 to (43*43)-1
+			$Grid[Floor($i/43)][Mod($i, 43)][2] = $Array[$i]
+		Next
+	Else
+		For $i = 0 To 42
+			For $j = 0 To 42
+				$Grid[$i][$j][2] = 1
+			Next
+		Next
+	EndIf
 
 	SetLog(GetLangText("msgDone"), $COLOR_BLUE)
 EndFunc   ;==>SeekEdges

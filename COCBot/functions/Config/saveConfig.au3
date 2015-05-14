@@ -282,6 +282,11 @@ Func saveConfig() ;Saves the controls settings to the config
 	Else
 		IniWrite($config, "config", "chkUpdate", 0)
 	EndIf
+	If IsChecked($chkStayAlive) Then
+		IniWrite($config, "config", "stayalive", 1)
+	Else
+		IniWrite($config, "config", "stayalive", 0)
+	EndIf
 
 	;---------------------------------------------------------------------------------------
 	; Base location settings ---------------------------------------------------------------

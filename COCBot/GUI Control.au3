@@ -100,7 +100,7 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 					Case $lblpushbulletenabled
 						lblpushbulletenabled()
 					Case $btnGitHub
-						ShellExecute("http://www.brokenbot.org/forum/index.php?u=/category/support-forums")
+						ShellExecute("http://http://forum.brokenbot.org/forum-8.html")
 					Case $btnCloseBR
 						GUISetState(@SW_ENABLE, $frmBot)
 						GUISetState(@SW_HIDE, $frmBugReport)

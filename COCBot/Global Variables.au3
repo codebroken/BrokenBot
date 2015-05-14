@@ -21,6 +21,7 @@
 #include <GuiRichEdit.au3>
 #include <GuiTab.au3>
 #include <GuiListBox.au3>
+#include <MsgBoxConstants.au3>
 
 Global Const $COLOR_ORANGE = 0xFFA500
 
