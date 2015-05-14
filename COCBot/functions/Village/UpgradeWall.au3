@@ -86,8 +86,7 @@ Func UpgradeWallelix()
 			_Sleep(2000)
 			Click(472, 482) ; Click Okay
 			SetLog(GetLangText("msgWallUpDone"), $COLOR_BLUE) ; Done upgrade
-			$WallUpgrade += 1
-			GUICtrlSetData($lblwallupgradecount, $WallUpgrade)
+			GUICtrlSetData($lblwallupgradecount, GUICtrlRead($lblwallupgradecount) + 1)
 			Click(1, 1) ; Click away
 			_Sleep(1000)
 		EndIf

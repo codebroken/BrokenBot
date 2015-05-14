@@ -13,18 +13,12 @@ Func GetResources($MidAttack = False) ;Reads resources
 			$i += 1
 			Local $discon =  ChkDisconnection()
 			If $i >= 20 or $discon = True Then ; If gold cannot be read by 10 seconds or disconnected
-				If checkNextButton() And $x <= 20 Then ;Checks for Out of Sync or Connection Error during search
+				If $discon = False and checkNextButton() And $x <= 20 Then ;Something is wrong but next button available
 					Click(750, 500) ;Click Next
 					If _Sleep(1000) Then Return False
 					$x += 1
 				Else
 					SetLog(GetLangText("msgNoNextButton"), $COLOR_RED)
-					If $DebugMode = 1 Then
-						_GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "NoNextRes-" & @HOUR & @MIN & @SEC & ".png")
-					EndIf
-					If $PushBulletEnabled = 1 Then
-						_Push(GetLangText("pushDisca"), GetLangText("pushDiscb"))
-					EndIf
 					Return False
 				EndIf
 				$i = 0

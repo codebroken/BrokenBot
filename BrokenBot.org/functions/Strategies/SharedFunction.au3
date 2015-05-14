@@ -1,3 +1,8 @@
+; This code was created for public use by BrokenBot.org and falls under the GPLv3 license.
+; This code can be incorporated into open source/non-profit projects free of charge and without consent.
+; **NOT FOR COMMERCIAL USE** by any project which includes any part of the code in this sub-directory without express written consent of BrokenBot.org
+; You **MAY NOT SOLICIT DONATIONS** from any project which includes any part of the code in this sub-directory without express written consent of BrokenBot.org
+;
 ;Function needed by all strategies
 
 
@@ -12,9 +17,9 @@ Func ChkDisconnection($disconnected = False)
 			$speedBump += 500
 			If $speedBump > 5000 Then
 				$speedBump = 5000
-				SetLog(GetLangText("msgOOSAlreadySlow"), $COLOR_RED)
+				SetLog("Out of sync! Already searching slowly, not changing anything.", $COLOR_RED)
 			Else
-				SetLog(GetLangText("msgOOSSlowingSearch"), $COLOR_RED)
+				SetLog("Out of sync! Slowing search speed by 0.5 secs.", $COLOR_RED)
 			EndIf
 		EndIf
 	EndIf
@@ -24,9 +29,9 @@ Func ChkDisconnection($disconnected = False)
 			$speedBump += 500
 			If $speedBump > 5000 Then
 				$speedBump=5000
-				SetLog(GetLangText("msgLCAlreadySlow"), $COLOR_RED)
+				SetLog("Lost Connection! Already searching slowly, not changing anything.", $COLOR_RED)
 			Else
-				SetLog(GetLangText("msgLCSlowingSearch"), $COLOR_RED)
+				SetLog("Lost Connection! Slowing search speed by 0.5 secs.", $COLOR_RED)
 			EndIf
 		EndIf
 	EndIf
