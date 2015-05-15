@@ -47,8 +47,6 @@ Func readConfig() ;Reads config and sets it to the variables
 	;Laboratory
 	$ichkLab = IniRead($config, "upgrade", "auto-uptroops", "0")
 	$icmbLaboratory = IniRead($config, "upgrade", "troops-name", "0")
-	$itxtLabX = IniRead($config, "upgrade", "LabPosX", "")
-	$itxtLabY = IniRead($config, "upgrade", "LabPosY", "")
 
 	;---------------------------------------------------------------------------------------
 	; Notification settings ----------------------------------------------------------------
@@ -82,6 +80,16 @@ Func readConfig() ;Reads config and sets it to the variables
 	$ichkAvoidEdge = IniRead($config, "misc", "AvoidEdge", "0")
 	$itxtcampCap = IniRead($config, "misc", "capacity", "0")
 	$itxtspellCap = IniRead($config, "misc", "spellcap", "3")
+	; Import old setting to new method
+	If $ichkAvoidEdge = "0" Then
+		GUICtrlSetData($sldAcc, 100)
+		IniWrite($config, "misc", "AvoidEdge", "-1")
+	ElseIf $ichkAvoidEdge = "1" Then
+		GUICtrlSetData($sldAcc, 10)
+		IniWrite($config, "misc", "AvoidEdge", "-1")
+	Else
+		GUICtrlSetData($sldAcc, IniRead($config, "misc", "RedLineAcc", "10"))
+	EndIf
 
 	;---------------------------------------------------------------------------------------
 	; Config settings ----------------------------------------------------------------------
@@ -100,6 +108,11 @@ Func readConfig() ;Reads config and sets it to the variables
 		GUICtrlSetState($chkUpdate, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkUpdate, $GUI_UNCHECKED)
+	EndIf
+	If IniRead($config, "config", "stayalive", "0") = 1 Then
+		GUICtrlSetState($chkStayAlive, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkStayAlive, $GUI_UNCHECKED)
 	EndIf
 
 	;---------------------------------------------------------------------------------------
@@ -131,4 +144,12 @@ Func readConfig() ;Reads config and sets it to the variables
 		$collectorPos[$i][0] = IniRead($config, "position", "xCollector" & $i + 1, "")
 		$collectorPos[$i][1] = IniRead($config, "position", "yCollector" & $i + 1, "")
 	Next
+	$LabPos[0] = IniRead($config, "position", "LabPosX", "")
+	$LabPos[1] = IniRead($config, "position", "LabPosY", "")
+
+	;---------------------------------------------------------------------------------------
+	; Hidden settings ----------------------------------------------------------------------
+	;---------------------------------------------------------------------------------------
+	; These settings can be read in from config but aren't found in the GUI
+	$FontSize = IniRead($config, "hidden", "fontsize", "8.5")
 EndFunc   ;==>readConfig

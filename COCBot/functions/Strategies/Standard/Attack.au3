@@ -260,7 +260,7 @@ Func Standard_LaunchTroop($troopKind, $nbSides, $waveNb, $maxWaveNb, $slotsPerEd
 	If $waveNb = 3 Then $waveName = "third"
 	If $maxWaveNb = 1 Then $waveName = "only"
 	If $waveNb = 0 Then $waveName = "last"
-	SetLog("Dropping " & $waveName & " wave of " & $troopNb & " " & $name, $COLOR_BLUE)
+	SetLog(GetLangText("msgDropping") & $waveName & GetLangText("msgWaveOf") & $troopNb & " " & $name, $COLOR_BLUE)
 	Standard_DropOnEdges($troop, $nbSides, $troopNb, $slotsPerEdge, $miniEdge)
 	Return True
 EndFunc   ;==>Standard_LaunchTroop
@@ -280,10 +280,10 @@ Func Standard_Attack($AttackMethod = 1)
 	$pQueen = _GDIPlus_PenCreate(0xFF9D58E9, 1)
 	$pCC = _GDIPlus_PenCreate(0xFFFEF8F7, 1)
 
-	If $ichkAvoidEdge = 1 Then SeekEdges()
+	If GUICtrlRead($sldAcc) < 100 Then SeekEdges()
 
 	If $AttackMethod = 2 Then
-		SetLog("~Nuking the dark elixir storage", $COLOR_BLUE)
+		SetLog(GetLangText("msgNuking"), $COLOR_BLUE)
 		Standard_DropNukes()
 		If _Sleep(5000) Then Return
 	Else
@@ -294,6 +294,8 @@ Func Standard_Attack($AttackMethod = 1)
 		$CC = -1
 		$Barb = -1
 		$Arch = -1
+		$KingWasHere = False
+		$QueenWasHere = False
 		For $i = 0 To 8
 			If $atkTroops[$i][0] = $eBarbarian Then
 				$Barb = $i
@@ -303,8 +305,10 @@ Func Standard_Attack($AttackMethod = 1)
 				$CC = $i
 			ElseIf $atkTroops[$i][0] = $eKing Then
 				$King = $i
+				$KingWasHere = True
 			ElseIf $atkTroops[$i][0] = $eQueen Then
 				$Queen = $i
+				$QueenWasHere = True
 			ElseIf $atkTroops[$i][0] = $eLSpell Then
 				$LSpell = $i
 				$SpellQty = $atkTroops[$i][1]
@@ -321,49 +325,49 @@ Func Standard_Attack($AttackMethod = 1)
 		If $THquadrant >= 1 And $THquadrant <= 4 Then $OuterQuad = True
 		If $THquadrant >= 6 And $THquadrant <= 9 Then $OuterQuad = True
 		If ($OuterQuad And $attackTH = 2) Then
-			SetLog("~Attacking townhall...")
+			SetLog(GetLangText("msgAttackingTH"))
 			$nbSides = -1
 		Else
 			If $AttackMethod = 0 Then
 				Switch _GUICtrlComboBox_GetCurSel($cmbDeadDeploy)
 					Case 0 ;Single sides ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-						SetLog("~Attacking in a single side...")
+						SetLog(GetLangText("msgSingleSide"))
 						$nbSides = 1
 					Case 1 ;Two sides ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-						SetLog("~Attacking in two sides...")
+						SetLog(GetLangText("msgTwoSides"))
 						$nbSides = 2
 					Case 2 ;Three sides ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-						SetLog("~Attacking in three sides...")
+						SetLog(GetLangText("msgThreeSides"))
 						$nbSides = 3
 					Case 3 ;Four sides ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-						SetLog("~Attacking in all sides...")
+						SetLog(GetLangText("msgAllSides"))
 						$nbSides = 4
 					Case 4
-						SetLog("~Mixed mode attacking...")
+						SetLog(GetLangText("msgMixedMode"))
 						$nbSides = 4
 						$mixedMode = True
 				EndSwitch
 			Else
 				Switch _GUICtrlComboBox_GetCurSel($cmbDeploy)
 					Case 0 ;Single sides ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-						SetLog("~Attacking in a single side...")
+						SetLog(GetLangText("msgSingleSide"))
 						$nbSides = 1
 					Case 1 ;Two sides ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-						SetLog("~Attacking in two sides...")
+						SetLog(GetLangText("msgTwoSides"))
 						$nbSides = 2
 					Case 2 ;Three sides ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-						SetLog("~Attacking in three sides...")
+						SetLog(GetLangText("msgThreeSides"))
 						$nbSides = 3
 					Case 3 ;Four sides ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-						SetLog("~Attacking in all sides...")
+						SetLog(GetLangText("msgAllSides"))
 						$nbSides = 4
 					Case 4
-						SetLog("~Mixed mode attacking...")
+						SetLog(GetLangText("msgMixedMode"))
 						$nbSides = 4
 						$mixedMode = True
 				EndSwitch
 			EndIf
-			If ($OuterQuad And $attackTH = 1) Then SetLog("~With limited townhall attack...")
+			If ($OuterQuad And $attackTH = 1) Then SetLog(GetLangText("msgLimitedTH"))
 			If ($nbSides = 0) Then Return
 		EndIf
 		If _Sleep(1000) Then Return
@@ -514,78 +518,86 @@ Func Standard_Attack($AttackMethod = 1)
 		$Resources = GetResources(True)
 		; Nuke DE if desired
 		If ($SpellQty >= GUICtrlRead($txtSpellNumber)) And Number($Resources[4]) >= Number(GUICtrlRead($txtDENukeLimit)) And IsChecked($chkNukeAttacking) Then
-			SetLog("~Nuking the dark elixir storage", $COLOR_BLUE)
+			SetLog(GetLangText("msgNuking"), $COLOR_BLUE)
 			Standard_DropNukes()
 		EndIf
 
 		If _Sleep(Standard_SetSleep(1)) Then Return
 
 		If _Sleep(100) Then Return
-		SetLog("~Dropping left over troops", $COLOR_BLUE)
-		For $x = 0 To 1
+		SetLog(GetLangText("msgDropLeftover"), $COLOR_BLUE)
+		$gone = True
+		$loop = 0
+		Local $useCastle = ($AttackMethod = 0) ? (IsChecked($chkDeadUseClanCastle) ? (1) : (0)) : (IsChecked($chkUseClanCastle) ? (1) : (0))
+		Local $useKing = ($AttackMethod = 0) ? (IsChecked($chkDeadUseKing) ? (1) : (0)) : (IsChecked($chkUseKing) ? (1) : (0))
+		Local $useQueen = ($AttackMethod = 0) ? (IsChecked($chkDeadUseQueen) ? (1) : (0)) : (IsChecked($chkUseQueen) ? (1) : (0))
+		Do
+			$loop += 1
+			$gone = True
 			Standard_PrepareAttack(True) ;Check remaining quantities
+			For $i = 0 To 8
+				If $atkTroops[$i][0] <> -1 Then
+					if $atkTroops[$i][0]=$eCastle and $useCastle <> 1 Then ContinueLoop
+					If $atkTroops[$i][0]=$eKing and $useKing <> 1 Then ContinueLoop
+					If $atkTroops[$i][0]=$eQueen and $useQueen <> 1 Then ContinueLoop
+					If $atkTroops[$i][1] > 0 Then $gone = False
+				EndIf
+			Next
 			For $i = $eBarbarian To $eMinion ; lauch all remaining troops
 				If $i = $eBarbarian Or $i = $eArcher Or $i = $eMinion Or $i = $eHog Or $i = $eValkyrie Then
 					Standard_LaunchTroop($i, (($mixedMode) ? 1 : $nbSides), 0, 1)
 				Else
 					If $i <> $eLSpell Then Standard_LaunchTroop($i, $nbSides, 0, 1, 2)
 				EndIf
-				If _Sleep(500) Then Return
 			Next
-		Next
+			If _Sleep(500) Then Return
+		Until $gone	or $loop > 10
 
 		;Activate KQ's power if deployed
 		Local $QueenUsed = ($AttackMethod = 0) ? (IsChecked($chkDeadUseQueen) ? (True) : (False)) : (IsChecked($chkUseQueen) ? (True) : (False))
 		Local $KingUsed = ($AttackMethod = 0) ? (IsChecked($chkDeadUseKing) ? (True) : (False)) : (IsChecked($chkUseKing) ? (True) : (False))
-		If $KingUsed Or $QueenUsed Then
-			If Number(GUICtrlRead($txtKingSkill)) < Number(GUICtrlRead($txtQueenSkill)) Then
-				If $King <> -1 Then
-					While True
-						If (TimerDiff($hHeroTimer) / 1000) > Number(GUICtrlRead($txtKingSkill)) Then
-							SetLog("Activate King's power", $COLOR_BLUE)
+		If ($KingUsed and $KingWasHere) Or ($QueenUsed And $QueenWasHere) Then
+			$KingGone = True
+			$QueenGone = True
+			If $KingUsed And $KingWasHere Then $KingGone = False
+			If $QueenUsed And $QueenWasHere Then $QueenGone = False
+			Do
+				If $KingWasHere Then
+					If GUICtrlRead($txtKingSkill) = 0 Then
+						_CaptureRegion()
+						If checkHealth($King) Or (TimerDiff($hHeroTimer) / 1000) > 60 Then
+							SetLog(GetLangText("msgActivateKing"), $COLOR_AQUA)
 							SelectDropTroupe($King)
-							ExitLoop
+							$KingGone = True
 						EndIf
-						_Sleep(50)
-					WEnd
-				EndIf
-				_Sleep(100)
-				If $Queen <> -1 Then
-					While True
-						If (TimerDiff($hHeroTimer) / 1000) > Number(GUICtrlRead($txtQueenSkill)) Then
-							SetLog("Activate Queen's power", $COLOR_BLUE)
-							SelectDropTroupe($Queen)
-							ExitLoop
-						EndIf
-						_Sleep(50)
-					WEnd
-				EndIf
-			Else
-				If $Queen <> -1 Then
-					While True
-						If (TimerDiff($hHeroTimer) / 1000) > Number(GUICtrlRead($txtQueenSkill)) Then
-							SetLog("Activate Queen's power", $COLOR_BLUE)
-							SelectDropTroupe($Queen)
-							ExitLoop
-						EndIf
-						_Sleep(50)
-					WEnd
-				EndIf
-				_Sleep(100)
-				If $King <> -1 Then
-					While True
+					Else
 						If (TimerDiff($hHeroTimer) / 1000) > Number(GUICtrlRead($txtKingSkill)) Then
-							SetLog("Activate King's power", $COLOR_BLUE)
+							SetLog(GetLangText("msgActivateKing"), $COLOR_BLUE)
 							SelectDropTroupe($King)
-							ExitLoop
+							$KingGone = True
 						EndIf
-						_Sleep(50)
-					WEnd
+					EndIf
 				EndIf
-			EndIf
+				If $QueenWasHere Then
+					If GUICtrlRead($txtQueenSkill) = 0 Then
+						_CaptureRegion()
+						If checkHealth($Queen) Or (TimerDiff($hHeroTimer) / 1000) > 60 Then
+							SetLog(GetLangText("msgActivateQueen"), $COLOR_AQUA)
+							SelectDropTroupe($Queen)
+							$QueenGone = True
+						EndIf
+					Else
+						If (TimerDiff($hHeroTimer) / 1000) > Number(GUICtrlRead($txtQueenSkill)) Then
+							SetLog(GetLangText("msgActivateQueen"), $COLOR_BLUE)
+							SelectDropTroupe($Queen)
+							$QueenGone = True
+						EndIf
+					EndIf
+				EndIf
+				If _Sleep(250) Then ExitLoop
+			Until $KingGone And $QueenGone
 		EndIf
-
-		SetLog("~Finished attacking, waiting to finish", $COLOR_GREEN)
+		SetLog(GetLangText("msgFinishedWait"), $COLOR_GREEN)
 	EndIf
 
 	If $TakeAttackSnapShot = 1 Then
@@ -600,7 +612,8 @@ Func Standard_Attack($AttackMethod = 1)
 EndFunc   ;==>Standard_Attack
 
 Func Standard_DropNukes()
-	If checkDarkElix() Then
+	;No need to check dark storage again, already checked during search
+	;If checkDarkElix() Then
 		$nLSpell = -1
 		$nSpellQty = 0
 		For $i = 0 To 8
@@ -610,7 +623,7 @@ Func Standard_DropNukes()
 			EndIf
 		Next
 		If $nLSpell = -1 Then
-			SetLog("No spell available!", $COLOR_RED)
+			SetLog(GetLangText("msgNoSpell"), $COLOR_RED)
 		Else
 			SelectDropTroupe($nLSpell)
 			If _Sleep(1000) Then Return
@@ -623,7 +636,7 @@ Func Standard_DropNukes()
 				$z = $z + 1
 			Until $nSpellQty = 0 Or $z = 100
 		EndIf
-	EndIf
+	;EndIf
 EndFunc   ;==>Standard_DropNukes
 
 ;Drops Clan Castle troops, given the slot and x, y coordinates.
@@ -631,7 +644,7 @@ EndFunc   ;==>Standard_DropNukes
 Func Standard_dropCC($x, $y, $slot, $AttackMethod = 1, $CenterLoc = 1) ;Drop clan castle
 	Local $useCastle = ($AttackMethod = 0) ? (IsChecked($chkDeadUseClanCastle) ? (1) : (0)) : (IsChecked($chkUseClanCastle) ? (1) : (0))
 	If $slot <> -1 And $useCastle = 1 Then
-		SetLog("Dropping Clan Castle", $COLOR_BLUE)
+		SetLog(GetLangText("msgDroppingCC"), $COLOR_BLUE)
 		Click(68 + (72 * $slot), 595)
 		If _Sleep(500) Then Return
 		Click($x, $y, 1, 500, $CenterLoc, 30)
@@ -650,7 +663,7 @@ Func Standard_dropHeroes($x, $y, $KingSlot = -1, $QueenSlot = -1, $AttackMethod 
 		Local $useQueen = ($AttackMethod = 0) ? (IsChecked($chkDeadUseQueen) ? (1) : (0)) : (IsChecked($chkUseQueen) ? (1) : (0))
 
 		If $KingSlot <> -1 And $useKing = 1 Then
-			SetLog("Dropping King", $COLOR_BLUE)
+			SetLog(GetLangText("msgDroppingKing"), $COLOR_BLUE)
 			Click(68 + (72 * $KingSlot), 595) ;Select King
 			If _Sleep(500) Then Return
 			Click($x, $y, 1, 0, $CenterLoc, 30)
@@ -661,7 +674,7 @@ Func Standard_dropHeroes($x, $y, $KingSlot = -1, $QueenSlot = -1, $AttackMethod 
 		If _Sleep(1000) Then ExitLoop
 
 		If $QueenSlot <> -1 And $useQueen = 1 Then
-			SetLog("Dropping Queen", $COLOR_BLUE)
+			SetLog(GetLangText("msgDroppingQueen"), $COLOR_BLUE)
 			Click(68 + (72 * $QueenSlot), 595) ;Select Queen
 			If _Sleep(500) Then Return
 			Click($x, $y, 1, 0, $CenterLoc, 30)
@@ -672,3 +685,32 @@ Func Standard_dropHeroes($x, $y, $KingSlot = -1, $QueenSlot = -1, $AttackMethod 
 		ExitLoop
 	WEnd
 EndFunc   ;==>Standard_dropHeroes
+
+Func checkHealth($troop)
+    If isColorBetween(_GetPixelColor(68 + (72 * $troop), 557), Hex(0x18BD02, 6), Hex(0x4AD505, 6)) Then
+        Return False
+    EndIf
+    Return True
+EndFunc
+
+Func isColorBetween($nColor1, $nColorLow, $nColorHigh)
+    Local $Red1, $Red2, $Red3, $Blue1, $Blue2, $Blue3, $Green1, $Green2, $Green3
+
+    $Red1 = Dec(StringMid(String($nColor1), 1, 2))
+    $Blue1 = Dec(StringMid(String($nColor1), 3, 2))
+    $Green1 = Dec(StringMid(String($nColor1), 5, 2))
+
+    $Red2 = Dec(StringMid(String($nColorLow), 1, 2))
+    $Blue2 = Dec(StringMid(String($nColorLow), 3, 2))
+    $Green2 = Dec(StringMid(String($nColorLow), 5, 2))
+
+    $Red3 = Dec(StringMid(String($nColorHigh), 1, 2))
+    $Blue3 = Dec(StringMid(String($nColorHigh), 3, 2))
+    $Green3 = Dec(StringMid(String($nColorHigh), 5, 2))
+
+    If $Red1 < $Red2 Or $Red1 > $Red3 Then Return False
+    If $Green1 < $Green2 Or $Green1 > $Green3 Then Return False
+    If $Blue1 < $Blue2 Or $Blue1 > $Blue3 Then Return False
+
+    Return True
+EndFunc

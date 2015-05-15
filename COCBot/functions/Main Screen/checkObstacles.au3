@@ -5,7 +5,7 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 	Local $x, $y
 	_CaptureRegion()
 	If _ImageSearchArea($device, 0, 237, 321, 293, 346, $x, $y, 80) Then
-		SetLog("Another Device has connected, reconnect in " & $itxtReconnect & " minutes ", $COLOR_RED)
+		SetLog(GetLangText("msgAnotherDev") & $itxtReconnect & GetLangText("msgAnotherDevMinutes"), $COLOR_RED)
 		If _Sleep($itxtReconnect * 60000) Then Return
 		$iTimeTroops = 0
 		Click(416, 399);Check for "Another device" message
@@ -16,7 +16,7 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 	EndIf
 
 	If _ImageSearch($break, 0, $x, $y, 80) Then
-		SetLog("Village must take a break, wait ...", $COLOR_RED)
+		SetLog(GetLangText("msgTakeBreak"), $COLOR_RED)
 		If _Sleep(120000) Then Return ; 2 Minutes
 		Click(416, 399);Check for "Take a break" message
 		$Checkrearm = True

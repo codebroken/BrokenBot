@@ -13,8 +13,8 @@ Func StatusCheck($OnMainScreen = True, $WriteLog = False, $maxDelay = 1)
 	If $OnMainScreen Then
 		While Not checkMainScreen($WriteLog, $maxDelay)
 			If BotStopped(False) Then Return True
-			SetLog("Failed to access properly zoomed out main screen!!!", $COLOR_RED)
-			SetLog("Waiting 1 minute to repeat attempt.", $COLOR_RED)
+			SetLog(GetLangText("msgFailedZoomout"), $COLOR_RED)
+			SetLog(GetLangText("msgWaitMinute"), $COLOR_RED)
 			If _Sleep(6000) Then Return False
 		WEnd
 	EndIf

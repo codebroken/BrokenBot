@@ -3,22 +3,24 @@
 #pragma compile(Icon, "BrokenBot.org\images\icons\brokenbot.ico")
 #pragma compile(FileDescription, BrokenBot.org - Clash of Clans Bot)
 #pragma compile(ProductName, BrokenBot.org - Clash of Clans Bot)
-#pragma compile(ProductVersion, 2.1.1)
-#pragma compile(FileVersion, 2.1.1)
+#pragma compile(ProductVersion, 2.5.3)
+#pragma compile(FileVersion, 2.5.3)
 
 #include <GUIConstants.au3>
 
-$sBotVersion = "2.1.1"
+$sBotVersion = "2.5.3"
 $sBotTitle = "BrokenBot.org - Break FREE - v" & $sBotVersion
 
+Global $StartupLanguage = IniRead(@ScriptDir & "\config\default.ini", "config", "language", "English")
+
 If _Singleton($sBotTitle, 1) = 0 Then
-	MsgBox(0, "", "Bot is already running.")
+	MsgBox(0, "", GetLangText("boxAlreadyRunning"))
 	Exit
 EndIf
 
 If @AutoItX64 = 1 Then
-	MsgBox(0, "", "Don't Run/Compile Script (x64)! try to Run/Compile Script (x86) to getting this bot work." & @CRLF & _
-			"If this message still appear, try to re-install your AutoIt with newer version.")
+	MsgBox(0, "", GetLangText("boxCompile1") & @CRLF & _
+			GetLangText("boxCompile2"))
 	Exit
 EndIf
 
@@ -68,6 +70,18 @@ If IsArray($CmdLine) Then
 	EndIf
 EndIf
 
+$hHBitmap = _ScreenCapture_Capture("", 0, 0, 860, 720)
+$ret = DllCall(@ScriptDir & "\BrokenBot.org\BrokenBot32.dll", "str", "BrokenBotRedLineCheck", "ptr", $hHBitmap, "int", 1, "int", 1, "int", 0, "int", 0, "int", 0)
+_WinAPI_DeleteObject($hHBitmap)
+If Not IsArray($ret) Then
+	If MsgBox($MB_ICONWARNING + $MB_OKCANCEL, GetLangText("msgMissing"), GetLangText("msgMissing1") & @CRLF & @CRLF & GetLangText("msgMissing2") & @CRLF & @CRLF & GetLangText("msgMissing3") & " " & GetLangText("msgMissing4") & " " & GetLangText("msgMissing5") & @CRLF & @CRLF & GetLangText("msgMissing6")) = $IDOK Then
+		ShellExecute("https://www.microsoft.com/en-us/download/details.aspx?id=40784")
+		_GDIPlus_Shutdown()
+		_GUICtrlRichEdit_Destroy($txtLog)
+		Exit
+	EndIf
+EndIf
+
 While 1
 	If $StartImmediately Then
 		$StartImmediately = False
@@ -79,7 +93,7 @@ While 1
 					"Version: " & $sBotVersion & @CRLF & _
 					"Released under the GNU GPLv3 license.", 0, $frmBot)
 		Case $tiExit
-			SetLog("Exiting !!!", $COLOR_ORANGE)
+			SetLog(GetLangText("msgExit"), $COLOR_ORANGE)
 			ExitLoop
 	EndSwitch
 	Sleep(50)

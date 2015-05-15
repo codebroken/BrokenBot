@@ -8,6 +8,7 @@ EndFunc   ;==>SetLog
 Func _GUICtrlRichEdit_AppendTextColor($hWnd, $sText, $iColor)
 	Local $iLength = _GUICtrlRichEdit_GetTextLength($hWnd, True, True)
 	Local $iCp = _GUICtrlRichEdit_GetCharPosOfNextWord($hWnd, $iLength)
+	_GUICtrlRichEdit_SetFont($hWnd, $FontSize)
 	_GUICtrlRichEdit_AppendText($hWnd, $sText)
 	_GUICtrlRichEdit_SetSel($hWnd, $iCp - 1, $iLength + StringLen($sText))
 	_GUICtrlRichEdit_SetCharColor($hWnd, $iColor)

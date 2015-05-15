@@ -28,9 +28,9 @@ Func Initiate()
 			RegWrite($REGISTRY_KEY_DIRECTORY, "GuestWidth", "REG_DWORD", $DEFAULT_WIDTH)
 			RegWrite($REGISTRY_KEY_DIRECTORY, "WindowHeight", "REG_DWORD", $DEFAULT_HEIGHT)
 			RegWrite($REGISTRY_KEY_DIRECTORY, "WindowWidth", "REG_DWORD", $DEFAULT_WIDTH)
-			SetLog("Please restart your computer for the applied changes to take effect.", $COLOR_ORANGE)
+			SetLog(GetLangText("msgPleaseRestart"), $COLOR_ORANGE)
 			_Sleep(3000)
-			$MsgRet = MsgBox(BitOR($MB_OKCANCEL, $MB_SYSTEMMODAL), "Restart Computer", "Restart your computer for the applied changes to take effect." & @CRLF & "If your BlueStacks is the correct size  (860 x 720), click OK.", 10)
+			$MsgRet = MsgBox(BitOR($MB_OKCANCEL, $MB_SYSTEMMODAL), GetLangText("boxRestart"), GetLangText("boxRestart2") & @CRLF & GetLangText("boxRestart3"), 10)
 			If $MsgRet <> $IDOK Then
 				btnStop()
 				Return
@@ -39,9 +39,9 @@ Func Initiate()
 
 		WinActivate($Title)
 
-		SetLog("~~~~Welcome to " & $sBotTitle & "!~~~~", $COLOR_PURPLE)
-		SetLog($Compiled & " running on " & @OSArch & " OS", $COLOR_GREEN)
-		SetLog("Bot is starting...", $COLOR_ORANGE)
+		SetLog(GetLangText("msgWelcome") & $sBotTitle & "!~~~~", $COLOR_PURPLE)
+		SetLog($Compiled & GetLangText("msgRunningOn") & @OSArch & " OS", $COLOR_GREEN)
+		SetLog(GetLangText("msgStarting"), $COLOR_ORANGE)
 
 		If IsChecked($lblpushbulletenabled) And IsChecked($lblpushbulletdelete) Then
 			_DeletePush()
@@ -72,7 +72,7 @@ Func Initiate()
 		GUICtrlSetState($btnStart, $GUI_ENABLE)
 		GUICtrlSetData($btnStart, "Start Bot")
 	Else
-		SetLog("Not in Game!", $COLOR_RED)
+		SetLog(GetLangText("msgNotInGame"), $COLOR_RED)
 		btnStop()
 	EndIf
 EndFunc   ;==>Initiate
@@ -80,22 +80,22 @@ EndFunc   ;==>Initiate
 Func Open()
 	If $64Bit Then ;If 64-Bit
 		ShellExecute("C:\Program Files (x86)\BlueStacks\HD-StartLauncher.exe")
-		SetLog("Starting BlueStacks", $COLOR_GREEN)
+		SetLog(GetLangText("msgStartingBS"), $COLOR_GREEN)
 		Sleep(290)
-		SetLog("Waiting for BlueStacks to initiate...", $COLOR_GREEN)
+		SetLog(GetLangText("msgWaitingBS"), $COLOR_GREEN)
 		Check()
 	Else ;If 32-Bit
 		ShellExecute("C:\Program Files\BlueStacks\HD-StartLauncher.exe")
-		SetLog("Starting BlueStacks", $COLOR_GREEN)
+		SetLog(GetLangText("msgStartingBS"), $COLOR_GREEN)
 		Sleep(290)
-		SetLog("Waiting for BlueStacks to initiate...", $COLOR_GREEN)
+		SetLog(GetLangText("msgWaitingBS"), $COLOR_GREEN)
 		Check()
 	EndIf
 EndFunc   ;==>Open
 
 Func Check()
 	If IsArray(ControlGetPos($Title, "_ctl.Window", "[CLASS:BlueStacksApp; INSTANCE:1]")) Then
-		SetLog("BlueStacks Loaded, took " & ($Initiate) & " seconds to begin.", $COLOR_GREEN)
+		SetLog(GetLangText("msgBSLoaded") & ($Initiate) & GetLangText("msgBSLoadSecs"), $COLOR_GREEN)
 		Initiate()
 	Else
 		Sleep(1000)

@@ -113,11 +113,6 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	Else
 		GUICtrlSetState($chkCollect, $GUI_UNCHECKED)
 	EndIf
-	If $ichkAvoidEdge = 1 Then
-		GUICtrlSetState($chkAvoidEdge, $GUI_CHECKED)
-	Else
-		GUICtrlSetState($chkAvoidEdge, $GUI_UNCHECKED)
-	EndIf
 	If $TakeAttackSnapShot = 1 Then
 		GUICtrlSetState($chkTakeAttackSS, $GUI_CHECKED)
 	Else

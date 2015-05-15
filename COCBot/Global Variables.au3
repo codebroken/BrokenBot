@@ -21,6 +21,7 @@
 #include <GuiRichEdit.au3>
 #include <GuiTab.au3>
 #include <GuiListBox.au3>
+#include <MsgBoxConstants.au3>
 
 Global Const $COLOR_ORANGE = 0xFFA500
 
@@ -85,12 +86,15 @@ $THText[2] = "8"
 $THText[3] = "9"
 $THText[4] = "10"
 Global $SearchCount = 0 ;Number of searches
+Global $SearchFailed = False ; Last search failed or not
 Global $THaddtiles, $THside, $THi
 Global $StratNames = ""
 Global $prevSelection = ""
 Global $DefaultTab = 0
 
 Global $speedBump = 0
+Global $hTimerClickNext, $fdiffReadGold
+
 Global $prevTab = 0
 Global $slideOut = 0
 Global $slideIn = 0
@@ -329,3 +333,6 @@ Global $SpellLightningX = 549
 Global $SpellLightningY = 461
 Global $SpellRageX = 650
 Global $SpellRageY = 372
+Global $LabPos[2]
+
+Global $FontSize

@@ -66,3 +66,36 @@ Func _WaitForPixel($iLeft, $iTop, $iRight, $iBottom, $iColor, $iColorVariation, 
 	Return False
 EndFunc   ;==>_WaitForPixel
 
+Func GetLangText($Key)
+	$ReturnStr = ""
+	If IsDeclared("cmbLanguage") Then
+		$ReturnStr = IniRead(@ScriptDir & "\BrokenBot.org\languages\" & _GUICtrlComboBox_GetEditText($cmbLanguage) & ".ini", "general", $Key, "")
+		If $ReturnStr = "" Then
+			;MsgBox(0,"",$Key & " not found in " & _GUICtrlComboBox_GetEditText($cmbLanguage))
+			$ReturnStr = IniRead(@ScriptDir & "\BrokenBot.org\languages\English.ini", "general", $Key, "")
+			;If $ReturnStr = "" Then MsgBox(0,"",$Key & " not found in English")
+		EndIf
+	Else
+		$ReturnStr = IniRead(@ScriptDir & "\BrokenBot.org\languages\" & $StartupLanguage & ".ini", "general", $Key, "")
+		If $ReturnStr = "" Then
+			;MsgBox(0,"",$Key & " not found in " & $StartupLanguage)
+			$ReturnStr = IniRead(@ScriptDir & "\BrokenBot.org\languages\English.ini", "general", $Key, "")
+			;If $ReturnStr = "" Then MsgBox(0,"",$Key & " not found in English")
+		EndIf
+	EndIf
+	Return $ReturnStr
+EndFunc
+
+Func PopulateLanguages()
+	$searchfile = FileFindFirstFile(@ScriptDir & "\BrokenBot.org\languages\*.ini")
+	$txtLang = ""
+	While True
+		$newfile = FileFindNextFile($searchfile)
+		If @error Then ExitLoop
+		$txtLang = $txtLang & StringLeft($newfile, StringLen($newfile)-4) & "|"
+	WEnd
+	FileClose($searchfile)
+	$txtLang = StringLeft($txtLang, StringLen($txtLang) - 1)
+	_GUICtrlComboBox_ResetContent($cmbLanguage)
+	GUICtrlSetData($cmbLanguage, $txtLang)
+EndFunc

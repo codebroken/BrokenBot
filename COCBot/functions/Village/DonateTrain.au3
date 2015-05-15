@@ -21,7 +21,7 @@ Func Donate_GetTrainPos($troopKind)
 		Case $eValkyrie
 			Return $TrainValkyrie
 		Case Else
-			SetLog("Don't know how to train the troop " & $troopKind & " yet")
+			SetLog(GetLangText("msgDontKnow") & $troopKind & GetLangText("msgYet"))
 			Return 0
 	EndSwitch
 EndFunc   ;==>Donate_GetTrainPos
@@ -46,7 +46,7 @@ Func Donate_Train($reset = False)
 		If _Sleep(2000) Then Return
 	EndIf
 
-	SetLog("Training Troops...", $COLOR_BLUE)
+	SetLog(GetLangText("msgTrainingTroops"), $COLOR_BLUE)
 
 	If $reset Then ; reset all for cook again on startup
 		$ArmyComp = 0
@@ -85,7 +85,7 @@ Func Donate_Train($reset = False)
 				EndIf
 			EndIf
 		EndIf
-		SetLog("Forces needed: B-" & $CurBarb & ", A-" & $CurArch & ", Go-" & $CurGoblin & ", Gi-" & $CurGiant & ", W-" & $CurWB, $COLOR_GREEN)
+		SetLog(GetLangText("msgForcesNeededB")& $CurBarb & GetLangText("msgForcesNeededA") & $CurArch & GetLangText("msgForcesNeededGo") & $CurGoblin & GetLangText("msgForcesNeededGi") & $CurGiant & GetLangText("msgForcesNeededWB") & $CurWB, $COLOR_GREEN)
 	EndIf
 
 	Local $GiantEBarrack, $WallEBarrack, $ArchEBarrack, $BarbEBarrack, $GoblinEBarrack
@@ -120,12 +120,12 @@ Func Donate_Train($reset = False)
 
 		Local $TrainPos = _PixelSearch(155, 603, 694, 605, Hex(0x9C7C37, 6), 5) ;Finds Train Troops button
 		If IsArray($TrainPos) = False Then
-			SetLog("Barrack " & $i + 1 & " is not available", $COLOR_RED)
+			SetLog(GetLangText("msgBarrack") & $i + 1 & GetLangText("msgNotAvailable"), $COLOR_RED)
 			handleBarracksError($i)
 			If _Sleep(500) Then ExitLoop
 		Else
 			Click($TrainPos[0], $TrainPos[1]) ;Click Train Troops button
-			;SetLog("Barrack " & $i + 1 & " ...", $COLOR_GREEN)
+			;SetLog(GetLangText("msgBarrack") & $i + 1 & " ...", $COLOR_GREEN)
 			If _Sleep(1000) Then ExitLoop
 			If _GUICtrlComboBox_GetCurSel($cmbTroopComp) = 8 Then
 				Switch $i
@@ -205,7 +205,7 @@ Func Donate_Train($reset = False)
 						_CaptureRegion()
 				EndSwitch
 			Else
-				SetLog("====== Barrack " & $i + 1 & " : ======", $COLOR_BLUE)
+				SetLog("====== " & GetLangText("msgBarrack") & $i + 1 & " : ======", $COLOR_BLUE)
 				_CaptureRegion()
 				;while _ColorCheck(_GetPixelColor(496, 200), Hex(0x880000, 6), 20) Then
 				If $reset Or $FirstStart Then
@@ -360,39 +360,39 @@ Func Donate_Train($reset = False)
 				If $troopSecondGiant > $troopFirstGiant And GUICtrlRead($txtNumGiants) <> "0" Then
 					$ArmyComp += ($troopSecondGiant - $troopFirstGiant) * 5
 					$CurGiant -= ($troopSecondGiant - $troopFirstGiant)
-					SetLog("Barrack " & ($i + 1) & " Training Giant : " & ($troopSecondGiant - $troopFirstGiant), $COLOR_GREEN)
-					SetLog("Giant Remaining : " & $CurGiant, $COLOR_BLUE)
+					SetLog(GetLangText("msgBarrack") & ($i + 1) & GetLangText("msgTraining") & GetLangText("troopNameGiant") & " : " & ($troopSecondGiant - $troopFirstGiant), $COLOR_GREEN)
+					SetLog(GetLangText("troopNameGiant") & GetLangText("msgRemaining") & $CurGiant, $COLOR_BLUE)
 				EndIf
 
 
 				If $troopSecondWall > $troopFirstWall And GUICtrlRead($txtNumWallbreakers) <> "0" Then
 					$ArmyComp += ($troopSecondWall - $troopFirstWall) * 2
 					$CurWB -= ($troopSecondWall - $troopFirstWall)
-					SetLog("Barrack " & ($i + 1) & " Training WallBreaker : " & ($troopSecondWall - $troopFirstWall), $COLOR_GREEN)
-					SetLog("WallBreaker Remaining : " & $CurWB, $COLOR_BLUE)
+					SetLog(GetLangText("msgBarrack") & ($i + 1) & GetLangText("msgTraining") & GetLangText("troopNameWallBreaker") & " : " & ($troopSecondGiant - $troopFirstGiant), $COLOR_GREEN)
+					SetLog(GetLangText("troopNameWallBreaker") & GetLangText("msgRemaining") & $CurGiant, $COLOR_BLUE)
 				EndIf
 
 				If $troopSecondGoblin > $troopFirstGoblin And GUICtrlRead($txtGoblins) <> "0" Then
 					$ArmyComp += ($troopSecondGoblin - $troopFirstGoblin)
 					$CurGoblin -= ($troopSecondGoblin - $troopFirstGoblin)
-					SetLog("Barrack " & ($i + 1) & " Training Goblin : " & ($troopSecondGoblin - $troopFirstGoblin), $COLOR_GREEN)
-					SetLog("Goblin Remaining : " & $CurGoblin, $COLOR_BLUE)
+					SetLog(GetLangText("msgBarrack") & ($i + 1) & GetLangText("msgTraining") & GetLangText("troopNameGoblin") & " : " & ($troopSecondGiant - $troopFirstGiant), $COLOR_GREEN)
+					SetLog(GetLangText("troopNameGoblin") & GetLangText("msgRemaining") & $CurGiant, $COLOR_BLUE)
 				EndIf
 
 				If $troopSecondBarba > $troopFirstBarba And GUICtrlRead($txtBarbarians) <> "0" Then
 					$ArmyComp += ($troopSecondBarba - $troopFirstBarba)
 					$CurBarb -= ($troopSecondBarba - $troopFirstBarba)
-					SetLog("Barrack " & ($i + 1) & " Training Barbarian : " & ($troopSecondBarba - $troopFirstBarba), $COLOR_GREEN)
-					SetLog("Barbarian Remaining : " & $CurBarb, $COLOR_BLUE)
+					SetLog(GetLangText("msgBarrack") & ($i + 1) & GetLangText("msgTraining") & GetLangText("troopNameBarbarian") & " : " & ($troopSecondGiant - $troopFirstGiant), $COLOR_GREEN)
+					SetLog(GetLangText("troopNameBarbarian") & GetLangText("msgRemaining") & $CurGiant, $COLOR_BLUE)
 				EndIf
 
 				If $troopSecondArch > $troopFirstArch And GUICtrlRead($txtArchers) <> "0" Then
 					$ArmyComp += ($troopSecondArch - $troopFirstArch)
 					$CurArch -= ($troopSecondArch - $troopFirstArch)
-					SetLog("Barrack " & ($i + 1) & " Training Archer : " & ($troopSecondArch - $troopFirstArch), $COLOR_GREEN)
-					SetLog("Archer Remaining : " & $CurArch, $COLOR_BLUE)
+					SetLog(GetLangText("msgBarrack") & ($i + 1) & GetLangText("msgTraining") & GetLangText("troopNameArcher") & " : " & ($troopSecondGiant - $troopFirstGiant), $COLOR_GREEN)
+					SetLog(GetLangText("troopNameArcher") & GetLangText("msgRemaining") & $CurGiant, $COLOR_BLUE)
 				EndIf
-				SetLog("Total Troops building : " & $ArmyComp, $COLOR_RED)
+				SetLog(GetLangText("msgTotalBuilding") & $ArmyComp, $COLOR_RED)
 			EndIf
 		EndIf
 		If _Sleep(100) Then ExitLoop
@@ -401,9 +401,9 @@ Func Donate_Train($reset = False)
 	If $brerror[0] And $brerror[1] And $brerror[2] And $brerror[3] Then
 		resetBarracksError()
 		$needzoomout = True
-		SetLog("Restart Completed ...", $COLOR_RED)
+		SetLog(GetLangText("msgRestartComplete"), $COLOR_RED)
 	Else
-		SetLog("Training Troops Complete...", $COLOR_BLUE)
+		SetLog(GetLangText("msgTrainingComp"), $COLOR_BLUE)
 	EndIf
 	$FirstStart = False
 

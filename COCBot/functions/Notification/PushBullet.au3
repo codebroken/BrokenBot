@@ -42,42 +42,42 @@ Func _RemoteControl()
 				$iden[$x] = StringStripWS($iden[$x], $STR_STRIPLEADING + $STR_STRIPTRAILING + $STR_STRIPSPACES)
 
 				If $title[$x] = "BOT HELP" Then
-					SetLog("Your request has been received. Help has been sent")
-					_Push("Request for Help", "You can remotely control your bot using the following command format\n\nBot <command> where <command> is:\n\nPause - pause the bot\nResume - resume the bot\nStats - send bot current statistics\nLogs - send the current log file\nHelp - send this help message\n\nEnter the command in the title of the message")
+					SetLog(GetLangText("msgPBHelpSent"))
+					_Push(GetLangText("pushHRa"), GetLangText("pushHRb"))
 					_DeleteMessage($iden[$x])
 				ElseIf $title[$x] = "BOT PAUSE" Then
 					If $PauseBot = False Then
-						SetLog("Your request has been received. Bot is now paused")
-						_Push("Request to Pause", "Your request has been received. Bot is now paused")
+						SetLog(GetLangText("msgPBBotPaused"))
+						_Push(GetLangText("pushPRa"), GetLangText("pushPRb"))
 						;Local $hWnd = WinWait("[CLASS:AutoIt v3 GUI]", "", 10)
 						;WinActivate($hWnd)
 						;ControlClick("[CLASS:AutoIt v3 GUI]", "Stop Bot", "[CLASS:Button; TEXT:Stop Bot]", "left", "1")
 						;$StBot = 1
 						$PauseBot = True
 					Else
-						SetLog("Your bot is currently paused, no action was taken")
-						_Push("Request to Pause", "Your bot is currently paused, no action was taken")
+						SetLog(GetLangText("msgPBNoAction"))
+						_Push(GetLangText("pushPRa"), GetLangText("pushPRc"))
 					EndIf
 					_DeleteMessage($iden[$x])
 				ElseIf $title[$x] = "BOT RESUME" Then
 					If $PauseBot = True Then
-						SetLog("Your request has been received. Bot is now resumed")
-						_Push("Request to Resume", "Your request has been received. Bot is now resumed")
+						SetLog(GetLangText("msgPBResumed"))
+						_Push(GetLangText("pushRRa"), GetLangText("pushRRb"))
 						$PauseBot = False
 						;Local $hWnd = WinWait("[CLASS:AutoIt v3 GUI]", "", 10)
 						;WinActivate($hWnd)
 						;ControlClick("[CLASS:AutoIt v3 GUI]", "Start Bot", "[CLASS:Button; TEXT:Start Bot]", "left", "1")
 					Else
-						SetLog("Your bot is currently running, no action was taken")
-						_Push("Request to Resume", "Your bot is currently running, no action was taken")
+						SetLog(GetLangText("msgPBRunning"))
+						_Push(GetLangText("pushRRa"), GetLangText("pushRRc"))
 					EndIf
 					_DeleteMessage($iden[$x])
 				ElseIf $title[$x] = "BOT STATS" Then
-					SetLog("Your request has been received. Statistics sent")
-					_Push("Request for Stats", "Resources at Start\n-Gold:  " & GUICtrlRead($lblresultgoldtstart) & "\n-Elixir:  " & GUICtrlRead($lblresultelixirstart) & "\n-DE:  " & GUICtrlRead($lblresultdestart) & "\n-Trophies:  " & GUICtrlRead($lblresulttrophystart) & "\n\nCurrent Resources \n-Gold:  " & GUICtrlRead($lblresultgoldnow) & "\n-Elixir:  " & GUICtrlRead($lblresultelixirnow) & "\n-DE:  " & GUICtrlRead($lblresultdenow) & "\n-Trophies:  " & GUICtrlRead($lblresulttrophynow) & "\n\nBuildings/Walls Upgrade " & "\n-Wall Upgrade:  " & GUICtrlRead($lblwallupgradecount) & "\n\nTotal Gain\n-Gold Gain:  " & GUICtrlRead($lblresultgoldgain) & "\n-Elixir Gain:  " & GUICtrlRead($lblresultelixirgain) & "\n-DE Gain:  " & GUICtrlRead($lblresultdegain) & "\n-Trophies Gain:  " & GUICtrlRead($lblresulttrophygain) & "\n\nOther Stats\n-Attacked:  " & GUICtrlRead($lblresultvillagesattacked) & "\n-Skipped:  " & GUICtrlRead($lblresultvillagesskipped) & "\n-Search Cost:  " & GUICtrlRead($lblresultsearchcost) & "\n-Bot Run Time:  " & StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
+					SetLog(GetLangText("msgPBStats"))
+					_Push(GetLangText("pushStatRa"), GetLangText("pushStatRb") & GUICtrlRead($lblresultgoldtstart) & GetLangText("pushStatRc") & GUICtrlRead($lblresultelixirstart) & GetLangText("pushStatRd") & GUICtrlRead($lblresultdestart) & GetLangText("pushStatRe") & GUICtrlRead($lblresulttrophystart) & GetLangText("pushStatRf") & GUICtrlRead($lblresultgoldnow) & GetLangText("pushStatRg") & GUICtrlRead($lblresultelixirnow) & GetLangText("pushStatRh") & GUICtrlRead($lblresultdenow) & GetLangText("pushStatRi") & GUICtrlRead($lblresulttrophynow) & GetLangText("pushStatRj") & GetLangText("pushStatRk") & GUICtrlRead($lblwallupgradecount) & GetLangText("pushStatRl") & GUICtrlRead($lblresultgoldgain) & GetLangText("pushStatRm") & GUICtrlRead($lblresultelixirgain) & GetLangText("pushStatRn") & GUICtrlRead($lblresultdegain) & GetLangText("pushStatRo") & GUICtrlRead($lblresulttrophygain) & GetLangText("pushStatRp") & GUICtrlRead($lblresultvillagesattacked) & GetLangText("pushStatRq")& GUICtrlRead($lblresultvillagesskipped) & GetLangText("pushStatRr") & GUICtrlRead($lblresultsearchcost) & GetLangText("pushStatRs") & StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
 					_DeleteMessage($iden[$x])
 				ElseIf $title[$x] = "BOT LOGS" Then
-					SetLog("Your request has been received. Log is now sent")
+					SetLog(GetLangText("msgPBLog"))
 					_PushFile($sLogFileName, "logs", "text/plain; charset=utf-8", "Current Logs", $sLogFileName)
 					_DeleteMessage($iden[$x])
 				EndIf
@@ -162,12 +162,12 @@ Func _PushFile($File, $Folder, $FileType, $title, $body)
 			Else
 				If IsChecked($lblpushbulletdebug) Then
 					SetLog($hFileOpen)
-					SetLog("There is an error and file was not uploaded")
+					SetLog(GetLangText("msgPBErrorUpload"))
 				EndIf
 			EndIf
 		Else
 			If IsChecked($lblpushbulletdebug) Then
-				SetLog("Error encountered uploading file.")
+				SetLog(GetLangText("msgPBErrorUploading"))
 			EndIf
 		EndIf
 	Else
@@ -179,7 +179,7 @@ Func _PushFile($File, $Folder, $FileType, $title, $body)
 	EndIf
 	If IsChecked($lblpushbulletdebug) Then
 		SetLog($Result)
-		SetLog("You can paste this in the forum so we can check whether it is PushBullet problem or mine")
+		SetLog(GetLangText("msgPBPasteForum"))
 		SetLog('=========================================================================')
 	EndIf
 EndFunc   ;==>_PushFile

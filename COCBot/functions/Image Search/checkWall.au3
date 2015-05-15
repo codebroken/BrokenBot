@@ -26,13 +26,13 @@ Func checkWall()
 			If $WallLoc = 0 Then $WallLoc = _ImageSearch($Wall[$icmbWalls + 1], 1, $WallX, $WallY, $Tolerance2) ; Getting Wall lvl 10 Location
 		EndIf
 		If $WallLoc = 1 Then
-			SetLog("Found Walls level " & $icmbWalls + 4 & ", Upgrading...", $COLOR_GREEN)
+			SetLog(GetLangText("msgWallFound") & $icmbWalls + 4 & ", " & GetLangText("msgUpgrading"), $COLOR_GREEN)
 			$checkwalllogic = True
 			Return True
 		EndIf
 	Next
 	$checkwalllogic = False
-	SetLog("Cannot find Walls level " & $icmbWalls + 4 & ", Skip upgrade...", $COLOR_RED)
+	SetLog(GetLangText("msgWallNotFound") & $icmbWalls + 4 & GetLangText("msgWallSkipUpgrade"), $COLOR_RED)
 	Return False
 EndFunc   ;==>checkWall
 
@@ -56,10 +56,10 @@ Func FindWall()
 		If $WallLoc = 1 Then
 			WinActivate($HWnD)
 			Click($WallX, $WallY)
-			SetLog("Found Walls level " & $icmbWalls + 4 & " at PosX: " & $WallX & ", PosY: " & $WallY & "...", $COLOR_GREEN)
+			SetLog(GetLangText("msgWallFound") & $icmbWalls + 4 & " " & GetLangText("msgWallAt") & " PosX: " & $WallX & ", PosY: " & $WallY & "...", $COLOR_GREEN)
 			Return True
 		EndIf
 	Next
-	SetLog("Cannot find Walls level " & $icmbWalls + 4 & ", adjust tolerance and try again...", $COLOR_RED)
+	SetLog(GetLangText("msgWallNotFound") & $icmbWalls + 4 & GetLangText("msgWallAdjustTol"), $COLOR_RED)
 	Return False
 EndFunc   ;==>FindWall

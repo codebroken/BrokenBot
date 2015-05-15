@@ -5,8 +5,11 @@ Func Standard_Search()
 	Local $conditionlogstr
 	Local $AttackMethod
 	Local $DG, $DE, $DD, $DT, $G, $E, $D, $T
+	local $calculateCondition = True
 
 	_WinAPI_EmptyWorkingSet(WinGetProcess($Title)) ; Reduce BlueStacks Memory Usage
+
+	$hTimerClickNext = TimerInit() ;Next button already pressed before call here
 
 	$MinDeadGold = GUICtrlRead($txtDeadMinGold)
 	$MinDeadElixir = GUICtrlRead($txtDeadMinElixir)
@@ -21,90 +24,23 @@ Func Standard_Search()
 	$iNukeLimit = GUICtrlRead($txtDENukeLimit)
 
 	While 1
-		SetLog("Search Condition:", $COLOR_RED)
-		If IsChecked($chkDeadActivate) And $fullArmy Then
-			$conditionlogstr = "Dead Base ("
-			If IsChecked($chkDeadGE) Then
-				If _GUICtrlComboBox_GetCurSel($cmbDead) = 0 Then
-					$conditionlogstr = $conditionlogstr & " Gold: " & $MinDeadGold & " And " & "Elixir: " & $MinDeadElixir
-				Else
-					$conditionlogstr = $conditionlogstr & " Gold: " & $MinDeadGold & " Or " & "Elixir: " & $MinDeadElixir
-				EndIf
-			EndIf
-			If IsChecked($chkDeadMeetDE) Then
-				If $conditionlogstr <> "Dead Base (" Then
-					$conditionlogstr = $conditionlogstr & ";"
-				EndIf
-				$conditionlogstr = $conditionlogstr & " Dark: " & $MinDeadDark
-			EndIf
-			If IsChecked($chkDeadMeetTrophy) Then
-				If $conditionlogstr <> "Dead Base (" Then
-					$conditionlogstr = $conditionlogstr & ";"
-				EndIf
-				$conditionlogstr = $conditionlogstr & " Trophy: " & $MinDeadTrophy
-			EndIf
-			If IsChecked($chkDeadMeetTH) Then
-				If $conditionlogstr <> "Dead Base (" Then
-					$conditionlogstr = $conditionlogstr & ";"
-				EndIf
-				$conditionlogstr = $conditionlogstr & " Max Townhall: " & $MaxDeadTH
-			EndIf
-			If IsChecked($chkDeadMeetTHO) Then
-				If $conditionlogstr <> "Dead Base (" Then
-					$conditionlogstr = $conditionlogstr & ";"
-				EndIf
-				$conditionlogstr = $conditionlogstr & " Townhall Outside"
-			EndIf
-			$conditionlogstr = $conditionlogstr & " )"
-			SetLog($conditionlogstr, $COLOR_GREEN)
-		EndIf
-		If IsChecked($chkAnyActivate) And $fullArmy Then
-			$conditionlogstr = "Live Base ("
-			If IsChecked($chkMeetGE) Then
-				If _GUICtrlComboBox_GetCurSel($cmbAny) = 0 Then
-					$conditionlogstr = $conditionlogstr & " Gold: " & $MinGold & " And " & "Elixir: " & $MinElixir
-				Else
-					$conditionlogstr = $conditionlogstr & " Gold: " & $MinGold & " Or " & "Elixir: " & $MinElixir
-				EndIf
-			EndIf
-			If IsChecked($chkMeetDE) Then
-				If $conditionlogstr <> "Live Base (" Then
-					$conditionlogstr = $conditionlogstr & ";"
-				EndIf
-				$conditionlogstr = $conditionlogstr & " Dark: " & $MinDark
-			EndIf
-			If IsChecked($chkMeetTrophy) Then
-				If $conditionlogstr <> "Live Base (" Then
-					$conditionlogstr = $conditionlogstr & ";"
-				EndIf
-				$conditionlogstr = $conditionlogstr & " Trophy: " & $MinTrophy
-			EndIf
-			If IsChecked($chkMeetTH) Then
-				If $conditionlogstr <> "Live Base (" Then
-					$conditionlogstr = $conditionlogstr & ";"
-				EndIf
-				$conditionlogstr = $conditionlogstr & " Max Townhall: " & $MaxTH
-			EndIf
-			If IsChecked($chkMeetTHO) Then
-				If $conditionlogstr <> "Live Base (" Then
-					$conditionlogstr = $conditionlogstr & ";"
-				EndIf
-				$conditionlogstr = $conditionlogstr & " Townhall Outside"
-			EndIf
-			$conditionlogstr = $conditionlogstr & " )"
-			SetLog($conditionlogstr, $COLOR_GREEN)
-		EndIf
-		If IsChecked($chkNukeOnly) And $fullSpellFactory And $iNukeLimit > 0 Then
-			$conditionlogstr = "Zap Base ( Dark: " & $iNukeLimit & " )"
-			SetLog($conditionlogstr, $COLOR_GREEN)
-		EndIf
+		$calculateCondition = True
 		GUICtrlSetData($lblresultsearchcost, GUICtrlRead($lblresultsearchcost) + $SearchCost)
-		If $TakeAllTownSnapShot = 1 Then SetLog("Will save all of the towns when searching", $COLOR_GREEN)
-		$SearchCount = 0
+		If $TakeAllTownSnapShot = 1 Then SetLog(GetLangText("msgWillSaveAll"), $COLOR_GREEN)
+
+		If $SearchFailed = False Then ;reset SearchCount only when last search wasn't failed
+			$SearchCount = 0
+		EndIf
+		$SearchFailed = False
 		_BlockInputEx(3, "", "", $HWnD)
+
+
 		While 1
-			If Not _WaitForColor(30, 505, Hex(0xE80008, 6), 50, 10) Then Return -1
-			If _Sleep($speedBump) Then Return -1
+			If Not _WaitForColor(30, 505, Hex(0xE80008, 6), 50, 10) Then
+				ChkDisconnection()
+				Return -1
+			EndIf
+			;If _Sleep($speedBump) Then Return -1
 			GUICtrlSetState($btnAtkNow, $GUI_ENABLE)
 
 			If IsChecked($chkTakeTownSS) Then
@@ -116,17 +52,22 @@ Func Standard_Search()
 
 			If _Sleep($icmbSearchsp * 1500) Then Return -1
 
-			If $SearchCount <> 0 And Mod($SearchCount, 30) = 0 Then
-				If $MinDeadGold - 5000 >= 0 Then $MinDeadGold -= 5000
-				If $MinDeadElixir - 5000 >= 0 Then $MinDeadElixir -= 5000
-				If $MinDeadDark - 100 >= 0 Then $MinDeadDark -= 100
-				If $MinDeadTrophy - 2 >= 0 Then $MinDeadTrophy -= 2
-				If $MinGold - 5000 >= 0 Then $MinGold -= 5000
-				If $MinElixir - 5000 >= 0 Then $MinElixir -= 5000
-				If $MinDark - 100 >= 0 Then $MinDark -= 100
-				If $MinTrophy - 2 >= 0 Then $MinTrophy -= 2
-				If $iNukeLimit - 300 >= 0 Then $iNukeLimit -= 100
-				SetLog("Search Condition:", $COLOR_RED)
+			If $calculateCondition = True or ($SearchCount <> 0 And Mod($SearchCount, 30) = 0) Then
+				_BumpMouse()
+				$calculateCondition = False
+				Local $CondMultipler
+				$CondMultipler = Int($SearchCount/30)
+
+				If GUICtrlRead($txtDeadMinGold) - $CondMultipler*5000 >= 0 Then $MinDeadGold = GUICtrlRead($txtDeadMinGold) - $CondMultipler*5000
+				If GUICtrlRead($txtDeadMinElixir) - $CondMultipler*5000 >= 0 Then $MinDeadElixir = GUICtrlRead($txtDeadMinElixir) - $CondMultipler*5000
+				If GUICtrlRead($txtDeadMinDarkElixir) - $CondMultipler*100 >= 0 Then $MinDeadDark = GUICtrlRead($txtDeadMinDarkElixir) - $CondMultipler*100
+				If GUICtrlRead($txtDeadMinTrophy) - $CondMultipler*2 >= 0 Then $MinDeadTrophy = GUICtrlRead($txtDeadMinTrophy) - $CondMultipler*2
+				If GUICtrlRead($txtMinGold) - $CondMultipler*5000 >= 0 Then $MinGold = GUICtrlRead($txtMinGold) - $CondMultipler*5000
+				If GUICtrlRead($txtMinElixir) - $CondMultipler*5000 >= 0 Then $MinElixir = GUICtrlRead($txtMinElixir) - $CondMultipler*5000
+				If GUICtrlRead($txtMinDarkElixir) - $CondMultipler*100 >= 0 Then $MinDark = GUICtrlRead($txtMinDarkElixir) - $CondMultipler*100
+				If GUICtrlRead($txtMinTrophy) - $CondMultipler*2 >= 0 Then $MinTrophy = GUICtrlRead($txtMinTrophy) - $CondMultipler*2
+				If GUICtrlRead($txtDENukeLimit) - $CondMultipler*300 >= 0 Then $iNukeLimit = GUICtrlRead($txtDENukeLimit) - $CondMultipler*300
+				SetLog(GetLangText("msgSearchCond"), $COLOR_RED)
 				If IsChecked($chkDeadActivate) And $fullArmy Then
 					$conditionlogstr = "Dead Base ("
 					If IsChecked($chkDeadGE) Then
@@ -152,7 +93,7 @@ Func Standard_Search()
 						If $conditionlogstr <> "Dead Base (" Then
 							$conditionlogstr = $conditionlogstr & ";"
 						EndIf
-						$conditionlogstr = $conditionlogstr & " Max Townhall: " & $MaxDeadTH
+						$conditionlogstr = $conditionlogstr & " Max Townhall: " & $THText[$MaxDeadTH]
 					EndIf
 					If IsChecked($chkDeadMeetTHO) Then
 						If $conditionlogstr <> "Dead Base (" Then
@@ -188,7 +129,7 @@ Func Standard_Search()
 						If $conditionlogstr <> "Live Base (" Then
 							$conditionlogstr = $conditionlogstr & ";"
 						EndIf
-						$conditionlogstr = $conditionlogstr & " Max Townhall: " & $MaxTH
+						$conditionlogstr = $conditionlogstr & " Max Townhall: " & $THText[$MaxTH]
 					EndIf
 					If IsChecked($chkMeetTHO) Then
 						If $conditionlogstr <> "Live Base (" Then
@@ -237,10 +178,10 @@ Func Standard_Search()
 			EndSwitch
 
 			If $THLoc = "Out" And IsChecked($chkDeadActivate) And IsChecked($chkDeadSnipe) And $BaseData[0] Then
-				SetLog("~~~~~~~Outside Townhall in Dead Base Found!~~~~~~~", $COLOR_PURPLE)
+				SetLog(GetLangText("msgOutDeadFound"), $COLOR_PURPLE)
 				Return 0
 			ElseIf $THLoc = "Out" And IsChecked($chkAnyActivate) And IsChecked($chkSnipe) And Not $BaseData[0] Then
-				SetLog("~~~~~~~Outside Townhall in Live Base Found!~~~~~~~", $COLOR_PURPLE)
+				SetLog(GetLangText("msgOutLiveFound"), $COLOR_PURPLE)
 				Return 1
 			EndIf
 
@@ -274,7 +215,7 @@ Func Standard_Search()
 				EndIf
 
 				If $BaseData[0] And $conditionDeadPass Then
-					SetLog("~~~~~~~Dead Base Found!~~~~~~~", $COLOR_GREEN)
+					SetLog(GetLangText("msgDeadFound"), $COLOR_GREEN)
 					$GoodBase = True
 					$AttackMethod = 0
 				EndIf
@@ -311,7 +252,7 @@ Func Standard_Search()
 					EndIf
 
 					If $conditionAnyPass Then
-						SetLog("~~~~~~~Other Base Found!~~~~~~~", $COLOR_GREEN)
+						SetLog(GetLangText("msgOtherFound"), $COLOR_GREEN)
 						$GoodBase = True
 						$AttackMethod = 1
 					EndIf
@@ -324,7 +265,7 @@ Func Standard_Search()
 					If Number($BaseData[4]) >= Number($iNukeLimit) Then
 						If checkDarkElix() Then
 							$NukeAttack = True
-							SetLog("~~~~~~~Base to Zap Found!~~~~~~~", $COLOR_GREEN)
+							SetLog(GetLangText("msgZapFound"), $COLOR_GREEN)
 							$GoodBase = True
 							$AttackMethod = 2
 						EndIf
@@ -336,7 +277,7 @@ Func Standard_Search()
 			GUICtrlSetState($btnAtkNow, $GUI_DISABLE)
 			If $AttackNow Then
 				$AttackNow = False
-				SetLog("~~~~~~~Attack Now Clicked!~~~~~~~", $COLOR_GREEN)
+				SetLog(GetLangText("msgAttackNowClicked"), $COLOR_GREEN)
 				ExitLoop
 			EndIf
 
@@ -345,50 +286,24 @@ Func Standard_Search()
 			Else
 				_CaptureRegion()
 				If _ColorCheck(_GetPixelColor(703, 520), Hex(0xD84400, 6), 20) Then
-					_Sleep($speedBump)
+					Local $fDiffNow = TimerDiff($hTimerClickNext) - $fdiffReadGold  ;How long in attack prep mode
+					if $fDiffNow < $speedBump + $icmbSearchsp * 1500 Then ; Wait accoridng to search speed + speedBump
+						if _Sleep($speedBump + $icmbSearchsp * 1500 - $fDiffNow) Then ExitLoop (2)
+					EndIf
 					Click(750, 500) ;Click Next
+					$hTimerClickNext = TimerInit()
+					;Take time to do search
 					GUICtrlSetData($lblresultvillagesskipped, GUICtrlRead($lblresultvillagesskipped) + 1)
 					GUICtrlSetData($lblresultsearchcost, GUICtrlRead($lblresultsearchcost) + $SearchCost)
-					If _Sleep(500) Then Return -1
-				ElseIf _ColorCheck(_GetPixelColor(71, 530), Hex(0xC00000, 6), 20) Then
-					SetLog("Cannot locate Next button, try to return home...", $COLOR_RED)
-					Local $dummyX = 0
-					Local $dummyY = 0
-					If _ImageSearch(@ScriptDir & "\images\Client.bmp", 1, $dummyX, $dummyY, 50) = 1 Then
-						If $dummyX > 290 And $dummyX < 310 And $dummyY > 325 And $dummyY < 340 Then
-							$speedBump += 500
-							If $speedBump > 5000 Then
-								$speedBump = 5000
-								SetLog("Out of sync! Already searching slowly, not changing anything.", $COLOR_RED)
-							Else
-								SetLog("Out of sync! Slowing search speed by 0.5 secs.", $COLOR_RED)
-							EndIf
-						EndIf
-					EndIf
-					If $DebugMode = 1 Then _GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "NoNext-" & @HOUR & @MIN & @SEC & ".png")
-					If $PushBulletEnabled = 1 Then
-						_Push("Disconnected", "Your bot got disconnected while searching for enemy..")
-					EndIf
+					If _Sleep(1000) Then Return -1
+				ElseIf _ColorCheck(_GetPixelColor(71, 530), Hex(0xC00000, 6), 20) Then ;If End battle is available
+					SetLog(GetLangText("msgNoNextReturn"), $COLOR_RED)
+					ChkDisconnection(True)
+					ReturnHome(False, False, True)
 					Return -1
 				Else
-					SetLog("Cannot locate Next button & Surrender button, Restarting Bot", $COLOR_RED)
-					Local $dummyX = 0
-					Local $dummyY = 0
-					If _ImageSearch(@ScriptDir & "\images\Client.bmp", 1, $dummyX, $dummyY, 50) = 1 Then
-						If $dummyX > 290 And $dummyX < 310 And $dummyY > 325 And $dummyY < 340 Then
-							$speedBump += 500
-							If $speedBump > 5000 Then
-								$speedBump = 5000
-								SetLog("Out of sync! Already searching slowly, not changing anything.", $COLOR_RED)
-							Else
-								SetLog("Out of sync! Slowing search speed by 0.5 secs.", $COLOR_RED)
-							EndIf
-						EndIf
-					EndIf
-					If $DebugMode = 1 Then _GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "NoNextSurr-" & @HOUR & @MIN & @SEC & ".png")
-					If $PushBulletEnabled = 1 Then
-						_Push("Disconnected", "Your bot got disconnected while searching for enemy..")
-					EndIf
+					SetLog(GetLangText("msgNoNextRestart"), $COLOR_RED)
+					ChkDisconnection()
 					Return -1
 				EndIf
 			EndIf
@@ -404,10 +319,10 @@ Func Standard_Search()
 			EndIf
 		EndIf
 		If $PushBulletEnabled = 1 And $PushBulletmatchfound = 1 Then
-			_Push("Match Found!", "[G]: " & _NumberFormat($BaseData[2]) & "; [E]: " & _NumberFormat($BaseData[3]) & "; [D]: " & _NumberFormat($BaseData[4]) & "; [T]: " & $BaseData[5] & "; [TH Lvl]: " & $BaseData[1] & ", Loc: " & $THLoc)
-			SetLog("Push: Match Found", $COLOR_GREEN)
+			_Push(GetLangText("pushMatch"), "[" & GetLangText("msgGoldinitial") & "]: " & _NumberFormat($BaseData[2]) & "; [" & GetLangText("msgElixirinitial") & "]: " & _NumberFormat($BaseData[3]) & "; [" & GetLangText("msgDarkElixinitial") & "]: " & _NumberFormat($BaseData[4]) & "; [" & GetLangText("msgTrophyInitial") & "]: " & $BaseData[5] & "; [TH Lvl]: " & $BaseData[1] & ", Loc: " & $THLoc)
+			SetLog(GetLangText("msgPushMatch"), $COLOR_GREEN)
 		EndIf
-		SetLog("===============Searching Complete===============", $COLOR_BLUE)
+		SetLog(GetLangText("msgSearchComplete"), $COLOR_BLUE)
 		_BlockInputEx(0, "", "", $HWnD)
 		Return $AttackMethod
 	WEnd

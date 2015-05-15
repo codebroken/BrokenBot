@@ -49,7 +49,7 @@ Func checkDarkElix()
 	Until $bumpTolerance > $maxTolerance
 
 	If $DarkElixLocation = 0 Then
-		SetLog("No dark elixir storage was found!", $COLOR_RED)
+		SetLog(GetLangText("msgNoDEStorage"), $COLOR_RED)
 		If $DebugMode = 1 Then _GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & (IsChecked($rdoMaybeSkip) ? ("") : ("LowACC-")) & "NegDE-" & @HOUR & @MIN & @SEC & ".png")
 		$DEx = 0
 		$DEy = 0

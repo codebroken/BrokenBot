@@ -6,7 +6,7 @@ Func RequestCC()
 			If _Sleep(1000) Then Return
 		EndIf
 		While 1
-			SetLog("Requesting for Clan Castle's Troops", $COLOR_BLUE)
+			SetLog(GetLangText("msgRequesting"), $COLOR_BLUE)
 			Click($CCPos[0], $CCPos[1])
 			If _Sleep(1000) Then ExitLoop
 			_CaptureRegion()
@@ -26,11 +26,11 @@ Func RequestCC()
 					Click(524, 228)
 					;Click(340, 228)
 				Else
-					SetLog("Request's already been made", $COLOR_ORANGE)
+					SetLog(GetLangText("msgRequestAlready"), $COLOR_ORANGE)
 					Click(1, 1, 2)
 				EndIf
 			Else
-				SetLog("Clan Castle not available", $COLOR_RED)
+				SetLog(GetLangText("msgCCNotAvail"), $COLOR_RED)
 			EndIf
 			ExitLoop
 		WEnd

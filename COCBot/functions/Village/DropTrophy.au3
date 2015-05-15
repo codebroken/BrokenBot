@@ -7,9 +7,9 @@ Func DropTrophy()
 	If Number($TrophyCount) > Number($itxtMaxTrophy) Then
 		While Number($TrophyCount) > Number($itxtMinTrophy)
 			$TrophyCount = getOther(50, 74, "Trophy")
-			SetLog("Trophy Count : " & $TrophyCount, $COLOR_GREEN)
+			SetLog(GetLangText("msgTrophyCount") & $TrophyCount, $COLOR_GREEN)
 			If Number($TrophyCount) > Number($itxtMinTrophy) Then
-				SetLog("Dropping Trophies", $COLOR_BLUE)
+				SetLog(GetLangText("msgDropTrophies"), $COLOR_BLUE)
 				If _Sleep(2000) Then ExitLoop
 
 				ZoomOut()
@@ -33,7 +33,7 @@ Func DropTrophy()
 				ReturnHome(False, False) ;Return home no screenshot
 				If _Sleep(1000) Then ExitLoop
 			Else
-				SetLog("Trophy Drop Complete", $COLOR_BLUE)
+				SetLog(GetLangText("msgDropComplete"), $COLOR_BLUE)
 			EndIf
 		WEnd
 		Return True

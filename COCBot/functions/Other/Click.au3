@@ -9,7 +9,7 @@ Func Click($x, $y, $times = 1, $speed = 0, $CenteredOn = 0, $BufferDist = 20)
 			ControlClick($Title, "", "", "left", "1", $x, $y)
 		EndIf
 	Else
-		If $ichkAvoidEdge = 1 Then
+		If GUICtrlRead($sldAcc) < 100 Then
 			RedLineDeploy($x, $y, $times, $speed, $CenteredOn, $BufferDist)
 		Else
 			If $times <> 1 Then
