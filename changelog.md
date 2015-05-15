@@ -1,5 +1,10 @@
 ## Change Log:
 
+### v2.5.4
+* Fixed spells not being detected
+* Fix for archers not being detected
+* DLL update for resolving those few people that still had an issue
+
 ### v2.5.3
 * Fixed display of townhall levels in search results.
 * Fixed color recognition for archers.

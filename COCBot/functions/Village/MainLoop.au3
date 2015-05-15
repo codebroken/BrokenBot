@@ -67,7 +67,7 @@ Func runBot() ;Bot that runs everything in order
 							ContinueLoop
 						EndIf
 
-						Call($strPlugInInUse & "_PrepareAttack", $AttackType)
+						Call($strPlugInInUse & "_PrepareAttack", False, $AttackType)
 						If BotStopped(False) Then Return
 
 						SetLog(GetLangText("msgBeginAttack"))
