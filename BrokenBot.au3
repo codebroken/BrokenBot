@@ -3,12 +3,12 @@
 #pragma compile(Icon, "BrokenBot.org\images\icons\brokenbot.ico")
 #pragma compile(FileDescription, BrokenBot.org - Clash of Clans Bot)
 #pragma compile(ProductName, BrokenBot.org - Clash of Clans Bot)
-#pragma compile(ProductVersion, 2.5.4)
-#pragma compile(FileVersion, 2.5.4)
+#pragma compile(ProductVersion, 2.5.5)
+#pragma compile(FileVersion, 2.5.5)
 
 #include <GUIConstants.au3>
 
-$sBotVersion = "2.5.4"
+$sBotVersion = "2.5.5"
 $sBotTitle = "BrokenBot.org - Break FREE - v" & $sBotVersion
 
 Global $StartupLanguage = IniRead(@ScriptDir & "\config\default.ini", "config", "language", "English")

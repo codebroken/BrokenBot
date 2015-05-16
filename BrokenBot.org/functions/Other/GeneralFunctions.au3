@@ -69,19 +69,28 @@ EndFunc   ;==>_WaitForPixel
 Func GetLangText($Key)
 	$ReturnStr = ""
 	If IsDeclared("cmbLanguage") Then
-		$ReturnStr = IniRead(@ScriptDir & "\BrokenBot.org\languages\" & _GUICtrlComboBox_GetEditText($cmbLanguage) & ".ini", "general", $Key, "")
+		$array = _GUICtrlComboBox_GetListArray($cmbLanguage)
+		$CurrLangSel = $array[_GUICtrlComboBox_GetCurSel($cmbLanguage)+1]
+		$ReturnStr = IniRead(@ScriptDir & "\BrokenBot.org\languages\" & $CurrLangSel & ".ini", "general", $Key, "")
 		If $ReturnStr = "" Then
-			;MsgBox(0,"",$Key & " not found in " & _GUICtrlComboBox_GetEditText($cmbLanguage))
 			$ReturnStr = IniRead(@ScriptDir & "\BrokenBot.org\languages\English.ini", "general", $Key, "")
-			;If $ReturnStr = "" Then MsgBox(0,"",$Key & " not found in English")
 		EndIf
+;~ 		If IsDeclared("txtLog") And IsDeclared("statLog") Then
+;~ 			SetLog("SL:" & $StartupLanguage)
+;~ 			SetLog("CL:" & $CurrLangSel)
+;~ 			SetLog("Key:" & $Key)
+;~ 			SetLog("Result:" & $ReturnStr)
+;~ 		EndIf
 	Else
 		$ReturnStr = IniRead(@ScriptDir & "\BrokenBot.org\languages\" & $StartupLanguage & ".ini", "general", $Key, "")
 		If $ReturnStr = "" Then
-			;MsgBox(0,"",$Key & " not found in " & $StartupLanguage)
 			$ReturnStr = IniRead(@ScriptDir & "\BrokenBot.org\languages\English.ini", "general", $Key, "")
-			;If $ReturnStr = "" Then MsgBox(0,"",$Key & " not found in English")
 		EndIf
+;~ 		If IsDeclared("txtLog") And IsDeclared("statLog") Then
+;~ 			SetLog("SL:" & $StartupLanguage)
+;~ 			SetLog("Key:" & $Key)
+;~ 			SetLog("Result:" & $ReturnStr)
+;~ 		EndIf
 	EndIf
 	Return $ReturnStr
 EndFunc
