@@ -324,6 +324,7 @@ Func Standard_SaveConfig($configFile)
 		IniWrite($configFile, "search", "conditionSnipe", 0)
 	EndIf
 	;Search reduction setting in search tab
+	If GUICtrlRead($txtRedNumOfSerach) = 0 Then GUICtrlSetData($txtRedNumOfSerach,30)
 	IniWrite($configFile, "search",  "RedutionNumOfSerach", GUICtrlRead($txtRedNumOfSerach))
 	IniWrite($configFile, "search",  "ReductionGoldPercent", GUICtrlRead($txtRedGoldPercent))
 	IniWrite($configFile, "search",  "ReductionElixirPercent", GUICtrlRead($txtRedElixirPercent))

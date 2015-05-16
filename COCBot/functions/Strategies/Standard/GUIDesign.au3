@@ -104,7 +104,7 @@ Func Standard_LoadGUI()
 	$lblRedNukePercent = GUICtrlCreateLabel(GetLangText("lblRedNukePercent"), 30, 430, 120, 20)
 	Global $txtRedNukePercent = GUICtrlCreateInput("5", 160, 430, 50, 21, BitOR($ES_CENTER, $ES_NUMBER))
 	GUICtrlSetLimit(-1, 2)
-	; -- end of tab
+	; -- end of session
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 	Global $btnSearchMode = GUICtrlCreateButton(GetLangText("btnSearchMode"), 20, 527, 393, 25)
 	GUICtrlSetOnEvent(-1, "Standard_btnSearchMode")
