@@ -85,12 +85,7 @@ Func VillageReport()
 			SetLog(GetLangText("msgLastRaidLoot") & " [" & GetLangText("msgGoldinitial") & "]: " & _NumberFormat($LastRaidGold) & " [" & GetLangText("msgElixirinitial") & "]: " & _NumberFormat($LastRaidElixir) & _
 					" [" & GetLangText("msgDarkElixinitial") & "]: " & _NumberFormat($LastRaidDarkElixir) & " [" & GetLangText("msgTrophyInitial") & "]: " & $LastRaidTrophy)
 			If $PushBulletEnabled = 1 Then ;do pushbullet reports
-				If $PushBullettype = 1 Then ;As JPG
-					If _Sleep(2000) Then Return
-					_PushFile($FileName, "loots", "image/jpeg", "Last Raid", $FileName)
-				EndIf
-				If $PushBulletlastraid = 1 Then ;As Txt
-					_Push(GetLangText("pushLR"), GetLangText("pushLRb") & GetLangText("msgGoldinitial") & "]: " & _NumberFormat($GoldCount - $GoldCountOld) & " [" & GetLangText("msgElixirinitial") & "]: " & _NumberFormat($ElixirCount - $ElixirCountOld) & _
+				Local $PushReportText = GetLangText("pushLRb") & GetLangText("msgGoldinitial") & "]: " & _NumberFormat($GoldCount - $GoldCountOld) & " [" & GetLangText("msgElixirinitial") & "]: " & _NumberFormat($ElixirCount - $ElixirCountOld) & _
 							" [" & GetLangText("msgDarkElixinitial") & "]: " & _NumberFormat($DarkCount - $DarkCountOld) & " [" & GetLangText("msgTrophyInitial") & "]: " & ($TrophyCount - $TrophyCountOld) & _
 							"\nLoot: \n[" & GetLangText("msgGoldinitial") & "]: " & _NumberFormat($LastRaidGold) & " [" & GetLangText("msgElixirinitial") & "]: " & _NumberFormat($LastRaidElixir) & _
 							" [" & GetLangText("msgDarkElixinitial") & "]: " & _NumberFormat($LastRaidDarkElixir) & " [" & GetLangText("msgTrophyInitial") & "]: " & $LastRaidTrophy & _
@@ -98,7 +93,13 @@ Func VillageReport()
 							"\n" & GetLangText("pushVR") & " \n[" & GetLangText("msgGoldinitial") & "]: " & _NumberFormat($GoldCount) & " [" & GetLangText("msgElixirinitial") & "]: " & _NumberFormat($ElixirCount) & _
 							" [" & GetLangText("msgDarkElixinitial") & "]: " & _NumberFormat($DarkCount) & " [" & GetLangText("msgTrophyInitial") & "]: " & $TrophyCount & " [" & GetLangText("msgGemInitial") & "]: " & $GemCount & _
 							" [Attacked]: " & GUICtrlRead($lblresultvillagesattacked) & " [Skipped]: " & GUICtrlRead($lblresultvillagesskipped) & _
-							" [Wall Upgrade]: " & GUICtrlRead($lblwallupgradecount))
+							" [Wall Upgrade]: " & GUICtrlRead($lblwallupgradecount)
+				If $PushBullettype = 1 Then ;As JPG
+					If _Sleep(2000) Then Return
+					_PushFile($FileName, "loots", "image/jpeg", "Last Raid", $FileName & "\n" & PushReportText)
+				EndIf
+				If $PushBulletlastraid = 1 Then ;As Txt
+					_Push(GetLangText("pushLR"), $PushReportText)
 					SetLog(GetLangText("msgPushLastRaid"), $COLOR_GREEN)
 				EndIf
 				$Raid = 0
