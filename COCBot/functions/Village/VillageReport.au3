@@ -96,7 +96,7 @@ Func VillageReport()
 							" [Wall Upgrade]: " & GUICtrlRead($lblwallupgradecount)
 				If $PushBullettype = 1 Then ;As JPG
 					If _Sleep(2000) Then Return
-					_PushFile($FileName, "loots", "image/jpeg", "Last Raid", $FileName & "\n" & PushReportText)
+					_PushFile($FileName, "loots", "image/jpeg", "Last Raid", $FileName & "\n" & $PushReportText)
 				EndIf
 				If $PushBulletlastraid = 1 Then ;As Txt
 					_Push(GetLangText("pushLR"), $PushReportText)
