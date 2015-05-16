@@ -1,5 +1,8 @@
 ## Change Log:
 
+### v2.5.5
+* Fix for having alternate language selected but still displaying English
+
 ### v2.5.4
 * Fixed spells not being detected
 * Fix for archers not being detected

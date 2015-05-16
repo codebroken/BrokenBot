@@ -725,5 +725,8 @@ EndFunc
 
 Func cmbLanguage()
 	$array = _GUICtrlComboBox_GetListArray($cmbLanguage)
-	If $array[_GUICtrlComboBox_GetCurSel($cmbLanguage)+1] <> $StartupLanguage Then MsgBox(0, $array[_GUICtrlComboBox_GetCurSel($cmbLanguage)+1], GetLangText("msgRestartNeeded"))
+	If $array[_GUICtrlComboBox_GetCurSel($cmbLanguage)+1] <> $StartupLanguage Then
+		MsgBox(0, $array[_GUICtrlComboBox_GetCurSel($cmbLanguage)+1], GetLangText("msgRestartNeeded"))
+		$StartupLanguage = $array[_GUICtrlComboBox_GetCurSel($cmbLanguage)+1]
+	EndIf
 EndFunc
