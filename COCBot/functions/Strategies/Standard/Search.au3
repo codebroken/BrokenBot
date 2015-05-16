@@ -50,7 +50,7 @@ Func Standard_Search()
 				_GDIPlus_ImageSaveToFile($hBitmap, @ScriptDir & "\AllTowns\" & $Date & " at " & $Time & ".png")
 			EndIf
 
-			If _Sleep($icmbSearchsp * 1500) Then Return -1
+			;If _Sleep($icmbSearchsp * 1500) Then Return -1
 
 			If $calculateCondition = True or ($SearchCount <> 0 And Mod($SearchCount, 30) = 0) Then
 				_BumpMouse()
