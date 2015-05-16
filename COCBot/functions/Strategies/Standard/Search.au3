@@ -50,23 +50,43 @@ Func Standard_Search()
 				_GDIPlus_ImageSaveToFile($hBitmap, @ScriptDir & "\AllTowns\" & $Date & " at " & $Time & ".png")
 			EndIf
 
-			If _Sleep($icmbSearchsp * 1500) Then Return -1
+			;If _Sleep($icmbSearchsp * 1500) Then Return -1
 
-			If $calculateCondition = True or ($SearchCount <> 0 And Mod($SearchCount, 30) = 0) Then
+			If $calculateCondition = True or ($SearchCount <> 0 And Mod($SearchCount, GUICtrlRead($txtRedNumOfSerach)) = 0) Then
 				_BumpMouse()
 				$calculateCondition = False
 				Local $CondMultipler
-				$CondMultipler = Int($SearchCount/30)
+				$CondMultipler = Int($SearchCount/GUICtrlRead($txtRedNumOfSerach))
 
-				If GUICtrlRead($txtDeadMinGold) - $CondMultipler*5000 >= 0 Then $MinDeadGold = GUICtrlRead($txtDeadMinGold) - $CondMultipler*5000
-				If GUICtrlRead($txtDeadMinElixir) - $CondMultipler*5000 >= 0 Then $MinDeadElixir = GUICtrlRead($txtDeadMinElixir) - $CondMultipler*5000
-				If GUICtrlRead($txtDeadMinDarkElixir) - $CondMultipler*100 >= 0 Then $MinDeadDark = GUICtrlRead($txtDeadMinDarkElixir) - $CondMultipler*100
-				If GUICtrlRead($txtDeadMinTrophy) - $CondMultipler*2 >= 0 Then $MinDeadTrophy = GUICtrlRead($txtDeadMinTrophy) - $CondMultipler*2
-				If GUICtrlRead($txtMinGold) - $CondMultipler*5000 >= 0 Then $MinGold = GUICtrlRead($txtMinGold) - $CondMultipler*5000
-				If GUICtrlRead($txtMinElixir) - $CondMultipler*5000 >= 0 Then $MinElixir = GUICtrlRead($txtMinElixir) - $CondMultipler*5000
-				If GUICtrlRead($txtMinDarkElixir) - $CondMultipler*100 >= 0 Then $MinDark = GUICtrlRead($txtMinDarkElixir) - $CondMultipler*100
-				If GUICtrlRead($txtMinTrophy) - $CondMultipler*2 >= 0 Then $MinTrophy = GUICtrlRead($txtMinTrophy) - $CondMultipler*2
-				If GUICtrlRead($txtDENukeLimit) - $CondMultipler*300 >= 0 Then $iNukeLimit = GUICtrlRead($txtDENukeLimit) - $CondMultipler*300
+;~ 				If GUICtrlRead($txtDeadMinGold) - $CondMultipler*5000 >= 0 Then $MinDeadGold = GUICtrlRead($txtDeadMinGold) - $CondMultipler*5000
+;~ 				If GUICtrlRead($txtDeadMinElixir) - $CondMultipler*5000 >= 0 Then $MinDeadElixir = GUICtrlRead($txtDeadMinElixir) - $CondMultipler*5000
+;~ 				If GUICtrlRead($txtDeadMinDarkElixir) - $CondMultipler*100 >= 0 Then $MinDeadDark = GUICtrlRead($txtDeadMinDarkElixir) - $CondMultipler*100
+;~ 				If GUICtrlRead($txtDeadMinTrophy) - $CondMultipler*2 >= 0 Then $MinDeadTrophy = GUICtrlRead($txtDeadMinTrophy) - $CondMultipler*2
+;~ 				If GUICtrlRead($txtMinGold) - $CondMultipler*5000 >= 0 Then $MinGold = GUICtrlRead($txtMinGold) - $CondMultipler*5000
+;~ 				If GUICtrlRead($txtMinElixir) - $CondMultipler*5000 >= 0 Then $MinElixir = GUICtrlRead($txtMinElixir) - $CondMultipler*5000
+;~ 				If GUICtrlRead($txtMinDarkElixir) - $CondMultipler*100 >= 0 Then $MinDark = GUICtrlRead($txtMinDarkElixir) - $CondMultipler*100
+;~ 				If GUICtrlRead($txtMinTrophy) - $CondMultipler*2 >= 0 Then $MinTrophy = GUICtrlRead($txtMinTrophy) - $CondMultipler*2
+;~ 				If GUICtrlRead($txtDENukeLimit) - $CondMultipler*300 >= 0 Then $iNukeLimit = GUICtrlRead($txtDENukeLimit) - $CondMultipler*300
+
+				$MinDeadGold = GUICtrlRead($txtDeadMinGold) * (1 - $CondMultipler*GUICtrlRead($txtRedGoldPercent)/100)
+				$MinDeadGold = ($MinDeadGold>0) ? $MinDeadGold : 0
+				$MinDeadElixir = GUICtrlRead($txtDeadMinElixir)  * (1 - $CondMultipler*GUICtrlRead($txtRedElixirPercent)/100)
+				$MinDeadElixir = ($MinDeadElixir>0) ? $MinDeadElixir : 0
+				$MinDeadDark = GUICtrlRead($txtDeadMinDarkElixir) * (1 - $CondMultipler*GUICtrlRead($txtRedDEPercent)/100)
+				$MinDeadDark = ($MinDeadDark>0) ? $MinDeadDark : 0
+				$MinDeadTrophy = Int(GUICtrlRead($txtDeadMinTrophy) * (1 - $CondMultipler*GUICtrlRead($txtRedTrophyPercent)/100))
+				$MinDeadTrophy = ($MinDeadTrophy>0) ? $MinDeadTrophy : 0
+				$MinGold = GUICtrlRead($txtMinGold) * (1 - $CondMultipler*GUICtrlRead($txtRedGoldPercent)/100)
+				$MinGold = ($MinGold>0) ? $MinGold : 0
+				$MinElixir = GUICtrlRead($txtMinElixir)  * (1 - $CondMultipler*GUICtrlRead($txtRedElixirPercent)/100)
+				$MinElixir = ($MinElixir>0) ? $MinElixir : 0
+				$MinDark = GUICtrlRead($txtMinDarkElixir) * (1 - $CondMultipler*GUICtrlRead($txtRedDEPercent)/100)
+				$MinDark = ($MinDark>0) ? $MinDark : 0
+				$MinTrophy = Int(GUICtrlRead($txtMinTrophy) * (1 - $CondMultipler*GUICtrlRead($txtRedTrophyPercent)/100))
+				$MinTrophy = ($MinTrophy>0) ? $MinTrophy : 0
+				$iNukeLimit = GUICtrlRead($txtDENukeLimit) * (1 - $CondMultipler*GUICtrlRead($txtRedNukePercent)/100)
+				$iNukeLimit = ($iNukeLimit>0) ? $iNukeLimit : 0
+
 				SetLog(GetLangText("msgSearchCond"), $COLOR_RED)
 				If IsChecked($chkDeadActivate) And $fullArmy Then
 					$conditionlogstr = "Dead Base ("

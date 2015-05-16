@@ -22,6 +22,7 @@ Func Standard_LoadConfig()
 	_GUICtrlComboBox_SetCurSel($cmbAny, IniRead($configFile, "search", "AnyAndOr", "0"))
 	_GUICtrlComboBox_SetCurSel($cmbDead, IniRead($configFile, "search", "DeadAndOr", "0"))
 
+
 	If IniRead($configFile, "search", "conditionDeadGoldElixir", "0") = 1 Then
 		GUICtrlSetState($chkDeadGE, $GUI_CHECKED)
 	Else
@@ -99,6 +100,14 @@ Func Standard_LoadConfig()
 
 	Standard_chkDeadActivate()
 	Standard_chkAnyActivate()
+
+	;Search reduction settings inside search tab
+	GUICtrlSetData($txtRedNumOfSerach, IniRead($configFile, "search", "RedutionNumOfSerach", "30"))
+	GUICtrlSetData($txtRedGoldPercent, IniRead($configFile, "search", "ReductionGoldPercent", "5"))
+	GUICtrlSetData($txtRedElixirPercent, IniRead($configFile, "search", "ReductionElixirPercent", "5"))
+	GUICtrlSetData($txtRedDEPercent, IniRead($configFile, "search", "ReductionDEPercent", "5"))
+	GUICtrlSetData($txtRedTrophyPercent, IniRead($configFile, "search", "ReductionTrophyPercent", "5"))
+	GUICtrlSetData($txtRedNukePercent, IniRead($configFile, "search", "ReductionNukePercent", "5"))
 
 	;Attack Settings-------------------------------------------------------------------------
 	_GUICtrlComboBox_SetCurSel($cmbDeadDeploy, IniRead($configFile, "attack", "deploy-dead", "0"))
@@ -314,6 +323,13 @@ Func Standard_SaveConfig($configFile)
 	Else
 		IniWrite($configFile, "search", "conditionSnipe", 0)
 	EndIf
+	;Search reduction setting in search tab
+	IniWrite($configFile, "search",  "RedutionNumOfSerach", GUICtrlRead($txtRedNumOfSerach))
+	IniWrite($configFile, "search",  "ReductionGoldPercent", GUICtrlRead($txtRedGoldPercent))
+	IniWrite($configFile, "search",  "ReductionElixirPercent", GUICtrlRead($txtRedElixirPercent))
+	IniWrite($configFile, "search",  "ReductionDEPercent", GUICtrlRead($txtRedDEPercent))
+	IniWrite($configFile, "search",  "ReductionTrophyPercent", GUICtrlRead($txtRedTrophyPercent))
+	IniWrite($configFile, "search",  "ReductionNukePercent", GUICtrlRead($txtRedNukePercent))
 
 	;Attack Settings-------------------------------------------------------------------------
 	IniWrite($configFile, "attack", "deploy-dead", _GUICtrlComboBox_GetCurSel($cmbDeadDeploy))
