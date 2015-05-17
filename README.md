@@ -1,5 +1,5 @@
 # BrokenBot.org - Clash of Clans Bot
-Latest version: 2.5.5
+Latest version: 2.5.6
 
 ## Community
 Forums available for discussion at: http://brokenbot.org/
