@@ -102,7 +102,10 @@ EndFunc   ;==>runBot
 Func Idle($Plugin) ;Sequence that runs until Full Army
 	Local $TimeIdle = 0 ;In Seconds
 	Local $hTimer = TimerInit()
-	While Not Call($Plugin & "_ReadyCheck")
+	Local $prevCamp = 0
+	Local $hTroopTimer = TimerInit()
+	Local $TimeSinceTroop = 0
+	While Not Call($Plugin & "_ReadyCheck", $TimeSinceTroop)
 		If StatusCheck() Then Return
 		SetLog(GetLangText("msgWaitingFull"), $COLOR_PURPLE)
 		If $iCollectCounter > $COLLECTATCOUNT Then ; This is prevent from collecting all the time which isn't needed anyway
@@ -115,6 +118,11 @@ Func Idle($Plugin) ;Sequence that runs until Full Army
 		If StatusCheck() Then Return
 		_BumpMouse()
 		$TimeIdle = Round(TimerDiff($hTimer) / 1000, 2) ;In Seconds
+		If $CurCamp <> $prevCamp Then
+			$prevCamp = $CurCamp
+			$hTroopTimer = TimerInit()
+		EndIf
+		$TimeSinceTroop = TimerDiff($hTroopTimer) / 1000
 		SetLog(GetLangText("msgTimeIdle") & Floor(Floor($TimeIdle / 60) / 60) & GetLangText("msgTimeIdleHours")& Floor(Mod(Floor($TimeIdle / 60), 60)) & GetLangText("msgTimeIdleMin") & Floor(Mod($TimeIdle, 60)) & GetLangText("msgTimeIdleSec"), $COLOR_ORANGE)
 		If _Sleep(30000) Then ExitLoop
 	WEnd

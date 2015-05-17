@@ -3,13 +3,17 @@
 #pragma compile(Icon, "BrokenBot.org\images\icons\brokenbot.ico")
 #pragma compile(FileDescription, BrokenBot.org - Clash of Clans Bot)
 #pragma compile(ProductName, BrokenBot.org - Clash of Clans Bot)
-#pragma compile(ProductVersion, 2.5.5)
-#pragma compile(FileVersion, 2.5.5)
+#pragma compile(ProductVersion, 2.5.6)
+#pragma compile(FileVersion, 2.5.6)
 
 #include <GUIConstants.au3>
 
-$sBotVersion = "2.5.5"
+$sBotVersion = "2.5.6"
 $sBotTitle = "BrokenBot.org - Break FREE - v" & $sBotVersion
+
+If FileExists (@ScriptDir & "\.developer") Then
+	$sBotTitle = "BrokenBot - In Development"
+EndIf
 
 Global $StartupLanguage = IniRead(@ScriptDir & "\config\default.ini", "config", "language", "English")
 
@@ -19,8 +23,7 @@ If _Singleton($sBotTitle, 1) = 0 Then
 EndIf
 
 If @AutoItX64 = 1 Then
-	MsgBox(0, "", GetLangText("boxCompile1") & @CRLF & _
-			GetLangText("boxCompile2"))
+	MsgBox(0, "", GetLangText("boxCompile1") & @CRLF & GetLangText("boxCompile2"))
 	Exit
 EndIf
 

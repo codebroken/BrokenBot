@@ -1,5 +1,11 @@
 ## Change Log:
 
+### v2.5.6
+* Fix for bot thinking it is making troops but barracks aren't making anything
+* Failsafe added so that it will eventually start attacking even without full army camp if it gets really stuck (such as you have 199/200 troops but all barracks are trying to make giants)
+* Increased amount of information sent out in push bullet messages
+* Added customizable decreases in required loot levels for searching
+
 ### v2.5.5
 * Fix for having alternate language selected but still displaying English
 

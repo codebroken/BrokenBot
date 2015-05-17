@@ -9,6 +9,7 @@ logs/
 Loots/
 config/*.ini
 strategies/*.ini
+.developer
 
 ######################
 ## Windows detritus ##

@@ -1,8 +1,20 @@
-Func Standard_ReadyCheck()
+Func Standard_ReadyCheck($TimeSinceNewTroop)
+
+	If $TimeSinceNewTroop > Standard_GetTrainTime() + 60 Then
+		If $stuckCount < 3 Then
+			$FirstStart = True
+			SetLog(GetLangText("msgAppearsStuck"))
+			$stuckCount +=1
+		ElseIf $stuckCount = 3
+			SetLog(GetLangText("msgSevereStuck"))
+			$stuckCount += 1
+		EndIf
+	EndIf
+
 	$fullarmy = Standard_CheckArmyCamp()
 	If StatusCheck() Then Return False
 
-	If Not $fullarmy Then Standard_Train()
+	If Not $fullarmy And $stuckCount < 3 Then Standard_Train()
 	If StatusCheck() Then Return False
 
 	If IsChecked($chkMakeSpells) Then
@@ -13,15 +25,148 @@ Func Standard_ReadyCheck()
 		If StatusCheck() Then Return False
 	EndIf
 
+	If $stuckCount >= 3 And IsChecked($chkDeadActivate) Then
+		$fullArmy = True
+		Return True
+	EndIf
+
+	If $stuckCount >= 3 And IsChecked($chkAnyActivate) Then
+		$fullArmy = True
+		Return True
+	EndIf
 
 	If $fullarmy And IsChecked($chkDeadActivate) Then Return True
 	If $fullarmy And IsChecked($chkAnyActivate) Then Return True
+
 	If IsChecked($chkMakeSpells) Then
 		If $fullSpellFactory And IsChecked($chkNukeOnly) And Not IsChecked($chkNukeOnlyWithFullArmy) Then Return True
 	EndIf
 
 	Return False
 EndFunc   ;==>Standard_ReadyCheck
+
+Func Standard_GetTrainTime()
+	$MaxTrainTime = 0
+	Switch _GUICtrlComboBox_GetCurSel($cmbTroopComp)
+		Case 0
+			$MaxTrainTime = 25
+		Case 1
+			$MaxTrainTime = 20
+		Case 2
+			$MaxTrainTime = 30
+		Case 3
+			$MaxTrainTime = 25
+		Case 4
+			$MaxTrainTime = 120
+		Case 5
+			$MaxTrainTime = 120
+		Case 6
+			$MaxTrainTime = 30
+		Case 7
+			$MaxTrainTime = 120
+		Case 8
+			Switch _GUICtrlComboBox_GetCurSel($cmbBarrack1)
+				Case 0
+					$MaxTrainTime = 20
+				Case 1
+					$MaxTrainTime = 25
+				Case 2
+					$MaxTrainTime = 120
+				Case 3
+					$MaxTrainTime = 30
+				Case 4
+					$MaxTrainTime = 120
+				Case 5
+					$MaxTrainTime = 240
+				Case 6
+					$MaxTrainTime = 480
+				Case 7
+					$MaxTrainTime = 900
+				Case 8
+					$MaxTrainTime = 1800
+				Case 9
+					$MaxTrainTime = 2700
+				Case 10
+					$MaxTrainTime = 0
+			EndSwitch
+			Switch _GUICtrlComboBox_GetCurSel($cmbBarrack2)
+				Case 0
+					If $MaxTrainTime < 20 Then $MaxTrainTime = 20
+				Case 1
+					If $MaxTrainTime < 25 Then $MaxTrainTime = 25
+				Case 2
+					If $MaxTrainTime < 120 Then $MaxTrainTime = 120
+				Case 3
+					If $MaxTrainTime < 30 Then $MaxTrainTime = 30
+				Case 4
+					If $MaxTrainTime < 120 Then $MaxTrainTime = 120
+				Case 5
+					If $MaxTrainTime < 240 Then $MaxTrainTime = 240
+				Case 6
+					If $MaxTrainTime < 480 Then $MaxTrainTime = 480
+				Case 7
+					If $MaxTrainTime < 900 Then $MaxTrainTime = 900
+				Case 8
+					If $MaxTrainTime < 1800 Then $MaxTrainTime = 1800
+				Case 9
+					If $MaxTrainTime < 2700 Then $MaxTrainTime = 2700
+				Case 10
+					; Nothing
+			EndSwitch
+			Switch _GUICtrlComboBox_GetCurSel($cmbBarrack3)
+				Case 0
+					If $MaxTrainTime < 20 Then $MaxTrainTime = 20
+				Case 1
+					If $MaxTrainTime < 25 Then $MaxTrainTime = 25
+				Case 2
+					If $MaxTrainTime < 120 Then $MaxTrainTime = 120
+				Case 3
+					If $MaxTrainTime < 30 Then $MaxTrainTime = 30
+				Case 4
+					If $MaxTrainTime < 120 Then $MaxTrainTime = 120
+				Case 5
+					If $MaxTrainTime < 240 Then $MaxTrainTime = 240
+				Case 6
+					If $MaxTrainTime < 480 Then $MaxTrainTime = 480
+				Case 7
+					If $MaxTrainTime < 900 Then $MaxTrainTime = 900
+				Case 8
+					If $MaxTrainTime < 1800 Then $MaxTrainTime = 1800
+				Case 9
+					If $MaxTrainTime < 2700 Then $MaxTrainTime = 2700
+				Case 10
+					; Nothing
+			EndSwitch
+			Switch _GUICtrlComboBox_GetCurSel($cmbBarrack4)
+				Case 0
+					If $MaxTrainTime < 20 Then $MaxTrainTime = 20
+				Case 1
+					If $MaxTrainTime < 25 Then $MaxTrainTime = 25
+				Case 2
+					If $MaxTrainTime < 120 Then $MaxTrainTime = 120
+				Case 3
+					If $MaxTrainTime < 30 Then $MaxTrainTime = 30
+				Case 4
+					If $MaxTrainTime < 120 Then $MaxTrainTime = 120
+				Case 5
+					If $MaxTrainTime < 240 Then $MaxTrainTime = 240
+				Case 6
+					If $MaxTrainTime < 480 Then $MaxTrainTime = 480
+				Case 7
+					If $MaxTrainTime < 900 Then $MaxTrainTime = 900
+				Case 8
+					If $MaxTrainTime < 1800 Then $MaxTrainTime = 1800
+				Case 9
+					If $MaxTrainTime < 2700 Then $MaxTrainTime = 2700
+				Case 10
+					; Nothing
+			EndSwitch
+		Case 9
+			; Doesn't work currently
+			$MaxTrainTime = 0
+	EndSwitch
+	Return $MaxTrainTime
+EndFunc
 
 Func Standard_CheckArmyCamp()
 	SetLog(GetLangText("msgCheckingCamp"), $COLOR_BLUE)
