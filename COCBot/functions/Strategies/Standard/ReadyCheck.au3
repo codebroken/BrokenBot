@@ -525,19 +525,6 @@ Func Standard_Train($reset = False)
 					EndIf
 				EndIf
 
-				If GUICtrlRead($txtArchers) <> "0" And $CurArch > 0 Then
-					;If _ColorCheck(_GetPixelColor(261, 366), Hex(0x39D8E0, 6), 20) And $CurArch > 0 Then
-					If $CurArch > 0 Then
-						If $ArchEBarrack = 0 Then
-							Standard_TrainIt($eArcher, 1)
-						ElseIf $ArchEBarrack >= $CurArch Then
-							Standard_TrainIt($eArcher, $CurArch)
-						Else
-							Standard_TrainIt($eArcher, $ArchEBarrack)
-						EndIf
-					EndIf
-				EndIf
-
 				If GUICtrlRead($txtNumGiants) <> "0" And $CurGiant > 0 Then
 					;If _ColorCheck(_GetPixelColor(475, 366), Hex(0x3DD8E0, 6), 20) And $CurGiant > 0 Then
 					If $CurGiant > 0 Then
@@ -550,7 +537,6 @@ Func Standard_Train($reset = False)
 						EndIf
 					EndIf
 				EndIf
-
 
 				If GUICtrlRead($txtNumWallbreakers) <> "0" And $CurWB > 0 Then
 					;If _ColorCheck(_GetPixelColor(688, 366), Hex(0x3AD8E0, 6), 20) And $CurWB > 0  Then
@@ -565,6 +551,31 @@ Func Standard_Train($reset = False)
 					EndIf
 				EndIf
 
+				If GUICtrlRead($txtGoblins) <> "0" And $CurGoblin > 0 Then
+					;If _ColorCheck(_GetPixelColor(261, 366), Hex(0x39D8E0, 6), 20) And $CurGoblin > 0 Then
+					If $CurGoblin > 0 Then
+						If $GoblinEBarrack = 0 Then
+							Standard_TrainIt($eGoblin, 1)
+						ElseIf $GoblinEBarrack >= $CurGoblin Or $GoblinEBarrack = 0 Then
+							Standard_TrainIt($eGoblin, $CurGoblin)
+						Else
+							Standard_TrainIt($eGoblin, $GoblinEBarrack)
+						EndIf
+					EndIf
+				EndIf
+
+				If GUICtrlRead($txtArchers) <> "0" And $CurArch > 0 Then
+					;If _ColorCheck(_GetPixelColor(261, 366), Hex(0x39D8E0, 6), 20) And $CurArch > 0 Then
+					If $CurArch > 0 Then
+						If $ArchEBarrack = 0 Then
+							Standard_TrainIt($eArcher, 1)
+						ElseIf $ArchEBarrack >= $CurArch Then
+							Standard_TrainIt($eArcher, $CurArch)
+						Else
+							Standard_TrainIt($eArcher, $ArchEBarrack)
+						EndIf
+					EndIf
+				EndIf
 
 				If GUICtrlRead($txtBarbarians) <> "0" And $CurBarb > 0 Then
 					;If _ColorCheck(_GetPixelColor(369, 366), Hex(0x39D8E0, 6), 20) And $CurBarb > 0 Then
@@ -575,20 +586,6 @@ Func Standard_Train($reset = False)
 							Standard_TrainIt($eBarbarian, $CurBarb)
 						Else
 							Standard_TrainIt($eBarbarian, $BarbEBarrack)
-						EndIf
-					EndIf
-				EndIf
-
-
-				If GUICtrlRead($txtGoblins) <> "0" And $CurGoblin > 0 Then
-					;If _ColorCheck(_GetPixelColor(261, 366), Hex(0x39D8E0, 6), 20) And $CurGoblin > 0 Then
-					If $CurGoblin > 0 Then
-						If $GoblinEBarrack = 0 Then
-							Standard_TrainIt($eGoblin, 1)
-						ElseIf $GoblinEBarrack >= $CurGoblin Or $GoblinEBarrack = 0 Then
-							Standard_TrainIt($eGoblin, $CurGoblin)
-						Else
-							Standard_TrainIt($eGoblin, $GoblinEBarrack)
 						EndIf
 					EndIf
 				EndIf

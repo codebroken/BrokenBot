@@ -29,11 +29,11 @@ Next
 $AimCenter = 1
 $AimTH = 2
 
-Func RedLineDeploy($x, $y, $times = 1, $speed = 0, $CenteredOn = 0, $BufferDist = 20)
+Func RedLineDeploy($x, $y, $times = 1, $speed = 0, $CenteredOn = 1, $BufferDist = 20, $CenterX = 395, $CenterY = 314)
 	$BufferDist = GUICtrlRead($sldAcc) + 10
 	If $CenteredOn = $AimCenter Then
-		$AimX = Round((($Grid[42][42][0] - $Grid[0][0][0]) / 2) + $Grid[0][0][0])
-		$AimY = Round((($Grid[42][42][1] - $Grid[0][0][1]) / 2) + $Grid[0][0][1])
+		$AimX = $CenterX
+		$AimY = $CenterY
 	ElseIf $CenteredOn = $AimTH Then
 		$AimX = $THx
 		$AimY = $THy
@@ -201,17 +201,4 @@ Func SeekEdges()
 
 	SetLog(GetLangText("msgDone"), $COLOR_BLUE)
 EndFunc   ;==>SeekEdges
-
-Func CompareColor($cRed, $cGreen, $cBlue, $tol = 7)
-	For $w = 0 To $numEdges - 1
-		If Abs($cRed - $EdgeColors[$w][0]) < $tol Then
-			If Abs($cGreen - $EdgeColors[$w][1]) < $tol Then
-				If Abs($cBlue - $EdgeColors[$w][2]) < $tol Then
-					Return True
-				EndIf
-			EndIf
-		EndIf
-	Next
-	Return False
-EndFunc   ;==>CompareColor
 

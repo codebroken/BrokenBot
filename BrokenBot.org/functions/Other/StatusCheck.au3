@@ -17,7 +17,10 @@ Func StatusCheck($OnMainScreen = True, $WriteLog = False, $maxDelay = 1)
 			SetLog(GetLangText("msgWaitMinute"), $COLOR_RED)
 			If _Sleep(6000) Then Return False
 		WEnd
+		If $PauseBot = True And GUICtrlRead($btnPause) = "Pause" Then btnPause()
+		If $PauseBot = False And GUICtrlRead($btnPause) = "Resume" Then btnPause()
 	EndIf
+	If Pause() Then Return
 	If BotStopped($OnMainScreen) Then
 		Return True
 	Else

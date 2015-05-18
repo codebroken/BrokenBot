@@ -1,5 +1,12 @@
 ## Change Log:
 
+### v2.5.7
+* Fixed pushbullet pause command, if you pause mid-battle by pushbullet then the pause will not take effect until you have returned to main screen
+* Allow user to pause bot at just about anytime if they actually click the button
+* Fix added for wall breaker not being recognized
+* Modified troop training order to start with troops that take longer to produce
+* Significant modification to trophy dropping.  Now will zap DE if you have spells available and there is enough DE in there as entered into the Strategies/Spells/Zap field.  Will next drop king or queen if available.  Finally will resort to any other troop you have.  Additionally the location of the drop has been randomized and it uses red-line detection.
+
 ### v2.5.6
 * Fix for bot thinking it is making troops but barracks aren't making anything
 * Failsafe added so that it will eventually start attacking even without full army camp if it gets really stuck (such as you have 199/200 troops but all barracks are trying to make giants)
