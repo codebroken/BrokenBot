@@ -47,12 +47,8 @@ Func _RemoteControl()
 					_DeleteMessage($iden[$x])
 				ElseIf $title[$x] = "BOT PAUSE" Then
 					If $PauseBot = False Then
-						SetLog(GetLangText("msgPBBotPaused"))
+						SetLog(GetLangText("msgPBBotPauseFuture"))
 						_Push(GetLangText("pushPRa"), GetLangText("pushPRb"))
-						;Local $hWnd = WinWait("[CLASS:AutoIt v3 GUI]", "", 10)
-						;WinActivate($hWnd)
-						;ControlClick("[CLASS:AutoIt v3 GUI]", "Stop Bot", "[CLASS:Button; TEXT:Stop Bot]", "left", "1")
-						;$StBot = 1
 						$PauseBot = True
 					Else
 						SetLog(GetLangText("msgPBNoAction"))
@@ -64,9 +60,7 @@ Func _RemoteControl()
 						SetLog(GetLangText("msgPBResumed"))
 						_Push(GetLangText("pushRRa"), GetLangText("pushRRb"))
 						$PauseBot = False
-						;Local $hWnd = WinWait("[CLASS:AutoIt v3 GUI]", "", 10)
-						;WinActivate($hWnd)
-						;ControlClick("[CLASS:AutoIt v3 GUI]", "Start Bot", "[CLASS:Button; TEXT:Start Bot]", "left", "1")
+						If GUICtrlRead($btnPause) = "Resume" Then btnPause()
 					Else
 						SetLog(GetLangText("msgPBRunning"))
 						_Push(GetLangText("pushRRa"), GetLangText("pushRRc"))
