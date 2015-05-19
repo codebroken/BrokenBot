@@ -84,13 +84,6 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	_GUICtrlComboBox_SetCurSel($cmbUnitDelay, $icmbUnitDelay)
 	_GUICtrlComboBox_SetCurSel($cmbWaveDelay, $icmbWaveDelay)
 
-	If $iRandomspeedatk = 1 Then
-		GUICtrlSetState($Randomspeedatk, $GUI_CHECKED)
-	Else
-		GUICtrlSetState($Randomspeedatk, $GUI_UNCHECKED)
-	EndIf
-	Randomspeedatk()
-
 ;Lab
     If $ichkLab = 1 Then
         GUICtrlSetState($chkLab, $GUI_CHECKED)
@@ -215,6 +208,12 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 		GUICtrlSetState($lblfreebuilder, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($lblfreebuilder, $GUI_UNCHECKED)
+	EndIf
+
+	If $PushBulletdisconnection = 1 Then
+		GUICtrlSetState($lbldisconnect, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($lbldisconnect, $GUI_UNCHECKED)
 	EndIf
 
 	If $PushBullettype = 1 Then

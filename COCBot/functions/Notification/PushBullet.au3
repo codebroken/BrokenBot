@@ -10,42 +10,18 @@ Func _RemoteControl()
 	$oHTTP.Send()
 	$Result = $oHTTP.ResponseText
 
-	Local $findstr = StringRegExp($Result, '"title":"BOT')
-	If $findstr = 0 Then
-		$findstr = StringRegExp($Result, '"title":"bot')
-	EndIf
-	If $findstr = 0 Then
-		$findstr = StringRegExp($Result, '"title":"Bot')
-	EndIf
-	If $findstr = 0 Then
-		$findstr = StringRegExp($Result, '"title":"bOt')
-	EndIf
-	If $findstr = 0 Then
-		$findstr = StringRegExp($Result, '"title":"boT')
-	EndIf
-	If $findstr = 0 Then
-		$findstr = StringRegExp($Result, '"title":"BOt')
-	EndIf
-	If $findstr = 0 Then
-		$findstr = StringRegExp($Result, '"title":"bOT')
-	EndIf
-	If $findstr = 0 Then
-		$findstr = StringRegExp($Result, '"title":"BoT')
-	EndIf
-	If $findstr = 1 Then
+	If StringInStr(StringLower($Result), '"title":"bot') Then
 		Local $title = _StringBetween($Result, '"title":"', '"', "", False)
 		Local $iden = _StringBetween($Result, '"iden":"', '"', "", False)
-
 		For $x = 0 To UBound($title) - 1
 			If $title <> "" Or $iden <> "" Then
 				$title[$x] = StringUpper(StringStripWS($title[$x], $STR_STRIPLEADING + $STR_STRIPTRAILING + $STR_STRIPSPACES))
 				$iden[$x] = StringStripWS($iden[$x], $STR_STRIPLEADING + $STR_STRIPTRAILING + $STR_STRIPSPACES)
-
-				If $title[$x] = "BOT HELP" Then
+				If StringLeft($title[$x], 8) = "BOT HELP" Then
 					SetLog(GetLangText("msgPBHelpSent"))
 					_Push(GetLangText("pushHRa"), GetLangText("pushHRb"))
 					_DeleteMessage($iden[$x])
-				ElseIf $title[$x] = "BOT PAUSE" Then
+				ElseIf StringLeft($title[$x], 9) = "BOT PAUSE" And StringStripWS(StringRight($title[$x], StringLen($title[$x]) - 9), 3) = StringUpper(StringStripWS(GUICtrlRead($inppushuser), 3)) Then
 					If $PauseBot = False Then
 						SetLog(GetLangText("msgPBBotPauseFuture"))
 						_Push(GetLangText("pushPRa"), GetLangText("pushPRb"))
@@ -55,7 +31,7 @@ Func _RemoteControl()
 						_Push(GetLangText("pushPRa"), GetLangText("pushPRc"))
 					EndIf
 					_DeleteMessage($iden[$x])
-				ElseIf $title[$x] = "BOT RESUME" Then
+				ElseIf StringLeft($title[$x], 10) = "BOT RESUME" And StringStripWS(StringRight($title[$x], StringLen($title[$x]) - 10), 3) = StringUpper(StringStripWS(GUICtrlRead($inppushuser), 3)) Then
 					If $PauseBot = True Then
 						SetLog(GetLangText("msgPBResumed"))
 						_Push(GetLangText("pushRRa"), GetLangText("pushRRb"))
@@ -66,11 +42,11 @@ Func _RemoteControl()
 						_Push(GetLangText("pushRRa"), GetLangText("pushRRc"))
 					EndIf
 					_DeleteMessage($iden[$x])
-				ElseIf $title[$x] = "BOT STATS" Then
+				ElseIf StringLeft($title[$x], 9) = "BOT STATS" And StringStripWS(StringRight($title[$x], StringLen($title[$x]) - 9), 3) = StringUpper(StringStripWS(GUICtrlRead($inppushuser), 3)) Then
 					SetLog(GetLangText("msgPBStats"))
 					_Push(GetLangText("pushStatRa"), GetLangText("pushStatRb") & GUICtrlRead($lblresultgoldtstart) & GetLangText("pushStatRc") & GUICtrlRead($lblresultelixirstart) & GetLangText("pushStatRd") & GUICtrlRead($lblresultdestart) & GetLangText("pushStatRe") & GUICtrlRead($lblresulttrophystart) & GetLangText("pushStatRf") & GUICtrlRead($lblresultgoldnow) & GetLangText("pushStatRg") & GUICtrlRead($lblresultelixirnow) & GetLangText("pushStatRh") & GUICtrlRead($lblresultdenow) & GetLangText("pushStatRi") & GUICtrlRead($lblresulttrophynow) & GetLangText("pushStatRj") & GetLangText("pushStatRk") & GUICtrlRead($lblwallupgradecount) & GetLangText("pushStatRl") & GUICtrlRead($lblresultgoldgain) & GetLangText("pushStatRm") & GUICtrlRead($lblresultelixirgain) & GetLangText("pushStatRn") & GUICtrlRead($lblresultdegain) & GetLangText("pushStatRo") & GUICtrlRead($lblresulttrophygain) & GetLangText("pushStatRp") & GUICtrlRead($lblresultvillagesattacked) & GetLangText("pushStatRq")& GUICtrlRead($lblresultvillagesskipped) & GetLangText("pushStatRq1")& GUICtrlRead($lblresultsearchdisconnected) & GetLangText("pushStatRr") & GUICtrlRead($lblresultsearchcost) & GetLangText("pushStatRs") & StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
 					_DeleteMessage($iden[$x])
-				ElseIf $title[$x] = "BOT LOGS" Then
+				ElseIf StringLeft($title[$x], 8) = "BOT LOGS" And StringStripWS(StringRight($title[$x], StringLen($title[$x]) - 8), 3) = StringUpper(StringStripWS(GUICtrlRead($inppushuser), 3)) Then
 					SetLog(GetLangText("msgPBLog"))
 					_PushFile($sLogFileName, "logs", "text/plain; charset=utf-8", "Current Logs", $sLogFileName)
 					_DeleteMessage($iden[$x])
@@ -94,6 +70,7 @@ Func _PushBullet($pTitle = "", $pMessage = "")
 EndFunc   ;==>_PushBullet
 
 Func _Push($pTitle, $pMessage)
+	If StringStripWS(GUICtrlRead($inppushuser), 3) <> "" Then $pTitle = "[" & StringStripWS(GUICtrlRead($inppushuser), 3) & "] " & $pTitle
 	$oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 	$access_token = $PushBullettoken
 	$oHTTP.Open("Post", "https://api.pushbullet.com/v2/pushes", False)
@@ -104,6 +81,7 @@ Func _Push($pTitle, $pMessage)
 EndFunc   ;==>_Push
 
 Func _PushFile($File, $Folder, $FileType, $title, $body)
+	If StringStripWS(GUICtrlRead($inppushuser), 3) <> "" Then $Title = "[" & StringStripWS(GUICtrlRead($inppushuser), 3) & "] " & $Title
 	$oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 	$access_token = $PushBullettoken
 	$oHTTP.Open("Post", "https://api.pushbullet.com/v2/upload-request", False)

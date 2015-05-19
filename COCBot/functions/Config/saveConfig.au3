@@ -28,7 +28,6 @@ Func saveConfig() ;Saves the controls settings to the config
 	;---------------------------------------------------------------------------------------
 	IniWrite($config, "attack", "UnitD", _GUICtrlComboBox_GetCurSel($cmbUnitDelay))
 	IniWrite($config, "attack", "WaveD", _GUICtrlComboBox_GetCurSel($cmbWaveDelay))
-	IniWrite($config, "attack", "randomatk", GUICtrlRead($Randomspeedatk))
 	;---------------------------------------------------------------------------------------
 	; Donate settings ----------------------------------------------------------------------
 	;---------------------------------------------------------------------------------------
@@ -185,6 +184,11 @@ Func saveConfig() ;Saves the controls settings to the config
 	Else
 		IniWrite($config, "notification", "freebuilder", 0)
 	EndIf
+	If IsChecked($lbldisconnect) Then
+		IniWrite($config, "notification", "disconnection", 1)
+	Else
+		IniWrite($config, "notification", "disconnection", 0)
+	EndIf
 	If IsChecked($lblpushbulletdebug) Then
 		IniWrite($config, "notification", "debug", 1)
 	Else
@@ -211,6 +215,7 @@ Func saveConfig() ;Saves the controls settings to the config
 	Else
 		IniWrite($config, "notification", "attackimage", 0)
 	EndIf
+	IniWrite($config, "notification", "user", GUICtrlRead($inppushuser))
 
 	;---------------------------------------------------------------------------------------
 	; Misc settings ------------------------------------------------------------------------

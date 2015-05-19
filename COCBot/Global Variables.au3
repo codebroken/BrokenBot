@@ -282,6 +282,8 @@ Global $PushBullettype = 0
 Global $PushBulletattacktype = 0
 Global $FileName = ""
 Global $PushBulletvillagereport = 0
+Global $PushBulletvillagereportTimer
+Global $PushBulletvillagereportInterval = 3600000 ; an hour
 Global $PushBulletmatchfound = 0
 Global $PushBulletlastraid = 0
 Global $PushBullettotalgain = 0
@@ -289,6 +291,7 @@ Global $PushBulletdebug = 0
 Global $PushBulletremote = 0
 Global $PushBulletdelete = 0
 Global $PushBulletfreebuilder = 0
+Global $PushBulletdisconnection = 0
 Global $sLogFileName
 Global $Raid = 0
 Global $buildernotified = False
@@ -300,12 +303,14 @@ Global $SearchCost = 0
 Global $sTimerRC
 Global $PauseBot = False
 
+;Match found
+Global $MatchFoundText =""
+
 ;Last Raid
 Global $LastRaidGold = 0
 Global $LastRaidElixir = 0
 Global $LastRaidDarkElixir = 0
 Global $LastRaidTrophy = 0
-
 ;UpTroops
 Global $ichkLab
 Global $icmbLaboratory

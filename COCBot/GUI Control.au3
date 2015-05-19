@@ -40,8 +40,6 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 						chkRequest()
 					Case $tabMain
 						tabMain()
-					Case $Randomspeedatk
-						Randomspeedatk()
 					Case $chkNoAttack
 						If IsChecked($chkNoAttack) Then
 							If IsChecked($lblpushbulletenabled) Then
@@ -159,6 +157,8 @@ Func btnStart()
 		EndIf
 		GUICtrlSetState($pageGeneral, $GUI_SHOW)
 		$FirstAttack = True
+		; Set hourly village report timer
+		$PushBulletvillagereportTimer = TimerInit()
 
 		CreateLogFile()
 
@@ -468,18 +468,6 @@ Func chkRequest()
 	EndIf
 EndFunc   ;==>chkRequest
 
-Func Randomspeedatk()
-	If IsChecked($Randomspeedatk) Then
-		$iRandomspeedatk = 1
-		GUICtrlSetState($cmbUnitDelay, $GUI_DISABLE)
-		GUICtrlSetState($cmbWaveDelay, $GUI_DISABLE)
-	Else
-		$iRandomspeedatk = 0
-		GUICtrlSetState($cmbUnitDelay, $GUI_ENABLE)
-		GUICtrlSetState($cmbWaveDelay, $GUI_ENABLE)
-	EndIf
-EndFunc   ;==>Randomspeedatk
-
 Func tabMain()
 	If _GUICtrlTab_GetCurSel($tabMain) = 0 Then
 		ControlShow("", "", $txtLog)
@@ -607,6 +595,8 @@ Func lblpushbulletenabled()
 		GUICtrlSetState($lblpushbulletdelete, $GUI_ENABLE)
 		GUICtrlSetState($lblvillagereport, $GUI_ENABLE)
 		GUICtrlSetState($lblmatchfound, $GUI_ENABLE)
+		GUICtrlSetState($lblfreebuilder, $GUI_ENABLE)
+		GUICtrlSetState($lbldisconnect, $GUI_ENABLE)
 		GUICtrlSetState($lbllastraid, $GUI_ENABLE)
 		GUICtrlSetState($UseJPG, $GUI_ENABLE)
 	Else
@@ -616,6 +606,8 @@ Func lblpushbulletenabled()
 		GUICtrlSetState($lblpushbulletdelete, $GUI_DISABLE)
 		GUICtrlSetState($lblvillagereport, $GUI_DISABLE)
 		GUICtrlSetState($lblmatchfound, $GUI_DISABLE)
+		GUICtrlSetState($lblfreebuilder, $GUI_DISABLE)
+		GUICtrlSetState($lbldisconnect, $GUI_DISABLE)
 		GUICtrlSetState($lbllastraid, $GUI_DISABLE)
 		GUICtrlSetState($UseJPG, $GUI_DISABLE)
 	EndIf
@@ -633,8 +625,7 @@ Func btnBugRep()
 		EndIf
 	Next
 
-	GUICtrlSetData($inpSettings, "")
-	$firstLine = True
+	GUICtrlSetData($inpSettings, "Global Settings:")
 	If FileExists($config) Then
 		$hConfig = FileOpen($config)
 		While True
@@ -643,15 +634,26 @@ Func btnBugRep()
 			If StringInStr($strNextLine, "accounttoken=") Then
 				$strNextLine = "accounttoken=REDACTED"
 			EndIf
-			If Not $firstLine Then
-				GUICtrlSetData($inpSettings, GUICtrlRead($inpSettings) & @CRLF & $strNextLine)
-			Else
-				$firstLine = False
-				GUICtrlSetData($inpSettings, $strNextLine)
+			If StringInStr($strNextLine, "user=") Then
+				$strNextLine = "user=REDACTED"
 			EndIf
+			GUICtrlSetData($inpSettings, GUICtrlRead($inpSettings) & @CRLF & $strNextLine)
 		WEnd
+		FileClose($hConfig)
 	Else
-		GUICtrlSetData($inpSettings, "No log file found")
+		GUICtrlSetData($inpSettings, GUICtrlRead($inpSettings) & @CRLF & "No settings file found")
+	EndIf
+	GUICtrlSetData($inpSettings, GUICtrlRead($inpSettings) & @CRLF & @CRLF & "Strategy settings:")
+	If FileExists($dirStrat & GUICtrlRead($lstStrategies) & ".ini") Then
+		$hConfig = FileOpen($dirStrat & GUICtrlRead($lstStrategies) & ".ini")
+		While True
+			$strNextLine = FileReadLine($hConfig)
+			If @error Then ExitLoop
+			GUICtrlSetData($inpSettings, GUICtrlRead($inpSettings) & @CRLF & $strNextLine)
+		WEnd
+		FileClose($hConfig)
+	Else
+		GUICtrlSetData($inpSettings, GUICtrlRead($inpSettings) & @CRLF & "No strategy settings file found")
 	EndIf
 
 	GUISetState(@SW_DISABLE, $frmBot)
