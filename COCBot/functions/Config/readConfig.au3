@@ -61,6 +61,7 @@ Func readConfig() ;Reads config and sets it to the variables
 	$PushBulletremote = IniRead($config, "notification", "remote", "0")
 	$PushBulletdelete = IniRead($config, "notification", "delete", "0")
 	$PushBulletfreebuilder = IniRead($config, "notification", "freebuilder", "0")
+	$PushBulletdisconnection = IniRead($config, "notification", "disconnection", "0")
 
 	;---------------------------------------------------------------------------------------
 	; Misc settings ------------------------------------------------------------------------

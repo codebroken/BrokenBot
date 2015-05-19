@@ -58,16 +58,6 @@ Func Standard_Search()
 				Local $CondMultipler
 				$CondMultipler = Int($SearchCount/GUICtrlRead($txtRedNumOfSerach))
 
-;~ 				If GUICtrlRead($txtDeadMinGold) - $CondMultipler*5000 >= 0 Then $MinDeadGold = GUICtrlRead($txtDeadMinGold) - $CondMultipler*5000
-;~ 				If GUICtrlRead($txtDeadMinElixir) - $CondMultipler*5000 >= 0 Then $MinDeadElixir = GUICtrlRead($txtDeadMinElixir) - $CondMultipler*5000
-;~ 				If GUICtrlRead($txtDeadMinDarkElixir) - $CondMultipler*100 >= 0 Then $MinDeadDark = GUICtrlRead($txtDeadMinDarkElixir) - $CondMultipler*100
-;~ 				If GUICtrlRead($txtDeadMinTrophy) - $CondMultipler*2 >= 0 Then $MinDeadTrophy = GUICtrlRead($txtDeadMinTrophy) - $CondMultipler*2
-;~ 				If GUICtrlRead($txtMinGold) - $CondMultipler*5000 >= 0 Then $MinGold = GUICtrlRead($txtMinGold) - $CondMultipler*5000
-;~ 				If GUICtrlRead($txtMinElixir) - $CondMultipler*5000 >= 0 Then $MinElixir = GUICtrlRead($txtMinElixir) - $CondMultipler*5000
-;~ 				If GUICtrlRead($txtMinDarkElixir) - $CondMultipler*100 >= 0 Then $MinDark = GUICtrlRead($txtMinDarkElixir) - $CondMultipler*100
-;~ 				If GUICtrlRead($txtMinTrophy) - $CondMultipler*2 >= 0 Then $MinTrophy = GUICtrlRead($txtMinTrophy) - $CondMultipler*2
-;~ 				If GUICtrlRead($txtDENukeLimit) - $CondMultipler*300 >= 0 Then $iNukeLimit = GUICtrlRead($txtDENukeLimit) - $CondMultipler*300
-
 				$MinDeadGold = GUICtrlRead($txtDeadMinGold) * (1 - $CondMultipler*GUICtrlRead($txtRedGoldPercent)/100)
 				$MinDeadGold = ($MinDeadGold>0) ? $MinDeadGold : 0
 				$MinDeadElixir = GUICtrlRead($txtDeadMinElixir)  * (1 - $CondMultipler*GUICtrlRead($txtRedElixirPercent)/100)
@@ -338,8 +328,9 @@ Func Standard_Search()
 				SoundPlay(@WindowsDir & "\media\Festival\Windows Exclamation.wav", 1)
 			EndIf
 		EndIf
+		$MatchFoundText = "[" & GetLangText("msgGoldinitial") & "]: " & _NumberFormat($BaseData[2]) & "; [" & GetLangText("msgElixirinitial") & "]: " & _NumberFormat($BaseData[3]) & "; [" & GetLangText("msgDarkElixinitial") & "]: " & _NumberFormat($BaseData[4]) & "; [" & GetLangText("msgTrophyInitial") & "]: " & $BaseData[5] & "; [TH Lvl]: " & $BaseData[1] & ", Loc: " & $THLoc
 		If $PushBulletEnabled = 1 And $PushBulletmatchfound = 1 Then
-			_Push(GetLangText("pushMatch"), "[" & GetLangText("msgGoldinitial") & "]: " & _NumberFormat($BaseData[2]) & "; [" & GetLangText("msgElixirinitial") & "]: " & _NumberFormat($BaseData[3]) & "; [" & GetLangText("msgDarkElixinitial") & "]: " & _NumberFormat($BaseData[4]) & "; [" & GetLangText("msgTrophyInitial") & "]: " & $BaseData[5] & "; [TH Lvl]: " & $BaseData[1] & ", Loc: " & $THLoc)
+			_Push(GetLangText("pushMatch"), $MatchFoundText )
 			SetLog(GetLangText("msgPushMatch"), $COLOR_GREEN)
 		EndIf
 		SetLog(GetLangText("msgSearchComplete"), $COLOR_BLUE)

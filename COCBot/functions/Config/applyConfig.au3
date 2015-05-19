@@ -210,6 +210,12 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 		GUICtrlSetState($lblfreebuilder, $GUI_UNCHECKED)
 	EndIf
 
+	If $PushBulletdisconnection = 1 Then
+		GUICtrlSetState($lbldisconnect, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($lbldisconnect, $GUI_UNCHECKED)
+	EndIf
+
 	If $PushBullettype = 1 Then
 		GUICtrlSetState($UseJPG, $GUI_CHECKED)
 	Else
