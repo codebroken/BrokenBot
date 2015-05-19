@@ -1,4 +1,4 @@
-Func Click($x, $y, $times = 1, $speed = 0, $CenteredOn = 0, $BufferDist = 20)
+Func Click($x, $y, $times = 1, $speed = 0, $CenteredOn = 0, $BufferDist = -1)
 	If $CenteredOn = 0 Then
 		If $times <> 1 Then
 			For $i = 0 To ($times - 1)

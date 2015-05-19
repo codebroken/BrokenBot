@@ -4,18 +4,14 @@
 Func Standard_SetSleep($type)
 	Switch $type
 		Case 0
-			If $iRandomspeedatk = 1 Then
-				Return Round(Random(1, 10)) * 10
-			Else
-				Return ($icmbUnitDelay + 1) * 10
-			EndIf
+			$delay = ($icmbUnitDelay + 1) * 20
+			$delay = _Random_Gaussian($delay, $delay/3.1)
 		Case 1
-			If $iRandomspeedatk = 1 Then
-				Return Round(Random(1, 10)) * 100
-			Else
-				Return ($icmbWaveDelay + 1) * 100
-			EndIf
+			$delay = ($icmbWaveDelay + 1) * 200
+			$delay = _Random_Gaussian($delay, $delay/3.1)
 	EndSwitch
+	If $delay < 20 Then $delay = 20
+	Return $delay
 EndFunc   ;==>Standard_SetSleep
 
 ; Old mecanism, not used anymore
@@ -45,26 +41,37 @@ Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1,
 	If $number = 0 Then Return
 	If _Sleep(100) Then Return
 	SelectDropTroupe($troop) ;Select Troop
-	If _Sleep(300) Then Return
+	If _Sleep(200) Then Return
 	If $slotsPerEdge = 0 Or $number < $slotsPerEdge Then $slotsPerEdge = $number
-	If $number = 1 Or $slotsPerEdge = 1 Then ; Drop on a single point per edge => on the middle
-		Click($edge[2][0], $edge[2][1], $number, 0, $Center)
-		If $edge2 <> -1 Then Click($edge2[2][0], $edge2[2][1], $number, 0, $Center)
-		If _Sleep(50) Then Return
-	ElseIf $slotsPerEdge = 2 Then ; Drop on 2 points per edge
+	If $number = 1 Or $slotsPerEdge = 1 Then ; Drop on a random point per edge => centered on the middle
+		$Clickx = Round(_Random_Gaussian(((($Edge[4][0]-$Edge[0][0])/2)+$Edge[0][0]), (($Edge[4][0]-$Edge[0][0])/7)))
+		$Clicky = Round((($Edge[4][1] - $Edge[0][1]) / ($Edge[4][0] - $Edge[0][0])) * ($Clickx - $Edge[0][0])) + $Edge[0][1]
+		Click($Clickx, $Clicky, $number, 0, $Center)
+		If $edge2 <> -1 Then
+			If _Sleep(Standard_SetSleep(1)) Then Return
+			$Clickx = Round(_Random_Gaussian(((($Edge2[4][0]-$Edge2[0][0])/2)+$Edge2[0][0]), (($Edge2[4][0]-$Edge2[0][0])/7)))
+			$Clicky = Round((($Edge2[4][1] - $Edge2[0][1]) / ($Edge2[4][0] - $Edge2[0][0])) * ($Clickx - $Edge2[0][0])) + $Edge2[0][1]
+			Click($Clickx, $Clicky, $number, 0, $Center)
+		EndIf
+	ElseIf $slotsPerEdge = 2 Then ; Drop on 2 randomly spaced points per edge
 		Local $half = Ceiling($number / 2)
-		Click($edge[1][0], $edge[1][1], $half, 0, $Center)
-		If $edge2 <> -1 Then
-			If _Sleep(Standard_SetSleep(0)) Then Return
-			Click($edge2[1][0], $edge2[1][1], $half, 0, $Center)
-		EndIf
+		$Clickx = Round(_Random_Gaussian(((($Edge[4][0]-$Edge[0][0])/3)+$Edge[0][0]), (($Edge[4][0]-$Edge[0][0])/10)))
+		$Clicky = Round((($Edge[4][1] - $Edge[0][1]) / ($Edge[4][0] - $Edge[0][0])) * ($Clickx - $Edge[0][0])) + $Edge[0][1]
+		Click($Clickx, $Clicky, $half, 0, $Center)
 		If _Sleep(Standard_SetSleep(0)) Then Return
-		Click($edge[3][0], $edge[3][1], $number - $half, 0, $Center)
+		$Clickx = Round(_Random_Gaussian(((($Edge[4][0]-$Edge[0][0])*2/3)+$Edge[0][0]), (($Edge[4][0]-$Edge[0][0])/10)))
+		$Clicky = Round((($Edge[4][1] - $Edge[0][1]) / ($Edge[4][0] - $Edge[0][0])) * ($Clickx - $Edge[0][0])) + $Edge[0][1]
+		Click($Clickx, $Clicky, $number - $half, 0, $Center)
 		If $edge2 <> -1 Then
+			If _Sleep(Standard_SetSleep(1)) Then Return
+			$Clickx = Round(_Random_Gaussian(((($Edge2[4][0]-$Edge2[0][0])/3)+$Edge2[0][0]), (($Edge2[4][0]-$Edge2[0][0])/10)))
+			$Clicky = Round((($Edge2[4][1] - $Edge2[0][1]) / ($Edge2[4][0] - $Edge2[0][0])) * ($Clickx - $Edge2[0][0])) + $Edge2[0][1]
+			Click($Clickx, $Clicky, $half, 0, $Center)
 			If _Sleep(Standard_SetSleep(0)) Then Return
-			Click($edge2[3][0], $edge2[3][1], $number - $half, 0, $Center)
+			$Clickx = Round(_Random_Gaussian(((($Edge2[4][0]-$Edge2[0][0])*2/3)+$Edge2[0][0]), (($Edge2[4][0]-$Edge2[0][0])/10)))
+			$Clicky = Round((($Edge2[4][1] - $Edge2[0][1]) / ($Edge2[4][0] - $Edge2[0][0])) * ($Clickx - $Edge2[0][0])) + $Edge2[0][1]
+			Click($Clickx, $Clicky, $number - $half, 0, $Center)
 		EndIf
-		If _Sleep(Standard_SetSleep(0)) Then Return
 	Else
 		Local $minX = $edge[0][0]
 		Local $maxX = $edge[4][0]
@@ -76,31 +83,38 @@ Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1,
 			Local $minY2 = $edge2[0][1]
 			Local $maxY2 = $edge2[4][1]
 		EndIf
-		Local $nbTroopsLeft = $number
+		Local $nbTroopsGoneDec = 0
+		Local $nbTroopsGoneRound = 0
+		If $edge2 <> -1 Then
+			Local $nbtroopPerRound = $number / ($slotsPerEdge * 2)
+		Else
+			Local $nbTroopPerRound = $number / $slotsPerEdge
+		EndIf
 		For $i = 0 To $slotsPerEdge - 1
-			Local $nbtroopPerSlot = Round($nbTroopsLeft / ($slotsPerEdge - $i)) ; progressively adapt the number of drops to fill at the best
+			$nbTroopsGoneDec += $nbTroopPerRound
 			Local $posX = $minX + (($maxX - $minX) * $i) / ($slotsPerEdge - 1)
 			Local $posY = $minY + (($maxY - $minY) * $i) / ($slotsPerEdge - 1)
 			; Randomize the drop points a bit more
-			$posX = Round(_Random_Gaussian($posX, 1.5))
-			$posY = Round(_Random_Gaussian($posY, 1.5))
-			Click($posX, $posY, $nbtroopPerSlot, 0, $Center)
-			If $edge2 <> -1 Then ; for 2, 3 and 4 sides attack use 2x dropping
+			$posX = Round(_Random_Gaussian($posX, 3))
+			$posY = Round(_Random_Gaussian($posY, 3))
+			Click($posX, $posY, Ceiling($nbTroopsGoneDec - $nbTroopsGoneRound), 0, $Center)
+			$nbTroopsGoneRound += Ceiling($nbTroopsGoneDec - $nbTroopsGoneRound)
+			If _Sleep(Standard_SetSleep(0)) Then Return
+		Next
+		If $edge2 <> -1 Then
+			If _Sleep(Standard_SetSleep(1)) Then Return
+			For $i = 0 To $slotsPerEdge - 1
+				$nbTroopsGoneDec += $nbTroopPerRound
 				Local $posX2 = $maxX2 - (($maxX2 - $minX2) * $i) / ($slotsPerEdge - 1)
 				Local $posY2 = $maxY2 - (($maxY2 - $minY2) * $i) / ($slotsPerEdge - 1)
 				; Randomize the drop points a bit more
-				$posX2 = Round(_Random_Gaussian($posX2, 1.5))
-				$posY2 = Round(_Random_Gaussian($posY2, 1.5))
-				If $x = 0 Then
-					If _Sleep(Standard_SetSleep(0)) Then Return ; add delay for first wave attack to prevent skip dropping troops, must add for 4 sides attack
-				EndIf
-				Click($posX2, $posY2, $nbtroopPerSlot, 0, $Center)
-				$nbTroopsLeft -= $nbtroopPerSlot
-			Else
-				$nbTroopsLeft -= $nbtroopPerSlot
-			EndIf
-			If _Sleep(Standard_SetSleep(0)) Then Return
-		Next
+				$posX2 = Round(_Random_Gaussian($posX2, 3))
+				$posY2 = Round(_Random_Gaussian($posY2, 3))
+				Click($posX2, $posY2, Ceiling($nbTroopsGoneDec - $nbTroopsGoneRound), 0, $Center)
+				$nbTroopsGoneRound += Ceiling($nbTroopsGoneDec - $nbTroopsGoneRound)
+				If _Sleep(Standard_SetSleep(0)) Then Return
+			Next
+		EndIf
 	EndIf
 EndFunc   ;==>Standard_DropOnEdge
 
@@ -426,63 +440,79 @@ Func Standard_Attack($AttackMethod = 1)
 				Case 1
 					$DropX = $FurthestTopLeft[0][0]
 					$DropY = $FurthestTopLeft[0][1]
+					$DropArray[5][2]=[[$DropX, $DropY], [0, 0], [0, 0], [0, 0], [$DropX, $DropY]]
 				Case 2
 					$m = (537 - 238) / (535 - 128)
 					$m2 = (9 - 314) / (430 - 28)
 					$b = $THy - ($m * $THx)
 					$b2 = 314 - ($m2 * 28)
-					$DropX = ($b - $b2) / ($m2 - $m)
-					$DropY = Round($m2 * $DropX + $b2)
+					$DropXa = (($b - $b2) / ($m2 - $m)) - 20
+					$DropYa = Round($m2 * $DropXa + $b2)
+					$DropXb = (($b - $b2) / ($m2 - $m)) + 20
+					$DropYb = Round($m2 * $DropXb + $b2)
+					$DropArray[5][2]=[[$DropXa, $DropYa], [0, 0], [0, 0], [0, 0], [$DropXb, $DropYb]]
 				Case 3
 					$DropX = $FurthestTopLeft[4][0]
 					$DropY = $FurthestTopLeft[4][1]
+					$DropArray[5][2]=[[$DropX, $DropY], [0, 0], [0, 0], [0, 0], [$DropX, $DropY]]
 				Case 4
 					$m = (85 - 388) / (527 - 130)
 					$m2 = (612 - 314) / (440 - 28)
 					$b = $THy - ($m * $THx)
 					$b2 = 314 - ($m2 * 28)
-					$DropX = ($b - $b2) / ($m2 - $m)
-					$DropY = Round($m2 * $DropX + $b2)
+					$DropXa = (($b - $b2) / ($m2 - $m)) - 20
+					$DropYa = Round($m2 * $DropXa + $b2)
+					$DropXb = (($b - $b2) / ($m2 - $m)) + 20
+					$DropYb = Round($m2 * $DropXb + $b2)
+					$DropArray[5][2]=[[$DropXa, $DropYa], [0, 0], [0, 0], [0, 0], [$DropXb, $DropYb]]
 				Case 6
 					$m = (85 - 388) / (527 - 130)
 					$m2 = (612 - 314) / (440 - 28)
 					$b = $THy - ($m * $THx)
 					$b2 = 9 - ($m2 * 430)
-					$DropX = ($b - $b2) / ($m2 - $m)
-					$DropY = Round($m2 * $DropX + $b2)
+					$DropXa = (($b - $b2) / ($m2 - $m)) - 20
+					$DropYa = Round($m2 * $DropXa + $b2)
+					$DropXb = (($b - $b2) / ($m2 - $m)) + 20
+					$DropYb = Round($m2 * $DropXb + $b2)
+					$DropArray[5][2]=[[$DropXa, $DropYa], [0, 0], [0, 0], [0, 0], [$DropXb, $DropYb]]
 				Case 7
 					$DropX = Round(($FurthestBottomRight[4][0] - $FurthestBottomRight[0][0]) / 4) + $FurthestBottomRight[0][0]
 					$DropY = Round(($FurthestBottomRight[4][1] - $FurthestBottomRight[0][1]) / 4) + $FurthestBottomRight[0][1]
+					$DropArray[5][2]=[[$DropX, $DropY], [0, 0], [0, 0], [0, 0], [$DropX, $DropY]]
 				Case 8
 					$m = (537 - 238) / (535 - 128)
 					$m2 = (9 - 314) / (430 - 28)
 					$b = $THy - ($m * $THx)
 					$b2 = 612 - ($m2 * 440)
-					$DropX = ($b - $b2) / ($m2 - $m)
-					$DropY = Round($m2 * $DropX + $b2)
+					$DropXa = (($b - $b2) / ($m2 - $m)) - 20
+					$DropYa = Round($m2 * $DropXa + $b2)
+					$DropXb = (($b - $b2) / ($m2 - $m)) + 20
+					$DropYb = Round($m2 * $DropXb + $b2)
+					$DropArray[5][2]=[[$DropXa, $DropYa], [0, 0], [0, 0], [0, 0], [$DropXb, $DropYb]]
 				Case 9
 					$DropX = $FurthestBottomRight[4][0]
 					$DropY = $FurthestBottomRight[4][1]
+					$DropArray[5][2]=[[$DropX, $DropY], [0, 0], [0, 0], [0, 0], [$DropX, $DropY]]
 			EndSwitch
-			Standard_dropCC($DropX, $DropY, $CC, $AttackMethod, $AimTH)
+			Standard_dropCC($DropArray, $CC, $AttackMethod, $AimTH)
 			If _Sleep(100) Then Return
 			If Not $mixedMode Then
-				Standard_dropHeroes($DropX, $DropY, $King, $Queen, $AttackMethod, $AimTH)
+				Standard_dropHeroes($DropArray, $King, $Queen, $AttackMethod, $AimTH)
 				$hHeroTimer = TimerInit()
 			EndIf
 		Else
 			If $nbSides = 1 Then
-				Standard_dropCC($BottomRight[3][0], $BottomRight[3][1], $CC, $AttackMethod)
+				Standard_dropCC($BottomRight, $CC, $AttackMethod)
 			Else
-				Standard_dropCC($TopLeft[3][0], $TopLeft[3][1], $CC, $AttackMethod)
+				Standard_dropCC($TopLeft, $CC, $AttackMethod)
 			EndIf
 			If _Sleep(100) Then Return
 			If Not $mixedMode Then
 				If $nbSides = 1 Then
-					Standard_dropHeroes($BottomRight[3][0], $BottomRight[3][1], $King, $Queen, $AttackMethod)
+					Standard_dropHeroes($BottomRight, $King, $Queen, $AttackMethod)
 					$hHeroTimer = TimerInit()
 				Else
-					Standard_dropHeroes($TopLeft[3][0], $TopLeft[3][1], $King, $Queen, $AttackMethod)
+					Standard_dropHeroes($TopLeft, $King, $Queen, $AttackMethod)
 					$hHeroTimer = TimerInit()
 				EndIf
 			EndIf
@@ -503,10 +533,10 @@ Func Standard_Attack($AttackMethod = 1)
 			EndIf
 			If _Sleep(100) Then Return
 			If ($OuterQuad And $attackTH = 2) Then
-				Standard_dropHeroes($DropX, $DropY, $King, $Queen, $AttackMethod, $AimTH)
+				Standard_dropHeroes($DropArray, $King, $Queen, $AttackMethod, $AimTH)
 				$hHeroTimer = TimerInit()
 			Else
-				Standard_dropHeroes($BottomRight[3][0], $BottomRight[3][1], $King, $Queen, $AttackMethod)
+				Standard_dropHeroes($BottomRight, $King, $Queen, $AttackMethod)
 				$hHeroTimer = TimerInit()
 			EndIf
 			If Standard_LaunchTroop($eWallbreaker, 1, 3, 3, 1) Then
@@ -626,7 +656,7 @@ Func Standard_DropNukes()
 			SetLog(GetLangText("msgNoSpell"), $COLOR_RED)
 		Else
 			SelectDropTroupe($nLSpell)
-			If _Sleep(1000) Then Return
+			If _Sleep(200) Then Return
 			$z = 0
 			Do
 				Click(Round(_Random_Gaussian($DEx, 2)), Round(_Random_Gaussian($DEy - 5, 2)))
@@ -641,13 +671,15 @@ EndFunc   ;==>Standard_DropNukes
 
 ;Drops Clan Castle troops, given the slot and x, y coordinates.
 
-Func Standard_dropCC($x, $y, $slot, $AttackMethod = 1, $CenterLoc = 1) ;Drop clan castle
+Func Standard_dropCC($edge, $slot, $AttackMethod = 1, $CenterLoc = 1) ;Drop clan castle
 	Local $useCastle = ($AttackMethod = 0) ? (IsChecked($chkDeadUseClanCastle) ? (1) : (0)) : (IsChecked($chkUseClanCastle) ? (1) : (0))
 	If $slot <> -1 And $useCastle = 1 Then
 		SetLog(GetLangText("msgDroppingCC"), $COLOR_BLUE)
 		Click(68 + (72 * $slot), 595)
-		If _Sleep(500) Then Return
-		Click($x, $y, 1, 500, $CenterLoc, 30)
+		If _Sleep(200) Then Return
+		$x = Round(_Random_Gaussian(((($Edge[4][0]-$Edge[0][0])/2)+$Edge[0][0]), (($Edge[4][0]-$Edge[0][0])/8)))
+		$y = Round((($Edge[4][1] - $Edge[0][1]) / ($Edge[4][0] - $Edge[0][0])) * ($x - $Edge[0][0])) + $Edge[0][1]
+		Click($x, $y, 1, 0, $CenterLoc)
 		_GDIPlus_GraphicsDrawEllipse($Buffer, $x - 4, $y - 4, 8, 8, $pCC)
 	EndIf
 EndFunc   ;==>Standard_dropCC
@@ -655,9 +687,8 @@ EndFunc   ;==>Standard_dropCC
 ;Will drop heroes in a specific coordinates, only if slot is not -1
 ;Only drops when option is clicked.
 
-Func Standard_dropHeroes($x, $y, $KingSlot = -1, $QueenSlot = -1, $AttackMethod = 1, $CenterLoc = 1) ;Drops for king and queen
+Func Standard_dropHeroes($edge, $KingSlot = -1, $QueenSlot = -1, $AttackMethod = 1, $CenterLoc = 1) ;Drops for king and queen
 	While 1
-		If _Sleep(2000) Then ExitLoop
 
 		Local $useKing = ($AttackMethod = 0) ? (IsChecked($chkDeadUseKing) ? (1) : (0)) : (IsChecked($chkUseKing) ? (1) : (0))
 		Local $useQueen = ($AttackMethod = 0) ? (IsChecked($chkDeadUseQueen) ? (1) : (0)) : (IsChecked($chkUseQueen) ? (1) : (0))
@@ -665,19 +696,23 @@ Func Standard_dropHeroes($x, $y, $KingSlot = -1, $QueenSlot = -1, $AttackMethod 
 		If $KingSlot <> -1 And $useKing = 1 Then
 			SetLog(GetLangText("msgDroppingKing"), $COLOR_BLUE)
 			Click(68 + (72 * $KingSlot), 595) ;Select King
-			If _Sleep(500) Then Return
-			Click($x, $y, 1, 0, $CenterLoc, 30)
+			If _Sleep(200) Then Return
+			$x = Round(_Random_Gaussian(((($Edge[4][0]-$Edge[0][0])/2)+$Edge[0][0]), (($Edge[4][0]-$Edge[0][0])/8)))
+			$y = Round((($Edge[4][1] - $Edge[0][1]) / ($Edge[4][0] - $Edge[0][0])) * ($x - $Edge[0][0])) + $Edge[0][1]
+			Click($x, $y, 1, 0, $CenterLoc)
 			_GDIPlus_GraphicsDrawEllipse($Buffer, $x - 6, $y - 6, 12, 12, $pKing)
 			$checkKPower = True
 		EndIf
 
-		If _Sleep(1000) Then ExitLoop
+		If _Sleep(Standard_SetSleep(1)) Then ExitLoop
 
 		If $QueenSlot <> -1 And $useQueen = 1 Then
 			SetLog(GetLangText("msgDroppingQueen"), $COLOR_BLUE)
 			Click(68 + (72 * $QueenSlot), 595) ;Select Queen
-			If _Sleep(500) Then Return
-			Click($x, $y, 1, 0, $CenterLoc, 30)
+			If _Sleep(200) Then Return
+			$x = Round(_Random_Gaussian(((($Edge[4][0]-$Edge[0][0])/2)+$Edge[0][0]), (($Edge[4][0]-$Edge[0][0])/8)))
+			$y = Round((($Edge[4][1] - $Edge[0][1]) / ($Edge[4][0] - $Edge[0][0])) * ($x - $Edge[0][0])) + $Edge[0][1]
+			Click($x, $y, 1, 0, $CenterLoc)
 			_GDIPlus_GraphicsDrawEllipse($Buffer, $x - 5, $y - 5, 10, 10, $pQueen)
 			$checkQPower = True
 		EndIf

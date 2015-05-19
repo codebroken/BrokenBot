@@ -81,8 +81,6 @@ GUICtrlSetData(-1, "1|2|3|4|5|6|7|8|9|10", "5")
 $lblWaveDelay = GUICtrlCreateLabel(GetLangText("lblWaveDelay"), 155, 292, 75, 17)
 $cmbWaveDelay = GUICtrlCreateCombo("", 225, 289, 50, 17, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 GUICtrlSetData(-1, "1|2|3|4|5|6|7|8|9|10", "5")
-$Randomspeedatk = GUICtrlCreateCheckbox(GetLangText("Randomspeedatk"), 295, 292, 100, 17)
-GUICtrlSetOnEvent(-1, "Randomspeedatk")
 $lblAttackdelay = GUICtrlCreateLabel(GetLangText("lblAttackdelay"), 35, 315, 350, 67, $SS_CENTER)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 

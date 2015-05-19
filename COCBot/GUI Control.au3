@@ -40,8 +40,6 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 						chkRequest()
 					Case $tabMain
 						tabMain()
-					Case $Randomspeedatk
-						Randomspeedatk()
 					Case $chkNoAttack
 						If IsChecked($chkNoAttack) Then
 							If IsChecked($lblpushbulletenabled) Then
@@ -467,18 +465,6 @@ Func chkRequest()
 		GUICtrlSetState($txtRequest, $GUI_DISABLE)
 	EndIf
 EndFunc   ;==>chkRequest
-
-Func Randomspeedatk()
-	If IsChecked($Randomspeedatk) Then
-		$iRandomspeedatk = 1
-		GUICtrlSetState($cmbUnitDelay, $GUI_DISABLE)
-		GUICtrlSetState($cmbWaveDelay, $GUI_DISABLE)
-	Else
-		$iRandomspeedatk = 0
-		GUICtrlSetState($cmbUnitDelay, $GUI_ENABLE)
-		GUICtrlSetState($cmbWaveDelay, $GUI_ENABLE)
-	EndIf
-EndFunc   ;==>Randomspeedatk
 
 Func tabMain()
 	If _GUICtrlTab_GetCurSel($tabMain) = 0 Then
