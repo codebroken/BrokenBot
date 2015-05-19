@@ -29,7 +29,7 @@ Next
 $AimCenter = 1
 $AimTH = 2
 
-Func RedLineDeploy($x, $y, $times = 1, $speed = 0, $CenteredOn = 1, $BufferDist = -1, $CenterX = 395, $CenterY = 314, $RandomizeBuffer = 30)
+Func RedLineDeploy($x, $y, $times = 1, $speed = 0, $CenteredOn = 1, $BufferDist = -1, $CenterX = 395, $CenterY = 314, $RandomizeBuffer = 6)
 	If $BufferDist - 1  Then $BufferDist = GUICtrlRead($sldAcc) + 10
 	If $RandomizeBuffer > 0 Then
 		$BufferDist = $BufferDist + _Random_Gaussian($RandomizeBuffer/2, $RandomizeBuffer/6.2) ; Randomly distributes buffer zone from $BufferDist to $BufferDist + $RandomizeBuffer

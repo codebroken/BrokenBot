@@ -26,6 +26,8 @@ EndFunc   ;==>OldDropTroop
 
 ; improved function, that avoids to only drop on 5 discret drop points :
 Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1, $x = -1, $Center = 1)
+	$BufferDist = GUICtrlRead($sldAcc) + 10
+	$BufferDist = $BufferDist + _Random_Gaussian(20, 6)
 	Switch $troop
 		Case $eBarbarian
 			$Pen = $pBarbarian
@@ -46,31 +48,31 @@ Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1,
 	If $number = 1 Or $slotsPerEdge = 1 Then ; Drop on a random point per edge => centered on the middle
 		$Clickx = Round(_Random_Gaussian(((($Edge[4][0]-$Edge[0][0])/2)+$Edge[0][0]), (($Edge[4][0]-$Edge[0][0])/7)))
 		$Clicky = Round((($Edge[4][1] - $Edge[0][1]) / ($Edge[4][0] - $Edge[0][0])) * ($Clickx - $Edge[0][0])) + $Edge[0][1]
-		Click($Clickx, $Clicky, $number, 0, $Center)
+		Click($Clickx, $Clicky, $number, 0, $Center, $BufferDist)
 		If $edge2 <> -1 Then
 			If _Sleep(Standard_SetSleep(1)) Then Return
 			$Clickx = Round(_Random_Gaussian(((($Edge2[4][0]-$Edge2[0][0])/2)+$Edge2[0][0]), (($Edge2[4][0]-$Edge2[0][0])/7)))
 			$Clicky = Round((($Edge2[4][1] - $Edge2[0][1]) / ($Edge2[4][0] - $Edge2[0][0])) * ($Clickx - $Edge2[0][0])) + $Edge2[0][1]
-			Click($Clickx, $Clicky, $number, 0, $Center)
+			Click($Clickx, $Clicky, $number, 0, $Center, $BufferDist)
 		EndIf
 	ElseIf $slotsPerEdge = 2 Then ; Drop on 2 randomly spaced points per edge
 		Local $half = Ceiling($number / 2)
 		$Clickx = Round(_Random_Gaussian(((($Edge[4][0]-$Edge[0][0])/3)+$Edge[0][0]), (($Edge[4][0]-$Edge[0][0])/10)))
 		$Clicky = Round((($Edge[4][1] - $Edge[0][1]) / ($Edge[4][0] - $Edge[0][0])) * ($Clickx - $Edge[0][0])) + $Edge[0][1]
-		Click($Clickx, $Clicky, $half, 0, $Center)
+		Click($Clickx, $Clicky, $half, 0, $Center, $BufferDist)
 		If _Sleep(Standard_SetSleep(0)) Then Return
 		$Clickx = Round(_Random_Gaussian(((($Edge[4][0]-$Edge[0][0])*2/3)+$Edge[0][0]), (($Edge[4][0]-$Edge[0][0])/10)))
 		$Clicky = Round((($Edge[4][1] - $Edge[0][1]) / ($Edge[4][0] - $Edge[0][0])) * ($Clickx - $Edge[0][0])) + $Edge[0][1]
-		Click($Clickx, $Clicky, $number - $half, 0, $Center)
+		Click($Clickx, $Clicky, $number - $half, 0, $Center, $BufferDist)
 		If $edge2 <> -1 Then
 			If _Sleep(Standard_SetSleep(1)) Then Return
 			$Clickx = Round(_Random_Gaussian(((($Edge2[4][0]-$Edge2[0][0])/3)+$Edge2[0][0]), (($Edge2[4][0]-$Edge2[0][0])/10)))
 			$Clicky = Round((($Edge2[4][1] - $Edge2[0][1]) / ($Edge2[4][0] - $Edge2[0][0])) * ($Clickx - $Edge2[0][0])) + $Edge2[0][1]
-			Click($Clickx, $Clicky, $half, 0, $Center)
+			Click($Clickx, $Clicky, $half, 0, $Center, $BufferDist)
 			If _Sleep(Standard_SetSleep(0)) Then Return
 			$Clickx = Round(_Random_Gaussian(((($Edge2[4][0]-$Edge2[0][0])*2/3)+$Edge2[0][0]), (($Edge2[4][0]-$Edge2[0][0])/10)))
 			$Clicky = Round((($Edge2[4][1] - $Edge2[0][1]) / ($Edge2[4][0] - $Edge2[0][0])) * ($Clickx - $Edge2[0][0])) + $Edge2[0][1]
-			Click($Clickx, $Clicky, $number - $half, 0, $Center)
+			Click($Clickx, $Clicky, $number - $half, 0, $Center, $BufferDist)
 		EndIf
 	Else
 		Local $minX = $edge[0][0]
@@ -97,7 +99,7 @@ Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1,
 			; Randomize the drop points a bit more
 			$posX = Round(_Random_Gaussian($posX, 3))
 			$posY = Round(_Random_Gaussian($posY, 3))
-			Click($posX, $posY, Ceiling($nbTroopsGoneDec - $nbTroopsGoneRound), 0, $Center)
+			Click($posX, $posY, Ceiling($nbTroopsGoneDec - $nbTroopsGoneRound), 0, $Center, $BufferDist)
 			$nbTroopsGoneRound += Ceiling($nbTroopsGoneDec - $nbTroopsGoneRound)
 			If _Sleep(Standard_SetSleep(0)) Then Return
 		Next
@@ -110,7 +112,7 @@ Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1,
 				; Randomize the drop points a bit more
 				$posX2 = Round(_Random_Gaussian($posX2, 3))
 				$posY2 = Round(_Random_Gaussian($posY2, 3))
-				Click($posX2, $posY2, Ceiling($nbTroopsGoneDec - $nbTroopsGoneRound), 0, $Center)
+				Click($posX2, $posY2, Ceiling($nbTroopsGoneDec - $nbTroopsGoneRound), 0, $Center, $BufferDist)
 				$nbTroopsGoneRound += Ceiling($nbTroopsGoneDec - $nbTroopsGoneRound)
 				If _Sleep(Standard_SetSleep(0)) Then Return
 			Next
