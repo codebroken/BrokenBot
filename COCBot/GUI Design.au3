@@ -220,7 +220,7 @@ GUICtrlSetTip(-1, GetLangText("lblpushbulletenabledTip"))
 $lblpushbulletdebug = GUICtrlCreateCheckbox(GetLangText("lblpushbulletdebug"), 100, 65, 60, 17)
 GUICtrlSetTip(-1, GetLangText("lblpushbulletdebugTip"))
 $lblpushbulletremote = GUICtrlCreateCheckbox(GetLangText("lblpushbulletremote"), 170, 65, 60, 17)
-GUICtrlSetTip(-1, GetLangText("lblpushbulletremoteTip"))
+GUICtrlSetTip(-1, GetLangText("pushbullettoken2") & @CRLF & GetLangText("pushbullettoken3") & @CRLF & GetLangText("pushbullettoken4") & @CRLF & @CRLF & GetLangText("pushbullettoken5") & @CRLF & GetLangText("pushbullettoken6") & @CRLF & GetLangText("pushbullettoken7") & @CRLF & GetLangText("pushbullettoken8") & @CRLF & GetLangText("pushbullettoken9"))
 $lblpushbulletdelete = GUICtrlCreateCheckbox(GetLangText("lblpushbulletdelete"), 240, 65, 120, 17)
 GUICtrlSetTip(-1, GetLangText("lblpushbulletdeleteTip"))
 
@@ -237,8 +237,9 @@ GUICtrlSetTip(-1, GetLangText("UseJPGTip"))
 $UseAttackJPG = GUICtrlCreateCheckbox(GetLangText("UseAttackJPG"), 260, 155, 60, 17)
 GUICtrlSetTip(-1, GetLangText("UseAttackJPGTip"))
 
-$lblpushbullet2 = GUICtrlCreateGroup(GetLangText("lblpushbullet2"), 20, 210, 370, 140)
-$pushbullettoken2 = GUICtrlCreateLabel(GetLangText("pushbullettoken2") & @CRLF & GetLangText("pushbullettoken3") & @CRLF & GetLangText("pushbullettoken4") & @CRLF & @CRLF & GetLangText("pushbullettoken5") & @CRLF & GetLangText("pushbullettoken6") & @CRLF & GetLangText("pushbullettoken7") & @CRLF & GetLangText("pushbullettoken8") & @CRLF & GetLangText("pushbullettoken9"), 25, 230, 340, 350, $SS_LEFT)
+$lblpushbullet2 = GUICtrlCreateGroup(GetLangText("lblpushbullet2"), 20, 210, 370, 70)
+$lblpushUser = GUICtrlCreateLabel(GetLangText("lblpushuser"), 30, 230, 350, 20)
+$inppushUser = GUICtrlCreateInput("", 30, 250, 150, 20)
 
 ; ---------------------------------------------------------------------------------------------------------------------
 ; Misc ----------------------------------------------------------------------------------------------------------------

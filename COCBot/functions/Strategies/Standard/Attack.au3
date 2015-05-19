@@ -27,7 +27,8 @@ EndFunc   ;==>OldDropTroop
 ; improved function, that avoids to only drop on 5 discret drop points :
 Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1, $x = -1, $Center = 1)
 	$BufferDist = GUICtrlRead($sldAcc) + 10
-	$BufferDist = $BufferDist + _Random_Gaussian(20, 6)
+	$BufferDist = $BufferDist + _Random_Gaussian(20, 8)
+	If $BufferDist < (GUICtrlRead($sldAcc) + 10) Then $BufferDist = GUICtrlRead($sldAcc) + 10
 	Switch $troop
 		Case $eBarbarian
 			$Pen = $pBarbarian

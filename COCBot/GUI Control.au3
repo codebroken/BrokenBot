@@ -625,8 +625,7 @@ Func btnBugRep()
 		EndIf
 	Next
 
-	GUICtrlSetData($inpSettings, "")
-	$firstLine = True
+	GUICtrlSetData($inpSettings, "Global Settings:")
 	If FileExists($config) Then
 		$hConfig = FileOpen($config)
 		While True
@@ -635,15 +634,26 @@ Func btnBugRep()
 			If StringInStr($strNextLine, "accounttoken=") Then
 				$strNextLine = "accounttoken=REDACTED"
 			EndIf
-			If Not $firstLine Then
-				GUICtrlSetData($inpSettings, GUICtrlRead($inpSettings) & @CRLF & $strNextLine)
-			Else
-				$firstLine = False
-				GUICtrlSetData($inpSettings, $strNextLine)
+			If StringInStr($strNextLine, "user=") Then
+				$strNextLine = "user=REDACTED"
 			EndIf
+			GUICtrlSetData($inpSettings, GUICtrlRead($inpSettings) & @CRLF & $strNextLine)
 		WEnd
+		FileClose($hConfig)
 	Else
-		GUICtrlSetData($inpSettings, "No log file found")
+		GUICtrlSetData($inpSettings, GUICtrlRead($inpSettings) & @CRLF & "No settings file found")
+	EndIf
+	GUICtrlSetData($inpSettings, GUICtrlRead($inpSettings) & @CRLF & @CRLF & "Strategy settings:")
+	If FileExists($dirStrat & GUICtrlRead($lstStrategies) & ".ini") Then
+		$hConfig = FileOpen($dirStrat & GUICtrlRead($lstStrategies) & ".ini")
+		While True
+			$strNextLine = FileReadLine($hConfig)
+			If @error Then ExitLoop
+			GUICtrlSetData($inpSettings, GUICtrlRead($inpSettings) & @CRLF & $strNextLine)
+		WEnd
+		FileClose($hConfig)
+	Else
+		GUICtrlSetData($inpSettings, GUICtrlRead($inpSettings) & @CRLF & "No strategy settings file found")
 	EndIf
 
 	GUISetState(@SW_DISABLE, $frmBot)

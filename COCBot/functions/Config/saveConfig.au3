@@ -215,6 +215,7 @@ Func saveConfig() ;Saves the controls settings to the config
 	Else
 		IniWrite($config, "notification", "attackimage", 0)
 	EndIf
+	IniWrite($config, "notification", "user", GUICtrlRead($inppushuser))
 
 	;---------------------------------------------------------------------------------------
 	; Misc settings ------------------------------------------------------------------------

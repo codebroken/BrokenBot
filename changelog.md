@@ -3,6 +3,11 @@
 ### v2.5.8
 * Additional randomization for deployment of troops and deploy timing
 * Removed "randomize" check box, it was terrible method of randomization.  You are now always somewhat randomized, but you can modify the average delay by adjusting the unit delay and wave delay
+* Pushbullet last raid now sends how much loot was available
+* Pushbullet village report is now not sent until at least 1 hour has passed
+* Pushbullet now has multi-user support.  Add your village name to settings page and all new messages will be appended with [username] so you can keep your bots straight.  Additionally bot commands should now have your user name added at the end so you are sending it to the correct bot (for example: "bot pause broken")
+* Bug report removes your username to prevent you accidentally uploading that information
+* Modified bug reporting button to include settings on your current strategy
 
 ### v2.5.7
 * Fixed pushbullet pause command, if you pause mid-battle by pushbullet then the pause will not take effect until you have returned to main screen

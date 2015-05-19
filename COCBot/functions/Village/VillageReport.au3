@@ -92,9 +92,9 @@ Func VillageReport()
 							" [" & GetLangText("msgDarkElixinitial") & "]: " & _NumberFormat($DarkCount - $DarkCountOld) & " [" & GetLangText("msgTrophyInitial") & "]: " & ($TrophyCount - $TrophyCountOld) & _
 							"\nLoot: \n[" & GetLangText("msgGoldinitial") & "]: " & _NumberFormat($LastRaidGold) & " [" & GetLangText("msgElixirinitial") & "]: " & _NumberFormat($LastRaidElixir) & _
 							" [" & GetLangText("msgDarkElixinitial") & "]: " & _NumberFormat($LastRaidDarkElixir) & " [" & GetLangText("msgTrophyInitial") & "]: " & $LastRaidTrophy & _
+							"\n" & GetLangText("pushLootA") & "\n" &  $MatchFoundText & _
 							"\n" & GetLangText("pushBS") & $SearchCount & _
 							GetLangText("pushStatRq1") &  GUICtrlRead($lblresultsearchdisconnected) & _
-							"\n" & GetLangText("pushLootA") & "\n" &  $MatchFoundText & _
 							"\n" & GetLangText("pushVR") & " \n[" & GetLangText("msgGoldinitial") & "]: " & _NumberFormat($GoldCount) & " [" & GetLangText("msgElixirinitial") & "]: " & _NumberFormat($ElixirCount) & _
 							" [" & GetLangText("msgDarkElixinitial") & "]: " & _NumberFormat($DarkCount) & " [" & GetLangText("msgTrophyInitial") & "]: " & $TrophyCount & " [" & GetLangText("msgGemInitial") & "]: " & $GemCount & _
 							" [Attacked]: " & GUICtrlRead($lblresultvillagesattacked) & " [Skipped]: " & GUICtrlRead($lblresultvillagesskipped) & _
