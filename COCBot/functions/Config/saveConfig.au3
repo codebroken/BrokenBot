@@ -184,6 +184,11 @@ Func saveConfig() ;Saves the controls settings to the config
 	Else
 		IniWrite($config, "notification", "freebuilder", 0)
 	EndIf
+	If IsChecked($lbldisconnect) Then
+		IniWrite($config, "notification", "disconnection", 1)
+	Else
+		IniWrite($config, "notification", "disconnection", 0)
+	EndIf
 	If IsChecked($lblpushbulletdebug) Then
 		IniWrite($config, "notification", "debug", 1)
 	Else

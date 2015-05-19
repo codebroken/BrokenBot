@@ -40,8 +40,8 @@ Func ChkDisconnection($disconnected = False)
 		;increase disconnect counts
 		GUICtrlSetData($lblresultsearchdisconnected, GUICtrlRead($lblresultsearchdisconnected) + 1)
 		If $DebugMode = 1 Then _GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "DisConnt-" & @HOUR & @MIN & @SEC & ".png")
-		If $PushBulletEnabled = 1 Then
 
+		If $PushBulletEnabled = 1 and IsChecked($lbldisconnect) Then
 			Local $iCount = _FileCountLines($sLogPath)
 			Local $myLines = ""
 			Local $i

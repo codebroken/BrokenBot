@@ -157,6 +157,8 @@ Func btnStart()
 		EndIf
 		GUICtrlSetState($pageGeneral, $GUI_SHOW)
 		$FirstAttack = True
+		; Set hourly village report timer
+		$PushBulletvillagereportTimer = TimerInit()
 
 		CreateLogFile()
 
@@ -593,6 +595,8 @@ Func lblpushbulletenabled()
 		GUICtrlSetState($lblpushbulletdelete, $GUI_ENABLE)
 		GUICtrlSetState($lblvillagereport, $GUI_ENABLE)
 		GUICtrlSetState($lblmatchfound, $GUI_ENABLE)
+		GUICtrlSetState($lblfreebuilder, $GUI_ENABLE)
+		GUICtrlSetState($lbldisconnect, $GUI_ENABLE)
 		GUICtrlSetState($lbllastraid, $GUI_ENABLE)
 		GUICtrlSetState($UseJPG, $GUI_ENABLE)
 	Else
@@ -602,6 +606,8 @@ Func lblpushbulletenabled()
 		GUICtrlSetState($lblpushbulletdelete, $GUI_DISABLE)
 		GUICtrlSetState($lblvillagereport, $GUI_DISABLE)
 		GUICtrlSetState($lblmatchfound, $GUI_DISABLE)
+		GUICtrlSetState($lblfreebuilder, $GUI_DISABLE)
+		GUICtrlSetState($lbldisconnect, $GUI_DISABLE)
 		GUICtrlSetState($lbllastraid, $GUI_DISABLE)
 		GUICtrlSetState($UseJPG, $GUI_DISABLE)
 	EndIf
