@@ -42,9 +42,8 @@ Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1,
 			$Pen = $pWallB
 	EndSwitch
 	If $number = 0 Then Return
-	If _Sleep(100) Then Return
 	SelectDropTroupe($troop) ;Select Troop
-	If _Sleep(200) Then Return
+	If _Sleep(100) Then Return
 	If $slotsPerEdge = 0 Or $number < $slotsPerEdge Then $slotsPerEdge = $number
 	If $number = 1 Or $slotsPerEdge = 1 Then ; Drop on a random point per edge => centered on the middle
 		$Clickx = Round(_Random_Gaussian(((($Edge[4][0]-$Edge[0][0])/2)+$Edge[0][0]), (($Edge[4][0]-$Edge[0][0])/7)))
@@ -88,11 +87,7 @@ Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1,
 		EndIf
 		Local $nbTroopsGoneDec = 0
 		Local $nbTroopsGoneRound = 0
-		If $edge2 <> -1 Then
-			Local $nbtroopPerRound = $number / ($slotsPerEdge * 2)
-		Else
-			Local $nbTroopPerRound = $number / $slotsPerEdge
-		EndIf
+		Local $nbTroopPerRound = $number / $slotsPerEdge
 		For $i = 0 To $slotsPerEdge - 1
 			$nbTroopsGoneDec += $nbTroopPerRound
 			Local $posX = $minX + (($maxX - $minX) * $i) / ($slotsPerEdge - 1)
@@ -106,6 +101,9 @@ Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1,
 		Next
 		If $edge2 <> -1 Then
 			If _Sleep(Standard_SetSleep(1)) Then Return
+			Local $nbTroopsGoneDec = 0
+			Local $nbTroopsGoneRound = 0
+			Local $nbTroopPerRound = $number / $slotsPerEdge
 			For $i = 0 To $slotsPerEdge - 1
 				$nbTroopsGoneDec += $nbTroopPerRound
 				Local $posX2 = $maxX2 - (($maxX2 - $minX2) * $i) / ($slotsPerEdge - 1)
