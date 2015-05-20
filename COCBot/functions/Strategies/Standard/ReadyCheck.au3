@@ -5,7 +5,7 @@ Func Standard_ReadyCheck($TimeSinceNewTroop)
 			$FirstStart = True
 			SetLog(GetLangText("msgAppearsStuck"))
 			$stuckCount +=1
-		ElseIf $stuckCount = 3
+		ElseIf $stuckCount = 3 Then
 			SetLog(GetLangText("msgSevereStuck"))
 			$stuckCount += 1
 		EndIf
