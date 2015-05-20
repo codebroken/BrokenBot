@@ -1,5 +1,8 @@
 ## Change Log:
 
+### v2.5.9
+* Emergency fix for occasional crash
+
 ### v2.5.8
 * Additional randomization for deployment of troops and deploy timing
 * Removed "randomize" check box, it was terrible method of randomization.  You are now always somewhat randomized, but you can modify the average delay by adjusting the unit delay and wave delay
