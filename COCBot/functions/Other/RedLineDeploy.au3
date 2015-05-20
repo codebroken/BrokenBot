@@ -148,12 +148,13 @@ Func RedLineDeploy($x, $y, $times = 1, $speed = 0, $CenteredOn = 1, $BufferDist 
 	EndIf
 	If $times <> 1 Then
 		For $i = 0 To ($times - 1)
-			ControlClick($Title, "", "", "left", "1", $AimX, $AimY)
+			ControlClick($Title, "", "", "left", "1", Random($AimX-2, $AimX +2, 1), Random($AimY-2, $AimY +2, 1))
 			_GDIPlus_GraphicsDrawEllipse($Buffer, $AimX - 2, $AimY - 2, 4, 4, $Pen)
-			If _Sleep($speed, False) Then ExitLoop
+			If _Sleep(Standard_SetSleep(0), False) Then Return
 		Next
 	Else
 		ControlClick($Title, "", "", "left", "1", $AimX, $AimY)
+		If _Sleep(Standard_SetSleep(0), False) Then Return
 		_GDIPlus_GraphicsDrawEllipse($Buffer, $AimX - 2, $AimY - 2, 4, 4, $Pen)
 	EndIf
 EndFunc   ;==>RedLineDeploy

@@ -122,6 +122,7 @@ Func Idle($Plugin) ;Sequence that runs until Full Army
 			$prevCamp = $CurCamp
 			$hTroopTimer = TimerInit()
 		EndIf
+		If $CurCamp = 0 or $CurCamp = "" Then $hTroopTimer = TimerInit() ; Not a good fix, but will stop errors for people whose troop size can't be read for now
 		$TimeSinceTroop = TimerDiff($hTroopTimer) / 1000
 		SetLog(GetLangText("msgTimeIdle") & Floor(Floor($TimeIdle / 60) / 60) & GetLangText("msgTimeIdleHours")& Floor(Mod(Floor($TimeIdle / 60), 60)) & GetLangText("msgTimeIdleMin") & Floor(Mod($TimeIdle, 60)) & GetLangText("msgTimeIdleSec"), $COLOR_ORANGE)
 		If _Sleep(30000) Then ExitLoop

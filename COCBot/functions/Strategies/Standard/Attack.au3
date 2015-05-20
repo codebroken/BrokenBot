@@ -4,13 +4,13 @@
 Func Standard_SetSleep($type)
 	Switch $type
 		Case 0
-			$delay = ($icmbUnitDelay + 1) * 20
+			$delay = ($icmbUnitDelay + 1) * 5 ;Random Gaussian is always positive, compensate for that
 			$delay = _Random_Gaussian($delay, $delay/3.1)
 		Case 1
-			$delay = ($icmbWaveDelay + 1) * 200
+			$delay = ($icmbWaveDelay + 1) * 50
 			$delay = _Random_Gaussian($delay, $delay/3.1)
 	EndSwitch
-	If $delay < 20 Then $delay = 20
+	If $delay < 1 Then $delay = 1
 	Return $delay
 EndFunc   ;==>Standard_SetSleep
 
@@ -29,6 +29,7 @@ Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1,
 	$BufferDist = GUICtrlRead($sldAcc) + 10
 	$BufferDist = $BufferDist + _Random_Gaussian(20, 8)
 	If $BufferDist < (GUICtrlRead($sldAcc) + 10) Then $BufferDist = GUICtrlRead($sldAcc) + 10
+	$htimer = TimerInit()
 	Switch $troop
 		Case $eBarbarian
 			$Pen = $pBarbarian
@@ -42,9 +43,8 @@ Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1,
 			$Pen = $pWallB
 	EndSwitch
 	If $number = 0 Then Return
-	If _Sleep(100) Then Return
 	SelectDropTroupe($troop) ;Select Troop
-	If _Sleep(200) Then Return
+	If _Sleep(100) Then Return
 	If $slotsPerEdge = 0 Or $number < $slotsPerEdge Then $slotsPerEdge = $number
 	If $number = 1 Or $slotsPerEdge = 1 Then ; Drop on a random point per edge => centered on the middle
 		$Clickx = Round(_Random_Gaussian(((($Edge[4][0]-$Edge[0][0])/2)+$Edge[0][0]), (($Edge[4][0]-$Edge[0][0])/7)))
@@ -61,7 +61,9 @@ Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1,
 		$Clickx = Round(_Random_Gaussian(((($Edge[4][0]-$Edge[0][0])/3)+$Edge[0][0]), (($Edge[4][0]-$Edge[0][0])/10)))
 		$Clicky = Round((($Edge[4][1] - $Edge[0][1]) / ($Edge[4][0] - $Edge[0][0])) * ($Clickx - $Edge[0][0])) + $Edge[0][1]
 		Click($Clickx, $Clicky, $half, 0, $Center, $BufferDist)
-		If _Sleep(Standard_SetSleep(0)) Then Return
+		If GUICtrlRead($sldAcc) < 100 Then
+			If _Sleep(Standard_SetSleep(0)) Then Return
+		EndIf
 		$Clickx = Round(_Random_Gaussian(((($Edge[4][0]-$Edge[0][0])*2/3)+$Edge[0][0]), (($Edge[4][0]-$Edge[0][0])/10)))
 		$Clicky = Round((($Edge[4][1] - $Edge[0][1]) / ($Edge[4][0] - $Edge[0][0])) * ($Clickx - $Edge[0][0])) + $Edge[0][1]
 		Click($Clickx, $Clicky, $number - $half, 0, $Center, $BufferDist)
@@ -70,12 +72,18 @@ Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1,
 			$Clickx = Round(_Random_Gaussian(((($Edge2[4][0]-$Edge2[0][0])/3)+$Edge2[0][0]), (($Edge2[4][0]-$Edge2[0][0])/10)))
 			$Clicky = Round((($Edge2[4][1] - $Edge2[0][1]) / ($Edge2[4][0] - $Edge2[0][0])) * ($Clickx - $Edge2[0][0])) + $Edge2[0][1]
 			Click($Clickx, $Clicky, $half, 0, $Center, $BufferDist)
-			If _Sleep(Standard_SetSleep(0)) Then Return
+			If GUICtrlRead($sldAcc) < 100 Then
+				If _Sleep(Standard_SetSleep(0)) Then Return
+			EndIf
 			$Clickx = Round(_Random_Gaussian(((($Edge2[4][0]-$Edge2[0][0])*2/3)+$Edge2[0][0]), (($Edge2[4][0]-$Edge2[0][0])/10)))
 			$Clicky = Round((($Edge2[4][1] - $Edge2[0][1]) / ($Edge2[4][0] - $Edge2[0][0])) * ($Clickx - $Edge2[0][0])) + $Edge2[0][1]
 			Click($Clickx, $Clicky, $number - $half, 0, $Center, $BufferDist)
 		EndIf
 	Else
+		If ($slotsPerEdge = $number) And ($slotsPerEdge > 10) Then
+			$slotsPerEdge = Int($number/Random(1.8, 2.8))
+			If $slotsPerEdge < 9 then $slotsPerEdge = Random(9, 11, 1)
+		EndIf
 		Local $minX = $edge[0][0]
 		Local $maxX = $edge[4][0]
 		Local $minY = $edge[0][1]
@@ -88,11 +96,7 @@ Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1,
 		EndIf
 		Local $nbTroopsGoneDec = 0
 		Local $nbTroopsGoneRound = 0
-		If $edge2 <> -1 Then
-			Local $nbtroopPerRound = $number / ($slotsPerEdge * 2)
-		Else
-			Local $nbTroopPerRound = $number / $slotsPerEdge
-		EndIf
+		Local $nbTroopPerRound = $number / $slotsPerEdge
 		For $i = 0 To $slotsPerEdge - 1
 			$nbTroopsGoneDec += $nbTroopPerRound
 			Local $posX = $minX + (($maxX - $minX) * $i) / ($slotsPerEdge - 1)
@@ -101,11 +105,17 @@ Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1,
 			$posX = Round(_Random_Gaussian($posX, 3))
 			$posY = Round(_Random_Gaussian($posY, 3))
 			Click($posX, $posY, Ceiling($nbTroopsGoneDec - $nbTroopsGoneRound), 0, $Center, $BufferDist)
+			SetLog(TimerDiff($htimer))
 			$nbTroopsGoneRound += Ceiling($nbTroopsGoneDec - $nbTroopsGoneRound)
-			If _Sleep(Standard_SetSleep(0)) Then Return
+			If GUICtrlRead($sldAcc) < 100 Then
+				If _Sleep(Standard_SetSleep(0)) Then Return
+			EndIf
 		Next
 		If $edge2 <> -1 Then
 			If _Sleep(Standard_SetSleep(1)) Then Return
+			Local $nbTroopsGoneDec = 0
+			Local $nbTroopsGoneRound = 0
+			Local $nbTroopPerRound = $number / $slotsPerEdge
 			For $i = 0 To $slotsPerEdge - 1
 				$nbTroopsGoneDec += $nbTroopPerRound
 				Local $posX2 = $maxX2 - (($maxX2 - $minX2) * $i) / ($slotsPerEdge - 1)
@@ -114,8 +124,11 @@ Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1,
 				$posX2 = Round(_Random_Gaussian($posX2, 3))
 				$posY2 = Round(_Random_Gaussian($posY2, 3))
 				Click($posX2, $posY2, Ceiling($nbTroopsGoneDec - $nbTroopsGoneRound), 0, $Center, $BufferDist)
+				SetLog(TimerDiff($htimer))
 				$nbTroopsGoneRound += Ceiling($nbTroopsGoneDec - $nbTroopsGoneRound)
-				If _Sleep(Standard_SetSleep(0)) Then Return
+				If GUICtrlRead($sldAcc) < 100 Then
+					If _Sleep(Standard_SetSleep(0)) Then Return
+				EndIf
 			Next
 		EndIf
 	EndIf
@@ -598,13 +611,13 @@ Func Standard_Attack($AttackMethod = 1)
 				If $KingWasHere Then
 					If GUICtrlRead($txtKingSkill) = 0 Then
 						_CaptureRegion()
-						If checkHealth($King) Or (TimerDiff($hHeroTimer) / 1000) > 60 Then
+						If (checkHealth($King) Or (TimerDiff($hHeroTimer) / 1000) > 60) And Not $KingGone Then
 							SetLog(GetLangText("msgActivateKing"), $COLOR_AQUA)
 							SelectDropTroupe($King)
 							$KingGone = True
 						EndIf
 					Else
-						If (TimerDiff($hHeroTimer) / 1000) > Number(GUICtrlRead($txtKingSkill)) Then
+						If ((TimerDiff($hHeroTimer) / 1000) > Number(GUICtrlRead($txtKingSkill))) And Not $KingGone Then
 							SetLog(GetLangText("msgActivateKing"), $COLOR_BLUE)
 							SelectDropTroupe($King)
 							$KingGone = True
@@ -614,13 +627,13 @@ Func Standard_Attack($AttackMethod = 1)
 				If $QueenWasHere Then
 					If GUICtrlRead($txtQueenSkill) = 0 Then
 						_CaptureRegion()
-						If checkHealth($Queen) Or (TimerDiff($hHeroTimer) / 1000) > 60 Then
+						If (checkHealth($Queen) Or (TimerDiff($hHeroTimer) / 1000) > 60) And Not $QueenGone Then
 							SetLog(GetLangText("msgActivateQueen"), $COLOR_AQUA)
 							SelectDropTroupe($Queen)
 							$QueenGone = True
 						EndIf
 					Else
-						If (TimerDiff($hHeroTimer) / 1000) > Number(GUICtrlRead($txtQueenSkill)) Then
+						If ((TimerDiff($hHeroTimer) / 1000) > Number(GUICtrlRead($txtQueenSkill))) And Not $QueenGone Then
 							SetLog(GetLangText("msgActivateQueen"), $COLOR_BLUE)
 							SelectDropTroupe($Queen)
 							$QueenGone = True

@@ -1,5 +1,8 @@
 ## Change Log:
 
+### v2.6.0
+* Much faster troop deployment.  Might not want to do 1/1 anymore
+* Temporary fix for those whose camp numbers can't be read. Unfortunately this may reintroduce a problem where training gets stuck for those people.  If you have this issue please temporarily use barracks training mode until this can be fully fixed.
 ### v2.5.9
 * Emergency fix for occasional crash
 
