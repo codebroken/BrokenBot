@@ -29,7 +29,6 @@ Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1,
 	$BufferDist = GUICtrlRead($sldAcc) + 10
 	$BufferDist = $BufferDist + _Random_Gaussian(20, 8)
 	If $BufferDist < (GUICtrlRead($sldAcc) + 10) Then $BufferDist = GUICtrlRead($sldAcc) + 10
-	$htimer = TimerInit()
 	Switch $troop
 		Case $eBarbarian
 			$Pen = $pBarbarian
@@ -105,7 +104,6 @@ Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1,
 			$posX = Round(_Random_Gaussian($posX, 3))
 			$posY = Round(_Random_Gaussian($posY, 3))
 			Click($posX, $posY, Ceiling($nbTroopsGoneDec - $nbTroopsGoneRound), 0, $Center, $BufferDist)
-			SetLog(TimerDiff($htimer))
 			$nbTroopsGoneRound += Ceiling($nbTroopsGoneDec - $nbTroopsGoneRound)
 			If GUICtrlRead($sldAcc) < 100 Then
 				If _Sleep(Standard_SetSleep(0)) Then Return
@@ -124,7 +122,6 @@ Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1,
 				$posX2 = Round(_Random_Gaussian($posX2, 3))
 				$posY2 = Round(_Random_Gaussian($posY2, 3))
 				Click($posX2, $posY2, Ceiling($nbTroopsGoneDec - $nbTroopsGoneRound), 0, $Center, $BufferDist)
-				SetLog(TimerDiff($htimer))
 				$nbTroopsGoneRound += Ceiling($nbTroopsGoneDec - $nbTroopsGoneRound)
 				If GUICtrlRead($sldAcc) < 100 Then
 					If _Sleep(Standard_SetSleep(0)) Then Return
