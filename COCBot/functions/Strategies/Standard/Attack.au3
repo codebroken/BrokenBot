@@ -443,7 +443,7 @@ Func Standard_Attack($AttackMethod = 1)
 				Case 1
 					$DropX = $FurthestTopLeft[0][0]
 					$DropY = $FurthestTopLeft[0][1]
-					$DropArray[5][2]=[[$DropX, $DropY], [0, 0], [0, 0], [0, 0], [$DropX, $DropY]]
+					Local $DropArray[5][2]=[[$DropX, $DropY], [0, 0], [0, 0], [0, 0], [$DropX, $DropY]]
 				Case 2
 					$m = (537 - 238) / (535 - 128)
 					$m2 = (9 - 314) / (430 - 28)
@@ -453,11 +453,11 @@ Func Standard_Attack($AttackMethod = 1)
 					$DropYa = Round($m2 * $DropXa + $b2)
 					$DropXb = (($b - $b2) / ($m2 - $m)) + 20
 					$DropYb = Round($m2 * $DropXb + $b2)
-					$DropArray[5][2]=[[$DropXa, $DropYa], [0, 0], [0, 0], [0, 0], [$DropXb, $DropYb]]
+					Local $DropArray[5][2]=[[$DropXa, $DropYa], [0, 0], [0, 0], [0, 0], [$DropXb, $DropYb]]
 				Case 3
 					$DropX = $FurthestTopLeft[4][0]
 					$DropY = $FurthestTopLeft[4][1]
-					$DropArray[5][2]=[[$DropX, $DropY], [0, 0], [0, 0], [0, 0], [$DropX, $DropY]]
+					Local $DropArray[5][2]=[[$DropX, $DropY], [0, 0], [0, 0], [0, 0], [$DropX, $DropY]]
 				Case 4
 					$m = (85 - 388) / (527 - 130)
 					$m2 = (612 - 314) / (440 - 28)
@@ -467,7 +467,7 @@ Func Standard_Attack($AttackMethod = 1)
 					$DropYa = Round($m2 * $DropXa + $b2)
 					$DropXb = (($b - $b2) / ($m2 - $m)) + 20
 					$DropYb = Round($m2 * $DropXb + $b2)
-					$DropArray[5][2]=[[$DropXa, $DropYa], [0, 0], [0, 0], [0, 0], [$DropXb, $DropYb]]
+					Local $DropArray[5][2]=[[$DropXa, $DropYa], [0, 0], [0, 0], [0, 0], [$DropXb, $DropYb]]
 				Case 6
 					$m = (85 - 388) / (527 - 130)
 					$m2 = (612 - 314) / (440 - 28)
@@ -477,11 +477,11 @@ Func Standard_Attack($AttackMethod = 1)
 					$DropYa = Round($m2 * $DropXa + $b2)
 					$DropXb = (($b - $b2) / ($m2 - $m)) + 20
 					$DropYb = Round($m2 * $DropXb + $b2)
-					$DropArray[5][2]=[[$DropXa, $DropYa], [0, 0], [0, 0], [0, 0], [$DropXb, $DropYb]]
+					Local $DropArray[5][2]=[[$DropXa, $DropYa], [0, 0], [0, 0], [0, 0], [$DropXb, $DropYb]]
 				Case 7
 					$DropX = Round(($FurthestBottomRight[4][0] - $FurthestBottomRight[0][0]) / 4) + $FurthestBottomRight[0][0]
 					$DropY = Round(($FurthestBottomRight[4][1] - $FurthestBottomRight[0][1]) / 4) + $FurthestBottomRight[0][1]
-					$DropArray[5][2]=[[$DropX, $DropY], [0, 0], [0, 0], [0, 0], [$DropX, $DropY]]
+					Local $DropArray[5][2]=[[$DropX, $DropY], [0, 0], [0, 0], [0, 0], [$DropX, $DropY]]
 				Case 8
 					$m = (537 - 238) / (535 - 128)
 					$m2 = (9 - 314) / (430 - 28)
@@ -491,11 +491,11 @@ Func Standard_Attack($AttackMethod = 1)
 					$DropYa = Round($m2 * $DropXa + $b2)
 					$DropXb = (($b - $b2) / ($m2 - $m)) + 20
 					$DropYb = Round($m2 * $DropXb + $b2)
-					$DropArray[5][2]=[[$DropXa, $DropYa], [0, 0], [0, 0], [0, 0], [$DropXb, $DropYb]]
+					Local $DropArray[5][2]=[[$DropXa, $DropYa], [0, 0], [0, 0], [0, 0], [$DropXb, $DropYb]]
 				Case 9
 					$DropX = $FurthestBottomRight[4][0]
 					$DropY = $FurthestBottomRight[4][1]
-					$DropArray[5][2]=[[$DropX, $DropY], [0, 0], [0, 0], [0, 0], [$DropX, $DropY]]
+					Local $DropArray[5][2]=[[$DropX, $DropY], [0, 0], [0, 0], [0, 0], [$DropX, $DropY]]
 			EndSwitch
 			Standard_dropCC($DropArray, $CC, $AttackMethod, $AimTH)
 			If _Sleep(100) Then Return
