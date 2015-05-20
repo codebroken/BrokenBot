@@ -4,13 +4,13 @@
 Func Standard_SetSleep($type)
 	Switch $type
 		Case 0
-			$delay = ($icmbUnitDelay + 1) * 20
+			$delay = ($icmbUnitDelay + 1) * 8 ;Random Gaussian is always positive, compensate for that
 			$delay = _Random_Gaussian($delay, $delay/3.1)
 		Case 1
-			$delay = ($icmbWaveDelay + 1) * 200
+			$delay = ($icmbWaveDelay + 1) * 80
 			$delay = _Random_Gaussian($delay, $delay/3.1)
 	EndSwitch
-	If $delay < 20 Then $delay = 20
+	If $delay < 9 Then $delay = 9
 	Return $delay
 EndFunc   ;==>Standard_SetSleep
 
