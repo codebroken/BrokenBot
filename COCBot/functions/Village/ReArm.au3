@@ -2,7 +2,7 @@
 Func ReArm()
     If $ichkTrap = 0 Then Return
 
-    SetLog("Checking if Village needs Rearming..", $COLOR_BLUE)
+    SetLog(GetLangText("msgCheckRearm"), $COLOR_BLUE)
 
     If $TownHallPos[0] = -1 Then
         LocateTownHall()
@@ -27,7 +27,7 @@ Func ReArm()
         If _ColorCheck(_GetPixelColor(350, 420), Hex(0xC83B10, 6), 20) Then
             Click(515, 400)
             If _Sleep(500) Then Return
-            SetLog("Rearmed Traps", $COLOR_ORANGE)
+            SetLog(GetLangText("msgRearmedTraps"), $COLOR_ORANGE)
         EndIf
     EndIf
 
@@ -41,7 +41,7 @@ Func ReArm()
         If _ColorCheck(_GetPixelColor(350, 420), Hex(0xC83B10, 6), 20) Then
             Click(515, 400)
             If _Sleep(500) Then Return
-            SetLog("Reloaded X-Bows", $COLOR_ORANGE)
+            SetLog(GetLangText("msgRearmedXBow"), $COLOR_ORANGE)
         EndIf
     EndIf
 
@@ -55,7 +55,7 @@ Func ReArm()
         If _ColorCheck(_GetPixelColor(350, 420), Hex(0xC83B10, 6), 20) Then
             Click(515, 400)
             If _Sleep(500) Then Return
-            SetLog("Reloaded Infernos", $COLOR_ORANGE)
+            SetLog(GetLangText("msgRearmedInferno"), $COLOR_ORANGE)
         EndIf
     EndIf
 

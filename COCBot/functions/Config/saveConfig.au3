@@ -28,7 +28,6 @@ Func saveConfig() ;Saves the controls settings to the config
 	;---------------------------------------------------------------------------------------
 	IniWrite($config, "attack", "UnitD", _GUICtrlComboBox_GetCurSel($cmbUnitDelay))
 	IniWrite($config, "attack", "WaveD", _GUICtrlComboBox_GetCurSel($cmbWaveDelay))
-	IniWrite($config, "attack", "randomatk", GUICtrlRead($Randomspeedatk))
 	;---------------------------------------------------------------------------------------
 	; Donate settings ----------------------------------------------------------------------
 	;---------------------------------------------------------------------------------------
@@ -157,8 +156,6 @@ Func saveConfig() ;Saves the controls settings to the config
         IniWrite($config, "upgrade", "auto-uptroops", 0)
     EndIf
     IniWrite($config, "upgrade", "troops-name", _GUICtrlComboBox_GetCurSel($cmbLaboratory))
-    IniWrite($config, "upgrade", "LabPosX", $itxtLabX)
-    IniWrite($config, "upgrade", "LabPosY", $itxtLabY)
 	;---------------------------------------------------------------------------------------
 	; Notification settings ----------------------------------------------------------------
 	;---------------------------------------------------------------------------------------
@@ -187,6 +184,11 @@ Func saveConfig() ;Saves the controls settings to the config
 	Else
 		IniWrite($config, "notification", "freebuilder", 0)
 	EndIf
+	If IsChecked($lbldisconnect) Then
+		IniWrite($config, "notification", "disconnection", 1)
+	Else
+		IniWrite($config, "notification", "disconnection", 0)
+	EndIf
 	If IsChecked($lblpushbulletdebug) Then
 		IniWrite($config, "notification", "debug", 1)
 	Else
@@ -213,15 +215,12 @@ Func saveConfig() ;Saves the controls settings to the config
 	Else
 		IniWrite($config, "notification", "attackimage", 0)
 	EndIf
+	IniWrite($config, "notification", "user", GUICtrlRead($inppushuser))
 
 	;---------------------------------------------------------------------------------------
 	; Misc settings ------------------------------------------------------------------------
 	;---------------------------------------------------------------------------------------
-	If IsChecked($chkAvoidEdge) Then
-		IniWrite($config, "misc", "AvoidEdge", 1)
-	Else
-		IniWrite($config, "misc", "AvoidEdge", 0)
-	EndIf
+	IniWrite($config, "misc", "RedLineAcc", GUICtrlRead($sldAcc))
 	If IsChecked($chkTakeAttackSS) Then
 		IniWrite($config, "misc", "TakeAttackSnapShot", 1)
 	Else
@@ -271,6 +270,8 @@ Func saveConfig() ;Saves the controls settings to the config
 	;---------------------------------------------------------------------------------------
 	; Config settings ----------------------------------------------------------------------
 	;---------------------------------------------------------------------------------------
+	$array = _GUICtrlComboBox_GetListArray($cmbLanguage)
+	IniWrite($config, "config", "language", $array[_GUICtrlComboBox_GetCurSel($cmbLanguage)+1])
 	If IsChecked($chkBackground) Then
 		IniWrite($config, "config", "Background", 1)
 	Else
@@ -285,6 +286,11 @@ Func saveConfig() ;Saves the controls settings to the config
 		IniWrite($config, "config", "chkUpdate", 1)
 	Else
 		IniWrite($config, "config", "chkUpdate", 0)
+	EndIf
+	If IsChecked($chkStayAlive) Then
+		IniWrite($config, "config", "stayalive", 1)
+	Else
+		IniWrite($config, "config", "stayalive", 0)
 	EndIf
 
 	;---------------------------------------------------------------------------------------
@@ -317,4 +323,6 @@ Func saveConfig() ;Saves the controls settings to the config
 		IniWrite($config, "position", "xBarrack" & $i + 1, $barrackPos[$i][0])
 		IniWrite($config, "position", "yBarrack" & $i + 1, $barrackPos[$i][1])
 	Next
+    IniWrite($config, "position", "LabPosX", $LabPos[0])
+    IniWrite($config, "position", "LabPosY", $LabPos[1])
 EndFunc   ;==>saveConfig

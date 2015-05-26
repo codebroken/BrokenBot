@@ -66,3 +66,45 @@ Func _WaitForPixel($iLeft, $iTop, $iRight, $iBottom, $iColor, $iColorVariation, 
 	Return False
 EndFunc   ;==>_WaitForPixel
 
+Func GetLangText($Key)
+	$ReturnStr = ""
+	If IsDeclared("cmbLanguage") Then
+		$array = _GUICtrlComboBox_GetListArray($cmbLanguage)
+		$CurrLangSel = $array[_GUICtrlComboBox_GetCurSel($cmbLanguage)+1]
+		$ReturnStr = IniRead(@ScriptDir & "\BrokenBot.org\languages\" & $CurrLangSel & ".ini", "general", $Key, "")
+		If $ReturnStr = "" Then
+			$ReturnStr = IniRead(@ScriptDir & "\BrokenBot.org\languages\English.ini", "general", $Key, "")
+		EndIf
+;~ 		If IsDeclared("txtLog") And IsDeclared("statLog") Then
+;~ 			SetLog("SL:" & $StartupLanguage)
+;~ 			SetLog("CL:" & $CurrLangSel)
+;~ 			SetLog("Key:" & $Key)
+;~ 			SetLog("Result:" & $ReturnStr)
+;~ 		EndIf
+	Else
+		$ReturnStr = IniRead(@ScriptDir & "\BrokenBot.org\languages\" & $StartupLanguage & ".ini", "general", $Key, "")
+		If $ReturnStr = "" Then
+			$ReturnStr = IniRead(@ScriptDir & "\BrokenBot.org\languages\English.ini", "general", $Key, "")
+		EndIf
+;~ 		If IsDeclared("txtLog") And IsDeclared("statLog") Then
+;~ 			SetLog("SL:" & $StartupLanguage)
+;~ 			SetLog("Key:" & $Key)
+;~ 			SetLog("Result:" & $ReturnStr)
+;~ 		EndIf
+	EndIf
+	Return $ReturnStr
+EndFunc
+
+Func PopulateLanguages()
+	$searchfile = FileFindFirstFile(@ScriptDir & "\BrokenBot.org\languages\*.ini")
+	$txtLang = ""
+	While True
+		$newfile = FileFindNextFile($searchfile)
+		If @error Then ExitLoop
+		$txtLang = $txtLang & StringLeft($newfile, StringLen($newfile)-4) & "|"
+	WEnd
+	FileClose($searchfile)
+	$txtLang = StringLeft($txtLang, StringLen($txtLang) - 1)
+	_GUICtrlComboBox_ResetContent($cmbLanguage)
+	GUICtrlSetData($cmbLanguage, $txtLang)
+EndFunc

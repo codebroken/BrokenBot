@@ -5,13 +5,13 @@ Func UpgradeBuilding()
 	If $ichkUpgrade1 = 0 And $ichkUpgrade2 = 0 And $ichkUpgrade3 = 0 Then Return
 
 	If GUICtrlRead($txtUpgradeX1) = "" And GUICtrlRead($txtUpgradeX2) = "" And GUICtrlRead($txtUpgradeX3) = "" Then
-		SetLog("Building location not set, skipping upgrade...", $COLOR_RED)
+		SetLog(GetLangText("msgUpgLocNotSet"), $COLOR_RED)
 		ClickP($TopLeftClient) ; Click Away
 		Return
 	EndIf
 	VillageReport()
 	If $FreeBuilder = 0 Then
-		SetLog("No builders available", $COLOR_RED)
+		SetLog(GetLangText("msgNoBuilders"), $COLOR_RED)
 		ClickP($TopLeftClient) ; Click Away
 		Return
 	EndIf
@@ -28,7 +28,7 @@ Func UpgradeBuilding()
 	If $iElixirStorage < $iMinElixir And $iGoldStorage < $iMinGold Then Return
 
 	If $ichkUpgrade1 = 1 Then
-		SetLog("Attempting to upgrade Building 1...")
+		SetLog(GetLangText("msgAttemptUpgr") & " 1...")
 
 		If _Sleep(500) Then Return
 		Click(GUICtrlRead($txtUpgradeX1), GUICtrlRead($txtUpgradeY1))
@@ -47,20 +47,20 @@ Func UpgradeBuilding()
 				If _Sleep(1000) Then Return
 				_CaptureRegion()
 				If _ColorCheck(_GetPixelColor(571, 263) <> Hex(0xD90404, 6), 20) Then
-					SetLog("Building 1 successfully upgraded...", $COLOR_GREEN)
+					SetLog(GetLangText("msgBuilding") & " 1 " & GetLangText("msgUpgradeSuccess"), $COLOR_GREEN)
 					If _Sleep(1000) Then Return
 					ClickP($TopLeftClient, 2)
-					SetLog("Unchecking", $COLOR_GREEN)
+					SetLog(GetLangText("msgUnchecking"), $COLOR_GREEN)
 					GUICtrlSetState($chkUpgrade1, $GUI_UNCHECKED)
 				Else
-					SetLog("Not enough Elixir to upgrade, try upgrade using Gold...", $COLOR_RED)
+					SetLog(GetLangText("msgNotEnoughElix"), $COLOR_RED)
 					ClickP($TopLeftClient, 2)
 					If $iGoldStorage >= $iMinGold Then
 						Click(GUICtrlRead($txtUpgradeX1), GUICtrlRead($txtUpgradeY1))
 						If _Sleep(500) Then Return
 						GoldUpgrade1()
 					ElseIf $iGoldStorage < $iMinGold Then
-						SetLog("Current Gold is lower than Minimum gold set for upgrading, skip upgrading...", $COLOR_RED)
+						SetLog(GetLangText("msgGoldLower"), $COLOR_RED)
 						If _Sleep(1000) Then Return
 					EndIf
 				EndIf
@@ -76,13 +76,13 @@ Func UpgradeBuilding()
 				If _Sleep(1000) Then Return
 				_CaptureRegion()
 				If _ColorCheck(_GetPixelColor(571, 263), Hex(0xD90404, 6), 20) Then
-					SetLog("Not enough Gold to upgrade, skip upgrading...", $COLOR_RED)
+					SetLog(GetLangText("msgNotEnoughGold"), $COLOR_RED)
 					ClickP($TopLeftClient, 2)
 				Else
-					SetLog("Building 1 successfully upgraded...", $COLOR_GREEN)
+					SetLog(GetLangText("msgBuilding") & " 1 " & GetLangText("msgUpgradeSuccess"), $COLOR_GREEN)
 					If _Sleep(1000) Then Return
 					ClickP($TopLeftClient, 2)
-					SetLog("Unchecking", $COLOR_GREEN)
+					SetLog(GetLangText("msgUnchecking"), $COLOR_GREEN)
 					GUICtrlSetState($chkUpgrade1, $GUI_UNCHECKED)
 				EndIf
 			EndIf
@@ -91,7 +91,7 @@ Func UpgradeBuilding()
 		VillageReport()
 		If _Sleep(1000) Then Return
 		If $FreeBuilder = 0 Then
-			SetLog("No builders available", $COLOR_RED)
+			SetLog(GetLangText("msgNoBuilders"), $COLOR_RED)
 			ClickP($TopLeftClient) ; Click Away
 			Return
 		EndIf
@@ -107,7 +107,7 @@ Func UpgradeBuilding()
 	;Upgrade 2
 
 	If $ichkUpgrade2 = 1 Then
-		SetLog("Attempting to upgrade Building 2...")
+		SetLog(GetLangText("msgAttemptUpgr") & " 2...")
 
 		If _Sleep(500) Then Return
 		Click(GUICtrlRead($txtUpgradeX2), GUICtrlRead($txtUpgradeY2))
@@ -126,19 +126,19 @@ Func UpgradeBuilding()
 				If _Sleep(1000) Then Return
 				_CaptureRegion()
 				If _ColorCheck(_GetPixelColor(571, 263) <> Hex(0xD90404, 6), 20) Then
-					SetLog("Building 2 successfully upgraded...", $COLOR_GREEN)
+					SetLog(GetLangText("msgBuilding") & " 2 " & GetLangText("msgUpgradeSuccess"), $COLOR_GREEN)
 					If _Sleep(1000) Then Return
 					ClickP($TopLeftClient, 2)
 					GUICtrlSetState($chkUpgrade2, $GUI_UNCHECKED)
 				Else
-					SetLog("Not enough Elixir to upgrade, try upgrade using Gold...", $COLOR_RED)
+					SetLog(GetLangText("msgNotEnoughElix"), $COLOR_RED)
 					ClickP($TopLeftClient, 2)
 					If $iGoldStorage >= $iMinGold Then
 						Click(GUICtrlRead($txtUpgradeX2), GUICtrlRead($txtUpgradeY2))
 						If _Sleep(500) Then Return
 						GoldUpgrade2()
 					ElseIf $iGoldStorage < $iMinGold Then
-						SetLog("Current Gold is lower than Minimum gold set for upgrading, skip upgrading...", $COLOR_RED)
+						SetLog(GetLangText("msgGoldLower"), $COLOR_RED)
 						If _Sleep(1000) Then Return
 					EndIf
 				EndIf
@@ -154,10 +154,10 @@ Func UpgradeBuilding()
 				If _Sleep(1000) Then Return
 				_CaptureRegion()
 				If _ColorCheck(_GetPixelColor(571, 263), Hex(0xD90404, 6), 20) Then
-					SetLog("Not enough Gold to upgrade, skip upgrading...", $COLOR_RED)
+					SetLog(GetLangText("msgNotEnoughGold"), $COLOR_RED)
 					ClickP($TopLeftClient, 2)
 				Else
-					SetLog("Building 2 successfully upgraded...", $COLOR_GREEN)
+					SetLog(GetLangText("msgBuilding") & " 2 " & GetLangText("msgUpgradeSuccess"), $COLOR_GREEN)
 					If _Sleep(1000) Then Return
 					ClickP($TopLeftClient, 2)
 					GUICtrlSetState($chkUpgrade2, $GUI_UNCHECKED)
@@ -168,7 +168,7 @@ Func UpgradeBuilding()
 		VillageReport()
 		If _Sleep(1000) Then Return
 		If $FreeBuilder = 0 Then
-			SetLog("No builders available", $COLOR_RED)
+			SetLog(GetLangText("msgNoBuilders"), $COLOR_RED)
 			ClickP($TopLeftClient) ; Click Away
 			Return
 		EndIf
@@ -183,7 +183,7 @@ Func UpgradeBuilding()
 
 	;Upgrade 3
 	If $ichkUpgrade3 = 1 Then
-		SetLog("Attempting to upgrade Building 3...")
+		SetLog(GetLangText("msgAttemptUpgr") & " 3...")
 
 		If _Sleep(500) Then Return
 		Click(GUICtrlRead($txtUpgradeX3), GUICtrlRead($txtUpgradeY3))
@@ -202,19 +202,19 @@ Func UpgradeBuilding()
 				If _Sleep(1000) Then Return
 				_CaptureRegion()
 				If _ColorCheck(_GetPixelColor(571, 263) <> Hex(0xD90404, 6), 20) Then
-					SetLog("Building 3 successfully upgraded...", $COLOR_GREEN)
+					SetLog(GetLangText("msgBuilding") & " 3 " & GetLangText("msgUpgradeSuccess"), $COLOR_GREEN)
 					If _Sleep(1000) Then Return
 					ClickP($TopLeftClient, 2)
 					GUICtrlSetState($chkUpgrade3, $GUI_UNCHECKED)
 				Else
-					SetLog("Not enough Elixir to upgrade, try upgrade using Gold...", $COLOR_RED)
+					SetLog(GetLangText("msgNotEnoughElix"), $COLOR_RED)
 					ClickP($TopLeftClient, 2)
 					If $iGoldStorage >= $iMinGold Then
 						Click(GUICtrlRead($txtUpgradeX3), GUICtrlRead($txtUpgradeY3))
 						If _Sleep(500) Then Return
 						GoldUpgrade3()
 					ElseIf $iGoldStorage < $iMinGold Then
-						SetLog("Current Gold is lower than Minimum gold set for upgrading, skip upgrading...", $COLOR_RED)
+						SetLog(GetLangText("msgGoldLower"), $COLOR_RED)
 						If _Sleep(1000) Then Return
 					EndIf
 				EndIf
@@ -230,10 +230,10 @@ Func UpgradeBuilding()
 				If _Sleep(1000) Then Return
 				_CaptureRegion()
 				If _ColorCheck(_GetPixelColor(571, 263), Hex(0xD90404, 6), 20) Then
-					SetLog("Not enough Gold to upgrade, skip upgrading...", $COLOR_RED)
+					SetLog(GetLangText("msgNotEnoughGold"), $COLOR_RED)
 					ClickP($TopLeftClient, 2)
 				Else
-					SetLog("Building 3 successfully upgraded...", $COLOR_GREEN)
+					SetLog(GetLangText("msgBuilding") & " 3 " & GetLangText("msgUpgradeSuccess"), $COLOR_GREEN)
 					If _Sleep(1000) Then Return
 					ClickP($TopLeftClient, 2)
 					GUICtrlSetState($chkUpgrade3, $GUI_UNCHECKED)
@@ -244,7 +244,7 @@ Func UpgradeBuilding()
 		VillageReport()
 		If _Sleep(1000) Then Return
 		If $FreeBuilder = 0 Then
-			SetLog("No builders available", $COLOR_RED)
+			SetLog(GetLangText("msgNoBuilders"), $COLOR_RED)
 			ClickP($TopLeftClient) ; Click Away
 			Return
 		EndIf
@@ -267,10 +267,10 @@ Func GoldUpgrade1()
 			If _Sleep(1000) Then Return
 			_CaptureRegion()
 			If _ColorCheck(_GetPixelColor(571, 263), Hex(0xD90404, 6), 20) Then
-				SetLog("Not enough Gold to upgrade, skip upgrading...", $COLOR_RED)
+				SetLog(GetLangText("msgNotEnoughGold"), $COLOR_RED)
 				ClickP($TopLeftClient, 2)
 			Else
-				SetLog("Building 1 successfully upgraded...", $COLOR_GREEN)
+				SetLog(GetLangText("msgBuilding") & " 1 " & GetLangText("msgUpgradeSuccess"), $COLOR_GREEN)
 				If _Sleep(1000) Then Return
 				ClickP($TopLeftClient, 2)
 				GUICtrlSetState($chkUpgrade1, $GUI_UNCHECKED)
@@ -290,10 +290,10 @@ Func GoldUpgrade2()
 			If _Sleep(1000) Then Return
 			_CaptureRegion()
 			If _ColorCheck(_GetPixelColor(571, 263), Hex(0xD90404, 6), 20) Then
-				SetLog("Not enough Gold to upgrade, skip upgrading...", $COLOR_RED)
+				SetLog(GetLangText("msgNotEnoughGold"), $COLOR_RED)
 				ClickP($TopLeftClient, 2)
 			Else
-				SetLog("Building 2 successfully upgraded...", $COLOR_GREEN)
+				SetLog(GetLangText("msgBuilding") & " 2 " & GetLangText("msgUpgradeSuccess"), $COLOR_GREEN)
 				If _Sleep(1000) Then Return
 				ClickP($TopLeftClient, 2)
 				GUICtrlSetState($chkUpgrade2, $GUI_UNCHECKED)
@@ -313,10 +313,10 @@ Func GoldUpgrade3()
 			If _Sleep(1000) Then Return
 			_CaptureRegion()
 			If _ColorCheck(_GetPixelColor(571, 263), Hex(0xD90404, 6), 20) Then
-				SetLog("Not enough Gold to upgrade, skip upgrading...", $COLOR_RED)
+				SetLog(GetLangText("msgNotEnoughGold"), $COLOR_RED)
 				ClickP($TopLeftClient, 2)
 			Else
-				SetLog("Building 3 successfully upgraded...", $COLOR_GREEN)
+				SetLog(GetLangText("msgBuilding") & " 3 " & GetLangText("msgUpgradeSuccess"), $COLOR_GREEN)
 				If _Sleep(1000) Then Return
 				ClickP($TopLeftClient, 2)
 				GUICtrlSetState($chkUpgrade3, $GUI_UNCHECKED)

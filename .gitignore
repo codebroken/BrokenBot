@@ -7,7 +7,9 @@ Attacks/
 Debug/
 logs/
 Loots/
-*.ini
+config/*.ini
+strategies/*.ini
+.developer
 
 ######################
 ## Windows detritus ##

@@ -4,7 +4,7 @@ Func Collect()
 	Local $collectx, $collecty, $i = 0
 
 	If $ichkCollect = 1 Then
-		SetLog("Collecting Resources", $COLOR_BLUE)
+		SetLog(GetLangText("msgCollecting"), $COLOR_BLUE)
 		_Sleep(250)
 		Click(1, 1) ;Click Away
 		While 1

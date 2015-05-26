@@ -21,6 +21,7 @@
 #include <GuiRichEdit.au3>
 #include <GuiTab.au3>
 #include <GuiListBox.au3>
+#include <MsgBoxConstants.au3>
 
 Global Const $COLOR_ORANGE = 0xFFA500
 
@@ -85,12 +86,15 @@ $THText[2] = "8"
 $THText[3] = "9"
 $THText[4] = "10"
 Global $SearchCount = 0 ;Number of searches
+Global $SearchFailed = False ; Last search failed or not
 Global $THaddtiles, $THside, $THi
 Global $StratNames = ""
 Global $prevSelection = ""
 Global $DefaultTab = 0
 
 Global $speedBump = 0
+Global $hTimerClickNext, $fdiffReadGold
+
 Global $prevTab = 0
 Global $slideOut = 0
 Global $slideIn = 0
@@ -278,6 +282,8 @@ Global $PushBullettype = 0
 Global $PushBulletattacktype = 0
 Global $FileName = ""
 Global $PushBulletvillagereport = 0
+Global $PushBulletvillagereportTimer
+Global $PushBulletvillagereportInterval = 3600000 ; an hour
 Global $PushBulletmatchfound = 0
 Global $PushBulletlastraid = 0
 Global $PushBullettotalgain = 0
@@ -285,6 +291,7 @@ Global $PushBulletdebug = 0
 Global $PushBulletremote = 0
 Global $PushBulletdelete = 0
 Global $PushBulletfreebuilder = 0
+Global $PushBulletdisconnection = 0
 Global $sLogFileName
 Global $Raid = 0
 Global $buildernotified = False
@@ -296,12 +303,14 @@ Global $SearchCost = 0
 Global $sTimerRC
 Global $PauseBot = False
 
+;Match found
+Global $MatchFoundText =""
+
 ;Last Raid
 Global $LastRaidGold = 0
 Global $LastRaidElixir = 0
 Global $LastRaidDarkElixir = 0
 Global $LastRaidTrophy = 0
-
 ;UpTroops
 Global $ichkLab
 Global $icmbLaboratory
@@ -329,3 +338,6 @@ Global $SpellLightningX = 549
 Global $SpellLightningY = 461
 Global $SpellRageX = 650
 Global $SpellRageY = 372
+Global $LabPos[2]
+
+Global $FontSize

@@ -1,5 +1,5 @@
 # BrokenBot.org - Clash of Clans Bot
-Latest version: 2.1.1
+Latest version: 2.6.0
 
 ## Community
 Forums available for discussion at: http://brokenbot.org/
@@ -11,7 +11,7 @@ https://docs.pushbullet.com/
 ### Credit
 Much thanks to: the original creators of this bot at gamebot.org, clashbot.org, cool7su, maxcom, msh2050, usabug, cmestres, samkhowaja and anyone else who I missed but has contributed to this great project!
 
-Original source:
+Original source from which this is modified (project originally started at gamebot.org):
 Modification of v5.8 of bot originally available from http://clashbot.org/forums/index.php?/topic/1010-flawless-clashbot-release-58-recommended/
 
 ### License

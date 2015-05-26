@@ -1,8 +1,20 @@
-Func Standard_ReadyCheck()
+Func Standard_ReadyCheck($TimeSinceNewTroop)
+
+	If $TimeSinceNewTroop > Standard_GetTrainTime() + 60 Then
+		If $stuckCount < 3 Then
+			$FirstStart = True
+			SetLog(GetLangText("msgAppearsStuck"))
+			$stuckCount +=1
+		ElseIf $stuckCount = 3 Then
+			SetLog(GetLangText("msgSevereStuck"))
+			$stuckCount += 1
+		EndIf
+	EndIf
+
 	$fullarmy = Standard_CheckArmyCamp()
 	If StatusCheck() Then Return False
 
-	If Not $fullarmy Then Standard_Train()
+	If Not $fullarmy And $stuckCount < 3 Then Standard_Train()
 	If StatusCheck() Then Return False
 
 	If IsChecked($chkMakeSpells) Then
@@ -13,9 +25,19 @@ Func Standard_ReadyCheck()
 		If StatusCheck() Then Return False
 	EndIf
 
+	If $stuckCount >= 3 And IsChecked($chkDeadActivate) Then
+		$fullArmy = True
+		Return True
+	EndIf
+
+	If $stuckCount >= 3 And IsChecked($chkAnyActivate) Then
+		$fullArmy = True
+		Return True
+	EndIf
 
 	If $fullarmy And IsChecked($chkDeadActivate) Then Return True
 	If $fullarmy And IsChecked($chkAnyActivate) Then Return True
+
 	If IsChecked($chkMakeSpells) Then
 		If $fullSpellFactory And IsChecked($chkNukeOnly) And Not IsChecked($chkNukeOnlyWithFullArmy) Then Return True
 	EndIf
@@ -23,8 +45,131 @@ Func Standard_ReadyCheck()
 	Return False
 EndFunc   ;==>Standard_ReadyCheck
 
+Func Standard_GetTrainTime()
+	$MaxTrainTime = 0
+	Switch _GUICtrlComboBox_GetCurSel($cmbTroopComp)
+		Case 0
+			$MaxTrainTime = 25
+		Case 1
+			$MaxTrainTime = 20
+		Case 2
+			$MaxTrainTime = 30
+		Case 3
+			$MaxTrainTime = 25
+		Case 4
+			$MaxTrainTime = 120
+		Case 5
+			$MaxTrainTime = 120
+		Case 6
+			$MaxTrainTime = 30
+		Case 7
+			$MaxTrainTime = 120
+		Case 8
+			Switch _GUICtrlComboBox_GetCurSel($cmbBarrack1)
+				Case 0
+					$MaxTrainTime = 20
+				Case 1
+					$MaxTrainTime = 25
+				Case 2
+					$MaxTrainTime = 120
+				Case 3
+					$MaxTrainTime = 30
+				Case 4
+					$MaxTrainTime = 120
+				Case 5
+					$MaxTrainTime = 240
+				Case 6
+					$MaxTrainTime = 480
+				Case 7
+					$MaxTrainTime = 900
+				Case 8
+					$MaxTrainTime = 1800
+				Case 9
+					$MaxTrainTime = 2700
+				Case 10
+					$MaxTrainTime = 0
+			EndSwitch
+			Switch _GUICtrlComboBox_GetCurSel($cmbBarrack2)
+				Case 0
+					If $MaxTrainTime < 20 Then $MaxTrainTime = 20
+				Case 1
+					If $MaxTrainTime < 25 Then $MaxTrainTime = 25
+				Case 2
+					If $MaxTrainTime < 120 Then $MaxTrainTime = 120
+				Case 3
+					If $MaxTrainTime < 30 Then $MaxTrainTime = 30
+				Case 4
+					If $MaxTrainTime < 120 Then $MaxTrainTime = 120
+				Case 5
+					If $MaxTrainTime < 240 Then $MaxTrainTime = 240
+				Case 6
+					If $MaxTrainTime < 480 Then $MaxTrainTime = 480
+				Case 7
+					If $MaxTrainTime < 900 Then $MaxTrainTime = 900
+				Case 8
+					If $MaxTrainTime < 1800 Then $MaxTrainTime = 1800
+				Case 9
+					If $MaxTrainTime < 2700 Then $MaxTrainTime = 2700
+				Case 10
+					; Nothing
+			EndSwitch
+			Switch _GUICtrlComboBox_GetCurSel($cmbBarrack3)
+				Case 0
+					If $MaxTrainTime < 20 Then $MaxTrainTime = 20
+				Case 1
+					If $MaxTrainTime < 25 Then $MaxTrainTime = 25
+				Case 2
+					If $MaxTrainTime < 120 Then $MaxTrainTime = 120
+				Case 3
+					If $MaxTrainTime < 30 Then $MaxTrainTime = 30
+				Case 4
+					If $MaxTrainTime < 120 Then $MaxTrainTime = 120
+				Case 5
+					If $MaxTrainTime < 240 Then $MaxTrainTime = 240
+				Case 6
+					If $MaxTrainTime < 480 Then $MaxTrainTime = 480
+				Case 7
+					If $MaxTrainTime < 900 Then $MaxTrainTime = 900
+				Case 8
+					If $MaxTrainTime < 1800 Then $MaxTrainTime = 1800
+				Case 9
+					If $MaxTrainTime < 2700 Then $MaxTrainTime = 2700
+				Case 10
+					; Nothing
+			EndSwitch
+			Switch _GUICtrlComboBox_GetCurSel($cmbBarrack4)
+				Case 0
+					If $MaxTrainTime < 20 Then $MaxTrainTime = 20
+				Case 1
+					If $MaxTrainTime < 25 Then $MaxTrainTime = 25
+				Case 2
+					If $MaxTrainTime < 120 Then $MaxTrainTime = 120
+				Case 3
+					If $MaxTrainTime < 30 Then $MaxTrainTime = 30
+				Case 4
+					If $MaxTrainTime < 120 Then $MaxTrainTime = 120
+				Case 5
+					If $MaxTrainTime < 240 Then $MaxTrainTime = 240
+				Case 6
+					If $MaxTrainTime < 480 Then $MaxTrainTime = 480
+				Case 7
+					If $MaxTrainTime < 900 Then $MaxTrainTime = 900
+				Case 8
+					If $MaxTrainTime < 1800 Then $MaxTrainTime = 1800
+				Case 9
+					If $MaxTrainTime < 2700 Then $MaxTrainTime = 2700
+				Case 10
+					; Nothing
+			EndSwitch
+		Case 9
+			; Doesn't work currently
+			$MaxTrainTime = 0
+	EndSwitch
+	Return $MaxTrainTime
+EndFunc
+
 Func Standard_CheckArmyCamp()
-	SetLog("Checking Army Camp...", $COLOR_BLUE)
+	SetLog(GetLangText("msgCheckingCamp"), $COLOR_BLUE)
 	$fullarmy = False
 
 	If _Sleep(100) Then Return
@@ -43,7 +188,7 @@ Func Standard_CheckArmyCamp()
 	If _Sleep(1000) Then Return
 	Local $BArmyPos = _WaitForPixel(309, 581, 433, 583, Hex(0x4084B8, 6), 5) ;Finds Info button
 	If IsArray($BArmyPos) = False Then
-		SetLog("Your Army Camp is not available", $COLOR_RED)
+		SetLog(GetLangText("msgCampNA"), $COLOR_RED)
 	Else
 		Click($BArmyPos[0], $BArmyPos[1]) ;Click Info button
 		If _Sleep(2000) Then Return
@@ -72,7 +217,7 @@ Func Standard_CheckArmyCamp()
 		EndSwitch
 		$CurCamp = Number(getOther(586, 193, "Camp"))
 		If $CurCamp > 0 Then
-			SetLog("Total Troop Capacity: " & $CurCamp & "/" & $itxtcampCap, $COLOR_GREEN)
+			SetLog(GetLangText("msgTotalCampCap") & $CurCamp & "/" & $itxtcampCap, $COLOR_GREEN)
 		EndIf
 
 		If $CurCamp >= ($itxtcampCap * (GUICtrlRead($cmbRaidcap) / 100)) Or IsArray($Campbar) = True Then
@@ -149,7 +294,7 @@ Func Standard_GetTrainPos($TroopKind)
 		Case $eValkyrie
 			Return $TrainValkyrie
 		Case Else
-			SetLog("Don't know how to train the troop " & $TroopKind & " yet")
+			SetLog(GetLangText("msgDontKnow") & $TroopKind & GetLangText("msgYet"))
 			Return 0
 	EndSwitch
 EndFunc   ;==>Standard_GetTrainPos
@@ -174,7 +319,7 @@ Func Standard_Train($reset = False)
 		If _Sleep(2000) Then Return
 	EndIf
 
-	SetLog("Training Troops...", $COLOR_BLUE)
+	SetLog(GetLangText("msgTrainingTroops"), $COLOR_BLUE)
 
 	If $reset Then ; reset all for cook again on startup
 		$ArmyComp = 0
@@ -213,7 +358,7 @@ Func Standard_Train($reset = False)
 				EndIf
 			EndIf
 		EndIf
-		SetLog("Forces needed: B-" & $CurBarb & ", A-" & $CurArch & ", Go-" & $CurGoblin & ", Gi-" & $CurGiant & ", W-" & $CurWB, $COLOR_GREEN)
+		SetLog(GetLangText("msgForcesNeededB") & $CurBarb & GetLangText("msgForcesNeededA") & $CurArch & GetLangText("msgForcesNeededGo") & $CurGoblin & GetLangText("msgForcesNeededGi") & $CurGiant & GetLangText("msgForcesNeededWB") & $CurWB, $COLOR_GREEN)
 	EndIf
 
 	Local $GiantEBarrack, $WallEBarrack, $ArchEBarrack, $BarbEBarrack, $GoblinEBarrack
@@ -249,12 +394,12 @@ Func Standard_Train($reset = False)
 
 		Local $TrainPos = _PixelSearch(155, 603, 694, 605, Hex(0x9C7C37, 6), 5) ;Finds Train Troops button
 		If IsArray($TrainPos) = False Then
-			SetLog("Barrack " & $i + 1 & " is not available", $COLOR_RED)
+			SetLog(GetLangText("msgBarrack") & $i + 1 & GetLangText("msgNotAvailable"), $COLOR_RED)
 			handleBarracksError($i)
 			If _Sleep(500) Then ExitLoop
 		Else
 			Click($TrainPos[0], $TrainPos[1]) ;Click Train Troops button
-			;SetLog("Barrack " & $i + 1 & " ...", $COLOR_GREEN)
+			;SetLog(GetLangText("msgBarrack") & $i + 1 & " ...", $COLOR_GREEN)
 			If _Sleep(1000) Then ExitLoop
 
 			If _GUICtrlComboBox_GetCurSel($cmbTroopComp) = 8 Then
@@ -335,7 +480,7 @@ Func Standard_Train($reset = False)
 						_CaptureRegion()
 				EndSwitch
 			Else
-				SetLog("====== Barrack " & $i + 1 & " : ======", $COLOR_BLUE)
+				SetLog("====== " & GetLangText("msgBarrack") & $i + 1 & " : ======", $COLOR_BLUE)
 				_CaptureRegion()
 				;while _ColorCheck(_GetPixelColor(496, 200), Hex(0x880000, 6), 20) Then
 				If $reset Or $FirstStart Then
@@ -380,19 +525,6 @@ Func Standard_Train($reset = False)
 					EndIf
 				EndIf
 
-				If GUICtrlRead($txtArchers) <> "0" And $CurArch > 0 Then
-					;If _ColorCheck(_GetPixelColor(261, 366), Hex(0x39D8E0, 6), 20) And $CurArch > 0 Then
-					If $CurArch > 0 Then
-						If $ArchEBarrack = 0 Then
-							Standard_TrainIt($eArcher, 1)
-						ElseIf $ArchEBarrack >= $CurArch Then
-							Standard_TrainIt($eArcher, $CurArch)
-						Else
-							Standard_TrainIt($eArcher, $ArchEBarrack)
-						EndIf
-					EndIf
-				EndIf
-
 				If GUICtrlRead($txtNumGiants) <> "0" And $CurGiant > 0 Then
 					;If _ColorCheck(_GetPixelColor(475, 366), Hex(0x3DD8E0, 6), 20) And $CurGiant > 0 Then
 					If $CurGiant > 0 Then
@@ -405,7 +537,6 @@ Func Standard_Train($reset = False)
 						EndIf
 					EndIf
 				EndIf
-
 
 				If GUICtrlRead($txtNumWallbreakers) <> "0" And $CurWB > 0 Then
 					;If _ColorCheck(_GetPixelColor(688, 366), Hex(0x3AD8E0, 6), 20) And $CurWB > 0  Then
@@ -420,6 +551,31 @@ Func Standard_Train($reset = False)
 					EndIf
 				EndIf
 
+				If GUICtrlRead($txtGoblins) <> "0" And $CurGoblin > 0 Then
+					;If _ColorCheck(_GetPixelColor(261, 366), Hex(0x39D8E0, 6), 20) And $CurGoblin > 0 Then
+					If $CurGoblin > 0 Then
+						If $GoblinEBarrack = 0 Then
+							Standard_TrainIt($eGoblin, 1)
+						ElseIf $GoblinEBarrack >= $CurGoblin Or $GoblinEBarrack = 0 Then
+							Standard_TrainIt($eGoblin, $CurGoblin)
+						Else
+							Standard_TrainIt($eGoblin, $GoblinEBarrack)
+						EndIf
+					EndIf
+				EndIf
+
+				If GUICtrlRead($txtArchers) <> "0" And $CurArch > 0 Then
+					;If _ColorCheck(_GetPixelColor(261, 366), Hex(0x39D8E0, 6), 20) And $CurArch > 0 Then
+					If $CurArch > 0 Then
+						If $ArchEBarrack = 0 Then
+							Standard_TrainIt($eArcher, 1)
+						ElseIf $ArchEBarrack >= $CurArch Then
+							Standard_TrainIt($eArcher, $CurArch)
+						Else
+							Standard_TrainIt($eArcher, $ArchEBarrack)
+						EndIf
+					EndIf
+				EndIf
 
 				If GUICtrlRead($txtBarbarians) <> "0" And $CurBarb > 0 Then
 					;If _ColorCheck(_GetPixelColor(369, 366), Hex(0x39D8E0, 6), 20) And $CurBarb > 0 Then
@@ -430,20 +586,6 @@ Func Standard_Train($reset = False)
 							Standard_TrainIt($eBarbarian, $CurBarb)
 						Else
 							Standard_TrainIt($eBarbarian, $BarbEBarrack)
-						EndIf
-					EndIf
-				EndIf
-
-
-				If GUICtrlRead($txtGoblins) <> "0" And $CurGoblin > 0 Then
-					;If _ColorCheck(_GetPixelColor(261, 366), Hex(0x39D8E0, 6), 20) And $CurGoblin > 0 Then
-					If $CurGoblin > 0 Then
-						If $GoblinEBarrack = 0 Then
-							Standard_TrainIt($eGoblin, 1)
-						ElseIf $GoblinEBarrack >= $CurGoblin Or $GoblinEBarrack = 0 Then
-							Standard_TrainIt($eGoblin, $CurGoblin)
-						Else
-							Standard_TrainIt($eGoblin, $GoblinEBarrack)
 						EndIf
 					EndIf
 				EndIf
@@ -490,7 +632,7 @@ Func Standard_Train($reset = False)
 				If $troopSecondGiant > $troopFirstGiant And GUICtrlRead($txtNumGiants) <> "0" Then
 					$ArmyComp += ($troopSecondGiant - $troopFirstGiant) * 5
 					$CurGiant -= ($troopSecondGiant - $troopFirstGiant)
-					SetLog("Barrack " & ($i + 1) & " Training Giant : " & ($troopSecondGiant - $troopFirstGiant), $COLOR_GREEN)
+					SetLog(GetLangText("msgBarrack") & ($i + 1) & GetLangText("msgTraining") & GetLangText("troopNameGiant") & " : " & ($troopSecondGiant - $troopFirstGiant), $COLOR_GREEN)
 					SetLog("Giant Remaining : " & $CurGiant, $COLOR_BLUE)
 				EndIf
 
@@ -498,31 +640,31 @@ Func Standard_Train($reset = False)
 				If $troopSecondWall > $troopFirstWall And GUICtrlRead($txtNumWallbreakers) <> "0" Then
 					$ArmyComp += ($troopSecondWall - $troopFirstWall) * 2
 					$CurWB -= ($troopSecondWall - $troopFirstWall)
-					SetLog("Barrack " & ($i + 1) & " Training WallBreaker : " & ($troopSecondWall - $troopFirstWall), $COLOR_GREEN)
+					SetLog(GetLangText("msgBarrack") & ($i + 1) & GetLangText("msgTraining") & GetLangText("troopNameWallBreaker") & " : " & ($troopSecondWall - $troopFirstWall), $COLOR_GREEN)
 					SetLog("WallBreaker Remaining : " & $CurWB, $COLOR_BLUE)
 				EndIf
 
 				If $troopSecondGoblin > $troopFirstGoblin And GUICtrlRead($txtGoblins) <> "0" Then
 					$ArmyComp += ($troopSecondGoblin - $troopFirstGoblin)
 					$CurGoblin -= ($troopSecondGoblin - $troopFirstGoblin)
-					SetLog("Barrack " & ($i + 1) & " Training Goblin : " & ($troopSecondGoblin - $troopFirstGoblin), $COLOR_GREEN)
+					SetLog(GetLangText("msgBarrack") & ($i + 1) & GetLangText("msgTraining") & GetLangText("troopNameGoblin") & " : " & ($troopSecondGoblin - $troopFirstGoblin), $COLOR_GREEN)
 					SetLog("Goblin Remaining : " & $CurGoblin, $COLOR_BLUE)
 				EndIf
 
 				If $troopSecondBarba > $troopFirstBarba And GUICtrlRead($txtBarbarians) <> "0" Then
 					$ArmyComp += ($troopSecondBarba - $troopFirstBarba)
 					$CurBarb -= ($troopSecondBarba - $troopFirstBarba)
-					SetLog("Barrack " & ($i + 1) & " Training Barbarian : " & ($troopSecondBarba - $troopFirstBarba), $COLOR_GREEN)
+					SetLog(GetLangText("msgBarrack") & ($i + 1) & GetLangText("msgTraining") & GetLangText("troopNameBarbarian") & " : " & ($troopSecondBarba - $troopFirstBarba), $COLOR_GREEN)
 					SetLog("Barbarian Remaining : " & $CurBarb, $COLOR_BLUE)
 				EndIf
 
 				If $troopSecondArch > $troopFirstArch And GUICtrlRead($txtArchers) <> "0" Then
 					$ArmyComp += ($troopSecondArch - $troopFirstArch)
 					$CurArch -= ($troopSecondArch - $troopFirstArch)
-					SetLog("Barrack " & ($i + 1) & " Training Archer : " & ($troopSecondArch - $troopFirstArch), $COLOR_GREEN)
+					SetLog(GetLangText("msgBarrack") & ($i + 1) & GetLangText("msgTraining") & GetLangText("troopNameArcher") & " : " & ($troopSecondArch - $troopFirstArch), $COLOR_GREEN)
 					SetLog("Archer Remaining : " & $CurArch, $COLOR_BLUE)
 				EndIf
-				SetLog("Total Troops building : " & $ArmyComp, $COLOR_RED)
+				SetLog(GetLangText("msgTotalBuilding") & $ArmyComp, $COLOR_RED)
 			EndIf
 		EndIf
 		If _Sleep(100) Then ExitLoop
@@ -531,9 +673,9 @@ Func Standard_Train($reset = False)
 	If $brerror[0] = True And $brerror[1] = True And $brerror[2] = True And $brerror[3] = True Then
 		resetBarracksError()
 		$needzoomout = True
-		SetLog("Restart Completed ...", $COLOR_RED)
+		SetLog(GetLangText("msgRestartComplete"), $COLOR_RED)
 	Else
-		SetLog("Training Troops Complete...", $COLOR_BLUE)
+		SetLog(GetLangText("msgTrainingComp"), $COLOR_BLUE)
 	EndIf
 	$FirstStart = False
 
@@ -555,7 +697,7 @@ Func Standard_Train($reset = False)
 
 		If $TrainDrax1 = False And $TrainDrax2 = False Then Return
 
-		SetLog("Training Dark Troops...", $COLOR_BLUE)
+		SetLog(GetLangText("msgTrainingDark"), $COLOR_BLUE)
 
 		For $i = 0 To 1
 		If _Sleep(500) Then ExitLoop
@@ -569,7 +711,7 @@ Func Standard_Train($reset = False)
 
 		Local $TrainPos = _PixelSearch(155, 603, 694, 605, Hex(0x603818, 6), 5) ;Finds Train Troops button
 		If IsArray($TrainPos) = False Then
-		SetLog("Dark Barrack " & $i + 1 & " is not available", $COLOR_RED)
+		SetLog(GetLangText("msgDarkBarrack") & $i + 1 & GetLangText("msgNotAvailable"), $COLOR_RED)
 		If _Sleep(500) Then ExitLoop
 		Else
 		Click($TrainPos[0], $TrainPos[1]) ;Click Train Troops button
@@ -767,7 +909,7 @@ Func Standard_Train($reset = False)
 		If _Sleep(100) Then ExitLoop
 		Click($TopLeftClient[0], $TopLeftClient[1], 2, 250); Click away twice with 250ms delay
 		Next
-		SetLog("Dark Troop Training Complete...", $COLOR_BLUE)
+		SetLog(GetLangText("msgDarkTroopComplete"), $COLOR_BLUE)
 		$FirstDarkTrain = False
 	#ce
 EndFunc   ;==>Standard_Train
@@ -781,15 +923,15 @@ Func Standard_MakeSpells()
 		If Not LocateSpellFactory() Then Return
 		SaveConfig()
 	Else
-		If _Sleep(100) Then Return
+		If _Sleep(500) Then Return
 		Click($SpellPos[0], $SpellPos[1]) ;Click Spell Factory
 	EndIf
 
-	If _Sleep(1000) Then Return ;Do a bit slower
+	If _Sleep(500) Then Return ;Do a bit slower
 	_CaptureRegion()
-	Local $BSpellPos = _PixelSearch(214, 581, 368, 583, Hex(0x4084B8, 6), 5) ;Finds Info button
+	Local $BSpellPos = _WaitForPixel(214, 581, 368, 583, Hex(0x4084B8, 6), 5, 3) ;Finds Info button, wait max 3 seconds
 	If IsArray($BSpellPos) = False Then
-		SetLog("Your Spell Factory is not available", $COLOR_RED)
+		SetLog(GetLangText("msgSFUnavailable"), $COLOR_RED)
 		If $DebugMode = 2 Then _GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "SpellNA-" & @HOUR & @MIN & @SEC & ".png")
 	EndIf
 
@@ -798,13 +940,13 @@ Func Standard_MakeSpells()
 	If IsArray($BSpellPos) Then
 		Click($BSpellPos[0], $BSpellPos[1])
 		If _Sleep(1000) Then Return
-		SetLog("Making spell: " & GUICtrlRead($cmbSpellCreate) & " x " & $itxtspellcap, $COLOR_BLUE)
+		SetLog(GetLangText("msgMakingSpell") & GUICtrlRead($cmbSpellCreate) & " x " & $itxtspellcap, $COLOR_BLUE)
 		Click(220 + _GUICtrlComboBox_GetCurSel($cmbSpellCreate) * 106, 320, $itxtspellcap)
 		If _Sleep(500) Then Return
 		ClickP($TopLeftClient)
 		$spellsstarted = True
 	Else
-		SetLog("Unable to click create spells", $COLOR_RED)
+		SetLog(GetLangText("msgUnableCreate"), $COLOR_RED)
 	EndIf
 
 	ClickP($TopLeftClient) ;Click Away

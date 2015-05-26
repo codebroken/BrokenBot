@@ -9,7 +9,7 @@ Func DonateCC()
 	Global $Donate = IsChecked($chkDonateAllBarbarians) Or IsChecked($chkDonateBarbarians) Or IsChecked($chkDonateAllArchers) Or IsChecked($chkDonateArchers) Or IsChecked($chkDonateAllGiants) Or IsChecked($chkDonateGiants)
 	If $Donate = False Then Return
 	Local $y = 119
-	SetLog("Donating Troops", $COLOR_BLUE)
+	SetLog(GetLangText("msgDonatingTroops"), $COLOR_BLUE)
 
 	_CaptureRegion()
 
@@ -34,7 +34,7 @@ Func DonateCC()
 						$String = $String & @CRLF & getString($DonatePixel[1] - 17)
 					EndIf
 
-					SetLog("Chat Text: " & $String, $COLOR_GREEN)
+					SetLog(GetLangText("msgChatText") & $String, $COLOR_GREEN)
 
 					If IsChecked($chkDonateBarbarians) Then
 						Local $Barbs = StringSplit(StringStripWS($itxtDonateBarbarians, 3), @CRLF)
@@ -52,7 +52,7 @@ Func DonateCC()
 								$y = $DonatePixel[1] + 10
 							EndIf
 						Else
-							SetLog("Unable to read troop 1 donate rules.")
+							SetLog(GetLangText("msgUnableToRead") & "1" & GetLangText("msgDonateRules"))
 							Return
 						EndIf
 					EndIf
@@ -72,7 +72,7 @@ Func DonateCC()
 								$y = $DonatePixel[1] + 10
 							EndIf
 						Else
-							SetLog("Unable to read troop 2 donate rules.")
+							SetLog(GetLangText("msgUnableToRead") & "2" & GetLangText("msgDonateRules"))
 							Return
 						EndIf
 					EndIf
@@ -92,7 +92,7 @@ Func DonateCC()
 								$y = $DonatePixel[1] + 10
 							EndIf
 						Else
-							SetLog("Unable to read troop 3 donate rules.")
+							SetLog(GetLangText("msgUnableToRead") & "3" & GetLangText("msgDonateRules"))
 							Return
 						EndIf
 					EndIf
@@ -109,7 +109,7 @@ Func DonateCC()
 					EndIf
 					GetTroopCoord()
 					If $RowDist = -1 or $ColDist = -1 Then
-						SetLog("Unable to determine how to donate " & $Troop & "(s)")
+						SetLog(GetLangText("msgUnableToDetermine") & $Troop)
 						ExitLoop
 					Else
 						DonateTroops($Troop, $ColDist, $RowDist, $TroopAmount)
@@ -139,7 +139,7 @@ Func DonateCC()
 	WEnd
 
 	If _Sleep(1000) Then Return
-	SetLog("Finished Donating", $COLOR_BLUE)
+	SetLog(GetLangText("msgFinishedDonating"), $COLOR_BLUE)
 	_CaptureRegion()
 	If _ColorCheck(_GetPixelColor(331, 330), Hex(0xF0A03B, 6), 20) Then
 		Click(331, 330) ;Clicks chat thing
@@ -173,19 +173,19 @@ Func DonateCC()
 					Click(520, 240)
 					If _Sleep(500) Then ExitLoop
 					$kicked += 1
-					SetLog($kicked & " Kicked!", $COLOR_RED)
+					SetLog($kicked & GetLangText("msgKicked"), $COLOR_RED)
 					If _Sleep(2000) Then ExitLoop
 					ExitLoop
 				Else
 					ControlSend($Title, "", "", "{CTRLDOWN}{UP}{CTRLUP}") ; scroll down the member list
-					SetLog("Scrolling down", $COLOR_RED)
+					SetLog(GetLangText("msgScrollingDown"), $COLOR_RED)
 					$Scroll += 1
 					If _Sleep(3000) Then ExitLoop
 				EndIf
 				If $Scroll = 8 Then ExitLoop (2)
 			WEnd
 		WEnd
-		SetLog("Finished kicking", $COLOR_RED)
+		SetLog(GetLangText("msgFinishedKicking"), $COLOR_RED)
 	EndIf
 	Click(1, 1, 1, 2000)
 EndFunc   ;==>DonateCC
@@ -212,9 +212,7 @@ Func DonateTroops($Troop, $i, $Row, $number)
 	If IsArray(_PixelSearch(119, $DonatePixel[1], 204, $DonatePixel[1]+4, Hex(0x262926, 6), 10)) Then
 		Click($DonatePixel[0], $DonatePixel[1] + 15)
 	Else
-		SetLog("No donate button exists to click")
-		SetLog("Donate pixel was: " & $DonatePixel[0] & ", " & $DonatePixel[1])
-		SetLog("Color was: " & _GetPixelColor($DonatePixel[0], $DonatePixel[1]))
+		SetLog(GetLangText("msgNoDonateButton"))
 	EndIf
 	If _Sleep(1000) Then Return
 	_CaptureRegion(0, 0, 860, $DonatePixel[1] + 200)
@@ -227,14 +225,14 @@ Func DonateTroops($Troop, $i, $Row, $number)
 		$y = $DonatePixel[1] + 185
 	EndIf
 	If _ColorCheck(_GetPixelColor($x, $y), Hex(0x507C00, 6), 10) Or _ColorCheck(_GetPixelColor($x, $y - 5), Hex(0x507C00, 6), 10) Then
-		SetLog("Donating " & $number & " " & $Troop, $COLOR_BLUE)
+		SetLog(GetLangText("msgDonating") & $number & " " & $Troop, $COLOR_BLUE)
 		If _Sleep(500) Then Return
 		; TODO, check available  trrop before donate the amount of number
 		Click($x, $y, $number, 50)
 		$Donate = True
 		update_armycamp($Troop, $number)
 	Else
-		SetLog("No " & $Troop & " available for donation.", $COLOR_ORANGE)
+		SetLog(GetLangText("msgNo") & $Troop & GetLangText("msgAvailable"), $COLOR_ORANGE)
 		Return
 	EndIf
 	If _Sleep(500) Then Return
@@ -242,15 +240,15 @@ EndFunc   ;==>DonateTroops
 
 Func update_armycamp($Troop, $number)
 	Switch $Troop
-		Case "Archer"
+		Case GetLangText("troopNamePlArcher"), GetLangText("troopNameArcher")
 			$CurArch += $number
-		Case "Barbarian"
+		Case GetLangText("troopNamePlBarbarian"), GetLangText("troopNameBarbarian")
 			$CurBarb += $number
-		Case "Goblin"
+		Case GetLangText("troopNamePlGoblin"), GetLangText("troopNameGoblin")
 			$CurGoblin += $number
-		Case "Giant"
+		Case GetLangText("troopNamePlGiant"), GetLangText("troopNameGiant")
 			$CurGiant += $number
-		Case "WB"
+		Case GetLangText("troopNamePlWallBreaker"), GetLangText("troopNameWallBreaker")
 			$CurWB += $number
 			;              Case "Balloon"
 			;             Case "Hog"
@@ -267,30 +265,30 @@ EndFunc   ;==>update_armycamp
 
 Func GetTroopCoord()
 	Switch $Troop
-		Case "Barbarian", "Healer", "Witch"
+		Case GetLangText("troopNamePlBarbarian"), GetLangText("troopNameBarbarian"), GetLangText("troopNamePlHealer"), GetLangText("troopNameHealer"), GetLangText("troopDarkPlWitch"), GetLangText("troopDarkWitch")
 			$ColDist = 0
-		Case "Archer", "Dragon", "Lava"
+		Case GetLangText("troopNamePlArcher"), GetLangText("troopNameArcher"), GetLangText("troopNamePlDragon"), GetLangText("troopNameDragon"), GetLangText("troopDarkPlLavaHound"), GetLangText("troopDarkLavaHound")
 			$ColDist = 1
-		Case "Giant", "Pekka"
+		Case GetLangText("troopNamePlGiant"), GetLangText("troopNameGiant"), GetLangText("troopNamePlPEKKA"), GetLangText("troopNamePEKKA")
 			$ColDist = 2
-		Case "Goblin", "Minion"
+		Case GetLangText("troopNamePlGoblin"), GetLangText("troopNameGoblin"), GetLangText("troopDarkPlMinion"), GetLangText("troopDarkMinion")
 			$ColDist = 3
-		Case "WB", "Hog"
+		Case GetLangText("troopNamePlWallBreaker"), GetLangText("troopNameWallBreaker"), GetLangText("troopDarkPlHog"), GetLangText("troopDarkHog")
 			$ColDist = 4
-		Case "Balloon", "Valkyrie"
+		Case GetLangText("troopNamePlBalloon"), GetLangText("troopNameBalloon"), GetLangText("troopDarkPlValkyrie"), GetLangText("troopDarkValkyrie")
 			$ColDist = 5
-		Case "Wizard", "Golem"
+		Case GetLangText("troopNamePlWizard"), GetLangText("troopNameWizard"), GetLangText("troopDarkPlGolem"), GetLangText("troopDarkGolem")
 			$ColDist = 6
 		Case Else
 			$ColDist = -1
 	EndSwitch
 
 	Switch $Troop
-		Case "Barbarian", "Archer", "Giant", "Goblin", "WB", "Balloon", "Wizard"
+		Case GetLangText("troopNamePlBarbarian"), GetLangText("troopNameBarbarian"),  GetLangText("troopNamePlArcher"), GetLangText("troopNameArcher"), GetLangText("troopNamePlGiant"), GetLangText("troopNameGiant"), GetLangText("troopNamePlGoblin"), GetLangText("troopNameGoblin"), GetLangText("troopNamePlWallBreaker"), GetLangText("troopNameWallBreaker"), GetLangText("troopNamePlBalloon"), GetLangText("troopNameBalloon"), GetLangText("troopNamePlWizard"), GetLangText("troopNameWizard")
 			$RowDist = 0
-		Case "Healer", "Dragon", "Pekka", "Minion", "Hog", "Valkyrie", "Golem"
+		Case GetLangText("troopNamePlHealer"), GetLangText("troopNameHealer"), GetLangText("troopNamePlDragon"), GetLangText("troopNameDragon"), GetLangText("troopNamePlPEKKA"), GetLangText("troopNamePEKKA"), GetLangText("troopDarkPlMinion"), GetLangText("troopDarkMinion"), GetLangText("troopDarkPlHog"), GetLangText("troopDarkHog"), GetLangText("troopDarkPlValkyrie"), GetLangText("troopDarkValkyrie"), GetLangText("troopDarkPlGolem"), GetLangText("troopDarkGolem")
 			$RowDist = 1
-		Case "Witch", "Lava"
+		Case GetLangText("troopDarkPlWitch"), GetLangText("troopDarkWitch"), GetLangText("troopDarkPlLavaHound"), GetLangText("troopDarkLavaHound")
 			$RowDist = 2
 		Case Else
 			$RowDist = -1

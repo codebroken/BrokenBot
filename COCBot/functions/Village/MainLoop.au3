@@ -17,8 +17,8 @@ Func runBot() ;Bot that runs everything in order
 		VillageReport()
 		If StatusCheck() Then Return
 
-		CheckCostPerSearch()
-		If StatusCheck() Then Return
+;~ 		CheckCostPerSearch()
+;~ 		If StatusCheck() Then Return
 
 		If $Checkrearm Then
 			ReArm()
@@ -62,12 +62,15 @@ Func runBot() ;Bot that runs everything in order
 					If PrepareSearch() Then
 						$AttackType = Call($strPlugInInUse & "_Search")
 						If BotStopped(False) Then Return
-						If $AttackType = -1 Then ContinueLoop
+						If $AttackType = -1 Then
+							$SearchFailed = True
+							ContinueLoop
+						EndIf
 
-						Call($strPlugInInUse & "_PrepareAttack", $AttackType)
+						Call($strPlugInInUse & "_PrepareAttack", False, $AttackType)
 						If BotStopped(False) Then Return
 
-						SetLog("======Beginning Attack======")
+						SetLog(GetLangText("msgBeginAttack"))
 						Call($strPlugInInUse & "_Attack", $AttackType)
 						If BotStopped(False) Then Return
 
@@ -99,9 +102,12 @@ EndFunc   ;==>runBot
 Func Idle($Plugin) ;Sequence that runs until Full Army
 	Local $TimeIdle = 0 ;In Seconds
 	Local $hTimer = TimerInit()
-	While Not Call($Plugin & "_ReadyCheck")
+	Local $prevCamp = 0
+	Local $hTroopTimer = TimerInit()
+	Local $TimeSinceTroop = 0
+	While Not Call($Plugin & "_ReadyCheck", $TimeSinceTroop)
 		If StatusCheck() Then Return
-		SetLog("~~~Waiting for full army~~~", $COLOR_PURPLE)
+		SetLog(GetLangText("msgWaitingFull"), $COLOR_PURPLE)
 		If $iCollectCounter > $COLLECTATCOUNT Then ; This is prevent from collecting all the time which isn't needed anyway
 			Collect()
 			If StatusCheck() Then Return
@@ -112,7 +118,13 @@ Func Idle($Plugin) ;Sequence that runs until Full Army
 		If StatusCheck() Then Return
 		_BumpMouse()
 		$TimeIdle = Round(TimerDiff($hTimer) / 1000, 2) ;In Seconds
-		SetLog("Time Idle: " & Floor(Floor($TimeIdle / 60) / 60) & " hours " & Floor(Mod(Floor($TimeIdle / 60), 60)) & " minutes " & Floor(Mod($TimeIdle, 60)) & " seconds", $COLOR_ORANGE)
+		If $CurCamp <> $prevCamp Then
+			$prevCamp = $CurCamp
+			$hTroopTimer = TimerInit()
+		EndIf
+		If $CurCamp = 0 or $CurCamp = "" Then $hTroopTimer = TimerInit() ; Not a good fix, but will stop errors for people whose troop size can't be read for now
+		$TimeSinceTroop = TimerDiff($hTroopTimer) / 1000
+		SetLog(GetLangText("msgTimeIdle") & Floor(Floor($TimeIdle / 60) / 60) & GetLangText("msgTimeIdleHours")& Floor(Mod(Floor($TimeIdle / 60), 60)) & GetLangText("msgTimeIdleMin") & Floor(Mod($TimeIdle, 60)) & GetLangText("msgTimeIdleSec"), $COLOR_ORANGE)
 		If _Sleep(30000) Then ExitLoop
 	WEnd
 EndFunc   ;==>Idle

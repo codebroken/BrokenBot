@@ -4,14 +4,14 @@ Func VillageReport()
 	ClickP($TopLeftClient) ;Click Away
 	If _Sleep(500) Then Return
 
-	SetLog("Village Report", $COLOR_GREEN)
+	SetLog(GetLangText("msgVillageRep"), $COLOR_GREEN)
 
 	$FreeBuilder = GetOther(324, 23, "Builder")
-	Setlog("Num. of Free Builders: " & $FreeBuilder, $COLOR_GREEN)
+	Setlog(GetLangText("msgNumFreeBuild") & $FreeBuilder, $COLOR_GREEN)
 	If $PushBulletEnabled = 1 And $PushBulletfreebuilder = 1 And $FreeBuilder > 0 And Not ($buildernotified) Then
-		_Push("Free builder", "You have " & ($FreeBuilder = 1) ? ("a" : $FreeBuilder) & " builder" & ($FreeBuilder = 1) ? ("" : "s") & " available!")
+		_Push(GetLangText("pushFB"), GetLangText("pushFBb") & ($FreeBuilder = 1) ? (GetLangText("pushFBc") : $FreeBuilder) & GetLangText("pushFBd") & ($FreeBuilder = 1) ? ("" : GetLangText("pushFBe")) & GetLangText("pushFBf"))
 		$buildernotified = True
-		SetLog("Push: Free Builder", $COLOR_GREEN)
+		SetLog(GetLangText("msgPushFreeBuild"), $COLOR_GREEN)
 	Else
 		$buildernotified = False
 	EndIf
@@ -23,7 +23,7 @@ Func VillageReport()
 		GUICtrlSetData($lblresulttrophygain, $TrophyCount - $TrophyCountOld)
 	EndIf
 
-	SetLog("Opening Builder page to read Resources..", $COLOR_BLUE)
+	SetLog(GetLangText("msgOpeningBuilder"), $COLOR_BLUE)
 	Click(388, 30) ; Click Builder Button
 	_CaptureRegion()
 	Local $i = 0
@@ -53,7 +53,7 @@ Func VillageReport()
 
 	Click(820, 40) ; Close Builder/Shop
 
-	SetLog("Resources: [G]: " & $GoldCount & " [E]: " & $ElixirCount & " [D]: " & $DarkCount & " [T]: " & $TrophyCount & " [GEM]: " & $GemCount, $COLOR_GREEN)
+	SetLog(GetLangText("msgResources") & " [" & GetLangText("msgGoldinitial") & "]: " & $GoldCount & " [" & GetLangText("msgElixirinitial") & "]: " & $ElixirCount & " [" & GetLangText("msgDarkElixinitial") & "]: " & $DarkCount & " [" & GetLangText("msgTrophyInitial") & "]: " & $TrophyCount & " [" & GetLangText("msgGemInitial") & "]: " & $GemCount, $COLOR_GREEN)
 
 	If $FirstAttack Then
 		GUICtrlSetData($lblresultgoldtstart, $GoldCount)
@@ -67,11 +67,14 @@ Func VillageReport()
 		$TrophyGained = $TrophyCount - GUICtrlRead($lblresulttrophystart)
 
 		If $PushBulletEnabled = 1 And $PushBulletvillagereport = 1 Then
-			_Push("Village Report", "[G]: " & _NumberFormat($GoldCount) & " [E]: " & _NumberFormat($ElixirCount) & " [D]: " & _NumberFormat($DarkCount) & _
-					" [T]: " & $TrophyCount & " [GEM]: " & $GemCount & " [Attacked]: " & GUICtrlRead($lblresultvillagesattacked) & _
-					" [Skipped]: " & GUICtrlRead($lblresultvillagesskipped) & " [Wall Upgrade]: " & GUICtrlRead($lblwallupgradecount) & _
-					" [Run Time]: " & StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
-			SetLog("Push: Village Report", $COLOR_GREEN)
+			If TimerDiff($PushBulletvillagereportTimer) >= $PushBulletvillagereportInterval Then ;Report is due
+				_Push(GetLangText("pushVR"), "[" & GetLangText("msgGoldinitial") & "]: " & _NumberFormat($GoldCount) & " [" & GetLangText("msgElixirinitial") & "]: " & _NumberFormat($ElixirCount) & " [" & GetLangText("msgDarkElixinitial") & "]: " & _NumberFormat($DarkCount) & _
+						" [" & GetLangText("msgTrophyInitial") & "]: " & $TrophyCount & " [" & GetLangText("msgGemInitial") & "]: " & $GemCount & " [Attacked]: " & GUICtrlRead($lblresultvillagesattacked) & _
+						" [Skipped]: " & GUICtrlRead($lblresultvillagesskipped) & " [Wall Upgrade]: " & GUICtrlRead($lblwallupgradecount) & _
+						" [Run Time]: " & StringFormat("%02i:%02i:%02i", $hour, $min, $sec) & "\n" & GetLangText("pushStatRq1")& GUICtrlRead($lblresultsearchdisconnected))
+				SetLog(GetLangText("msgPushVillageRep"), $COLOR_GREEN)
+				$PushBulletvillagereportTimer = TimerInit()
+			EndIf
 		EndIf
 
 		GUICtrlSetData($lblresultgoldgain, $GoldGained)
@@ -80,25 +83,29 @@ Func VillageReport()
 		GUICtrlSetData($lblresulttrophygain, $TrophyGained)
 
 		If Not $MidAttack And $Raid = 1 Then ;report when there is a Raid except when bot disconnected
-			SetLog("Last Raid Gain: [G]: " & _NumberFormat($GoldCount - $GoldCountOld) & " [E]: " & _NumberFormat($ElixirCount - $ElixirCountOld) & _
-					" [D]: " & _NumberFormat($DarkCount - $DarkCountOld) & " [T]: " & ($TrophyCount - $TrophyCountOld))
-			SetLog("Last Raid Loot: [G]: " & _NumberFormat($LastRaidGold) & " [E]: " & _NumberFormat($LastRaidElixir) & _
-					" [D]: " & _NumberFormat($LastRaidDarkElixir) & " [T]: " & $LastRaidTrophy)
+			SetLog(GetLangText("msgLastRaidGain") & " [" & GetLangText("msgGoldinitial") & "]: " & _NumberFormat($GoldCount - $GoldCountOld) & " [" & GetLangText("msgElixirinitial") & "]: " & _NumberFormat($ElixirCount - $ElixirCountOld) & _
+					" [" & GetLangText("msgDarkElixinitial") & "]: " & _NumberFormat($DarkCount - $DarkCountOld) & " [" & GetLangText("msgTrophyInitial") & "]: " & ($TrophyCount - $TrophyCountOld))
+			SetLog(GetLangText("msgLastRaidLoot") & " [" & GetLangText("msgGoldinitial") & "]: " & _NumberFormat($LastRaidGold) & " [" & GetLangText("msgElixirinitial") & "]: " & _NumberFormat($LastRaidElixir) & _
+					" [" & GetLangText("msgDarkElixinitial") & "]: " & _NumberFormat($LastRaidDarkElixir) & " [" & GetLangText("msgTrophyInitial") & "]: " & $LastRaidTrophy)
 			If $PushBulletEnabled = 1 Then ;do pushbullet reports
+				Local $PushReportText = GetLangText("pushLRb") & GetLangText("msgGoldinitial") & "]: " & _NumberFormat($GoldCount - $GoldCountOld) & " [" & GetLangText("msgElixirinitial") & "]: " & _NumberFormat($ElixirCount - $ElixirCountOld) & _
+							" [" & GetLangText("msgDarkElixinitial") & "]: " & _NumberFormat($DarkCount - $DarkCountOld) & " [" & GetLangText("msgTrophyInitial") & "]: " & ($TrophyCount - $TrophyCountOld) & _
+							"\nLoot: \n[" & GetLangText("msgGoldinitial") & "]: " & _NumberFormat($LastRaidGold) & " [" & GetLangText("msgElixirinitial") & "]: " & _NumberFormat($LastRaidElixir) & _
+							" [" & GetLangText("msgDarkElixinitial") & "]: " & _NumberFormat($LastRaidDarkElixir) & " [" & GetLangText("msgTrophyInitial") & "]: " & $LastRaidTrophy & _
+							"\n" & GetLangText("pushLootA") & "\n" &  $MatchFoundText & _
+							"\n" & GetLangText("pushBS") & $SearchCount & _
+							GetLangText("pushStatRq1") &  GUICtrlRead($lblresultsearchdisconnected) & _
+							"\n" & GetLangText("pushVR") & " \n[" & GetLangText("msgGoldinitial") & "]: " & _NumberFormat($GoldCount) & " [" & GetLangText("msgElixirinitial") & "]: " & _NumberFormat($ElixirCount) & _
+							" [" & GetLangText("msgDarkElixinitial") & "]: " & _NumberFormat($DarkCount) & " [" & GetLangText("msgTrophyInitial") & "]: " & $TrophyCount & " [" & GetLangText("msgGemInitial") & "]: " & $GemCount & _
+							" [Attacked]: " & GUICtrlRead($lblresultvillagesattacked) & " [Skipped]: " & GUICtrlRead($lblresultvillagesskipped) & _
+							" [Wall Upgrade]: " & GUICtrlRead($lblwallupgradecount)
 				If $PushBullettype = 1 Then ;As JPG
 					If _Sleep(2000) Then Return
-					_PushFile($FileName, "loots", "image/jpeg", "Last Raid", $FileName)
+					_PushFile($FileName, "loots", "image/jpeg", "Last Raid", $FileName & "\n" & $PushReportText)
 				EndIf
 				If $PushBulletlastraid = 1 Then ;As Txt
-					_Push("Last Raid Report:", "Gain: \n[G]: " & _NumberFormat($GoldCount - $GoldCountOld) & " [E]: " & _NumberFormat($ElixirCount - $ElixirCountOld) & _
-							" [D]: " & _NumberFormat($DarkCount - $DarkCountOld) & " [T]: " & ($TrophyCount - $TrophyCountOld) & _
-							"\nLoot: \n[G]: " & _NumberFormat($LastRaidGold) & " [E]: " & _NumberFormat($LastRaidElixir) & _
-							" [D]: " & _NumberFormat($LastRaidDarkElixir) & " [T]: " & $LastRaidTrophy & _
-							"\nVillage Report: \n[G]: " & _NumberFormat($GoldCount) & " [E]: " & _NumberFormat($ElixirCount) & _
-							" [D]: " & _NumberFormat($DarkCount) & " [T]: " & $TrophyCount & " [GEM]: " & $GemCount & _
-							" [Attacked]: " & GUICtrlRead($lblresultvillagesattacked) & " [Skipped]: " & GUICtrlRead($lblresultvillagesskipped) & _
-							" [Wall Upgrade]: " & GUICtrlRead($lblwallupgradecount))
-					SetLog("Push: Last raid Report", $COLOR_GREEN)
+					_Push(GetLangText("pushLR"), $PushReportText)
+					SetLog(GetLangText("msgPushLastRaid"), $COLOR_GREEN)
 				EndIf
 				$Raid = 0
 			EndIf

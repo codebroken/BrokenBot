@@ -18,7 +18,7 @@ Func _PluginDefaults()
 			EndIf
 		WEnd
 		If Not $found Then
-			SetLog("No data found for: " & $arStrats[$i] & ", making defaults.")
+			SetLog(GetLangText("msgNoDataFound") & $arStrats[$i] & GetLangText("msgNoDefaults"))
 			Call($arStrats[$i] & "_LoadGUI")
 			Call($arStrats[$i] & "_SaveConfig", $dirStrat & $arStrats[$i] & " - default.ini")
 			GUIDelete($frmAttackConfig)
