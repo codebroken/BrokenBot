@@ -84,6 +84,20 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	_GUICtrlComboBox_SetCurSel($cmbUnitDelay, $icmbUnitDelay)
 	_GUICtrlComboBox_SetCurSel($cmbWaveDelay, $icmbWaveDelay)
 
+;Hero
+	GUICtrlSetData($txtMinHeroDE, $itxtMinHeroDE)
+	If $ichkUpgradeBK = 1 Then
+		GUICtrlSetState($chkUpgradeBK, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkUpgradeBK, $GUI_UNCHECKED)
+	EndIf
+	
+	If $ichkUpgradeAQ = 1 Then
+		GUICtrlSetState($chkUpgradeAQ, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkUpgradeAQ, $GUI_UNCHECKED)
+	EndIf
+
 ;Lab
     If $ichkLab = 1 Then
         GUICtrlSetState($chkLab, $GUI_CHECKED)

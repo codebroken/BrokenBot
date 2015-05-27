@@ -40,6 +40,9 @@ Func runBot() ;Bot that runs everything in order
 
 		Laboratory()
 		If StatusCheck() Then Return
+		
+		UpgradeHero()
+		If StatusCheck() Then Return
 
 		UpgradeBuilding()
 		If StatusCheck() Then Return

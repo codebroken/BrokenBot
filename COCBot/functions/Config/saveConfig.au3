@@ -123,32 +123,38 @@ Func saveConfig() ;Saves the controls settings to the config
 	Else
 		IniWrite($config, "upgrade", "auto-upgrade3", 0)
 	EndIf
-	If IsChecked($chkUpgrade4) Then
-		IniWrite($config, "upgrade", "auto-upgrade4", 1)
+;~ 	If IsChecked($chkUpgrade4) Then
+;~ 		IniWrite($config, "upgrade", "auto-upgrade4", 1)
+;~ 	Else
+;~ 		IniWrite($config, "upgrade", "auto-upgrade4", 0)
+;~ 	EndIf
+;~ 	If IsChecked($chkUpgrade5) Then
+;~ 		IniWrite($config, "upgrade", "auto-upgrade5", 1)
+;~ 	Else
+;~ 		IniWrite($config, "upgrade", "auto-upgrade5", 0)
+;~ 	EndIf
+;~ 	If IsChecked($chkUpgrade6) Then
+;~ 		IniWrite($config, "upgrade", "auto-upgrade6", 1)
+;~ 	Else
+;~ 		IniWrite($config, "upgrade", "auto-upgrade6", 0)
+;~ 	EndIf
+	If IsChecked($chkUpgradeBK) Then
+		IniWrite($config, "upgrade", "auto-upgradeBK", 1)
 	Else
-		IniWrite($config, "upgrade", "auto-upgrade4", 0)
+		IniWrite($config, "upgrade", "auto-upgradeBK", 0)
 	EndIf
-	If IsChecked($chkUpgrade5) Then
-		IniWrite($config, "upgrade", "auto-upgrade5", 1)
+	If IsChecked($chkUpgradeAQ) Then
+		IniWrite($config, "upgrade", "auto-upgradeAQ", 1)
 	Else
-		IniWrite($config, "upgrade", "auto-upgrade5", 0)
+		IniWrite($config, "upgrade", "auto-upgradeAQ", 0)
 	EndIf
-	If IsChecked($chkUpgrade6) Then
-		IniWrite($config, "upgrade", "auto-upgrade6", 1)
-	Else
-		IniWrite($config, "upgrade", "auto-upgrade6", 0)
-	EndIf
+	IniWrite($config, "upgrade", "PosY1", GUICtrlRead($txtUpgradeY1))
 	IniWrite($config, "upgrade", "PosX1", GUICtrlRead($txtUpgradeX1))
 	IniWrite($config, "upgrade", "PosY2", GUICtrlRead($txtUpgradeY2))
 	IniWrite($config, "upgrade", "PosX2", GUICtrlRead($txtUpgradeX2))
 	IniWrite($config, "upgrade", "PosY3", GUICtrlRead($txtUpgradeY3))
 	IniWrite($config, "upgrade", "PosX3", GUICtrlRead($txtUpgradeX3))
-	IniWrite($config, "upgrade", "PosY4", GUICtrlRead($txtUpgradeY4))
-	IniWrite($config, "upgrade", "PosX4", GUICtrlRead($txtUpgradeX4))
-	IniWrite($config, "upgrade", "PosY5", GUICtrlRead($txtUpgradeY5))
-	IniWrite($config, "upgrade", "PosX5", GUICtrlRead($txtUpgradeX5))
-	IniWrite($config, "upgrade", "PosY6", GUICtrlRead($txtUpgradeY6))
-	IniWrite($config, "upgrade", "PosX6", GUICtrlRead($txtUpgradeX6))
+	IniWrite($config, "upgrade", "MinDE", GUICtrlRead($txtMinHeroDE))
 
 	If IsChecked($chkLab) Then
         IniWrite($config, "upgrade", "auto-uptroops", 1)

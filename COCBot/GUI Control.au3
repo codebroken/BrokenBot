@@ -85,12 +85,12 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 						chkUpgrade2()
 					Case $chkUpgrade3
 						chkUpgrade3()
-					Case $chkUpgrade4
-						chkUpgrade4()
-					Case $chkUpgrade5
-						chkUpgrade5()
-					Case $chkUpgrade6
-						chkUpgrade6()
+;~ 					Case $chkUpgrade4
+;~ 						chkUpgrade4()
+;~ 					Case $chkUpgrade5
+;~ 						chkUpgrade5()
+;~ 					Case $chkUpgrade6
+;~ 						chkUpgrade6()
 					Case $UseJPG
 						UseJPG()
 					Case $UseAttackJPG
@@ -551,29 +551,29 @@ Func chkUpgrade3()
 	EndIf
 EndFunc   ;==>chkUpgrade3
 
-Func chkUpgrade4()
-	If IsChecked($chkUpgrade4) Then
-		GUICtrlSetState($btnLocateUp4, $GUI_ENABLE)
-	Else
-		GUICtrlSetState($btnLocateUp4, $GUI_DISABLE)
-	EndIf
-EndFunc   ;==>chkUpgrade4
-
-Func chkUpgrade5()
-	If IsChecked($chkUpgrade5) Then
-		GUICtrlSetState($btnLocateUp5, $GUI_ENABLE)
-	Else
-		GUICtrlSetState($btnLocateUp5, $GUI_DISABLE)
-	EndIf
-EndFunc   ;==>chkUpgrade5
-
-Func chkUpgrade6()
-	If IsChecked($chkUpgrade6) Then
-		GUICtrlSetState($btnLocateUp6, $GUI_ENABLE)
-	Else
-		GUICtrlSetState($btnLocateUp6, $GUI_DISABLE)
-	EndIf
-EndFunc   ;==>chkUpgrade6
+;~ Func chkUpgrade4()
+;~ 	If IsChecked($chkUpgrade4) Then
+;~ 		GUICtrlSetState($btnLocateUp4, $GUI_ENABLE)
+;~ 	Else
+;~ 		GUICtrlSetState($btnLocateUp4, $GUI_DISABLE)
+;~ 	EndIf
+;~ EndFunc   ;==>chkUpgrade4
+;~ 
+;~ Func chkUpgrade5()
+;~ 	If IsChecked($chkUpgrade5) Then
+;~ 		GUICtrlSetState($btnLocateUp5, $GUI_ENABLE)
+;~ 	Else
+;~ 		GUICtrlSetState($btnLocateUp5, $GUI_DISABLE)
+;~ 	EndIf
+;~ EndFunc   ;==>chkUpgrade5
+;~ 
+;~ Func chkUpgrade6()
+;~ 	If IsChecked($chkUpgrade6) Then
+;~ 		GUICtrlSetState($btnLocateUp6, $GUI_ENABLE)
+;~ 	Else
+;~ 		GUICtrlSetState($btnLocateUp6, $GUI_DISABLE)
+;~ 	EndIf
+;~ EndFunc   ;==>chkUpgrade6
 
 Func UseJPG()
 	If IsChecked($UseJPG) And Not IsChecked($chkTakeLootSS) Then
