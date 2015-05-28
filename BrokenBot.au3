@@ -3,12 +3,12 @@
 #pragma compile(Icon, "BrokenBot.org\images\icons\brokenbot.ico")
 #pragma compile(FileDescription, BrokenBot.org - Clash of Clans Bot)
 #pragma compile(ProductName, BrokenBot.org - Clash of Clans Bot)
-#pragma compile(ProductVersion, 2.6.0)
-#pragma compile(FileVersion, 2.6.0)
+#pragma compile(ProductVersion, 2.7.0)
+#pragma compile(FileVersion, 2.7.0)
 
 #include <GUIConstants.au3>
 
-$sBotVersion = "2.6.0"
+$sBotVersion = "2.7.0"
 $sBotTitle = "BrokenBot.org - Break FREE - v" & $sBotVersion
 
 If FileExists (@ScriptDir & "\.developer") Then
@@ -85,6 +85,9 @@ If Not IsArray($ret) Then
 	EndIf
 EndIf
 
+;Only enable button start after all Initiation done.
+GUICtrlSetData($btnStart,GetLangText("btnStart") )
+GUICtrlSetState($btnStart, $GUI_ENABLE)
 While 1
 	If $StartImmediately Then
 		$StartImmediately = False

@@ -13,3 +13,5 @@ Global $prevTroopComp = -1
 Global $BarbariansComp, $ArchersComp, $GiantsComp, $GoblinsComp, $WBComp
 Global $fullarmy, $fullSpellFactory
 Global $stuckCount = 0
+
+

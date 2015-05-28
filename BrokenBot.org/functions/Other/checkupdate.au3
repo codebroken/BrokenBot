@@ -63,7 +63,7 @@ Func checkupdate()
 	If IsChecked($chkUpdate) Then
 		Local $sFilePath = @TempDir & "\update.dat"
 
-		Local $hMasterVersion = InetGet("https://github.com/codebroken/BrokenBot/blob/master/BrokenBot.au3", $sFilePath, 3)
+		Local $hMasterVersion = InetGet("http://www.brokenbot.org/page.php?p=vcheck", $sFilePath, 3)
 
 		If $hMasterVersion = 0 Then
 			SetLog(GetLangText("msgFailedVersion"))

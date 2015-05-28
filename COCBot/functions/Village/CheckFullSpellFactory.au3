@@ -20,7 +20,8 @@ Func CheckFullSpellFactory()
 		If $DebugMode = 2 Then _GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "SpellNA-" & @HOUR & @MIN & @SEC & ".png")
 	Else
 		Click($BSpellPos[0], $BSpellPos[1]) ;Click Info button
-		If _Sleep(2000) Then Return
+		;If _Sleep(2000) Then Return
+		 _WaitForPixel(690, 150, 710, 170, Hex(0xD80407, 6), 5, 1) ;Finds Red Cross button in new popup window
 
 		_CaptureRegion()
 		Local $Spellbar = _PixelSearch(707, 210, 709, 213, Hex(0x37A800, 6), 5)

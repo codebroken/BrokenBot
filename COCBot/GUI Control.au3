@@ -85,12 +85,12 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 						chkUpgrade2()
 					Case $chkUpgrade3
 						chkUpgrade3()
-					Case $chkUpgrade4
-						chkUpgrade4()
-					Case $chkUpgrade5
-						chkUpgrade5()
-					Case $chkUpgrade6
-						chkUpgrade6()
+;~ 					Case $chkUpgrade4
+;~ 						chkUpgrade4()
+;~ 					Case $chkUpgrade5
+;~ 						chkUpgrade5()
+;~ 					Case $chkUpgrade6
+;~ 						chkUpgrade6()
 					Case $UseJPG
 						UseJPG()
 					Case $UseAttackJPG
@@ -98,7 +98,7 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 					Case $lblpushbulletenabled
 						lblpushbulletenabled()
 					Case $btnGitHub
-						ShellExecute("http://http://forum.brokenbot.org/forum-8.html")
+						ShellExecute("http://www.brokenbot.org/page.php?p=support")
 					Case $btnCloseBR
 						GUISetState(@SW_ENABLE, $frmBot)
 						GUISetState(@SW_HIDE, $frmBugReport)
@@ -663,7 +663,7 @@ Func btnBugRep()
 EndFunc   ;==>btnBugRep
 
 Func openWebsite()
-	ShellExecute("http://www.brokenbot.org")
+	ShellExecute("http://www.brokenbot.org/page.php?p=main")
 EndFunc   ;==>openWebsite
 
 Func _btnRefresh()

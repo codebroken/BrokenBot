@@ -188,8 +188,8 @@ Global $barrackPos[4][2] ;Positions of each barracks
 Global $barrackTroop[10] ;Barrack troop set
 Global $ArmyPos[2]
 Global $SpellPos[2]
-Global $KingPos[2]
-Global $QueenPos[2]
+Global $KingPos[2] = ["",""]
+Global $QueenPos[2] = ["",""]
 Global $BuildPos1[2]
 Global $BuildPos2[2]
 Global $BuildPos3[2]
@@ -261,7 +261,6 @@ Global $device = @ScriptDir & "\images\device.bmp"
 
 Global $GoldCount = 0, $ElixirCount = 0, $DarkCount = 0, $GemCount = 0, $FreeBuilder = 0
 Global $GoldGained = 0, $ElixirGained = 0, $DarkGained = 0, $TrophyGained = 0
-;Global $GoldGainedOld = 0, $ElixirGainedOld = 0, $DarkGainedOld = 0, $TrophyGainedOld = 0
 Global $GoldCountOld = 0, $ElixirCountOld = 0, $DarkCountOld = 0, $TrophyOld = 0
 Global $WallUpgrade = 0
 Global $resArmy = 0
@@ -274,6 +273,7 @@ Global $FirstStart = True
 Global $MidAttack = False
 Global $Checkrearm = True
 Global $FirstDarkTrain = True
+
 
 ;PushBullet
 Global $PushBulletEnabled = 0
@@ -298,6 +298,12 @@ Global $buildernotified = False
 
 ;GoldCostPerSearch
 Global $SearchCost = 0
+
+;King & Queen Status
+Global $KingAvailable = False
+Global $QueenAvailable = False
+Global $KingUG = False
+Global $QueenUG = False
 
 ;Remote Control
 Global $sTimerRC
@@ -341,3 +347,16 @@ Global $SpellRageY = 372
 Global $LabPos[2]
 
 Global $FontSize
+
+;Used in Strategies
+Global $MinDeadGold
+Global $MinDeadElixir
+Global $MinDeadDark
+Global $MinDeadTrophy
+Global $MaxDeadTH
+Global $MinGold
+Global $MinElixir
+Global $MinDark
+Global $MinTrophy
+Global $MaxTH
+Global $iNukeLimit

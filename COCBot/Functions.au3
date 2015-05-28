@@ -11,7 +11,6 @@
 #include "functions\Image Search\checkButtonUpgrade.au3"
 #include "functions\Image Search\checkDeadBase.au3"
 #include "functions\Image Search\checkTownhall.au3"
-#include "functions\Image Search\checkDarkElix.au3"
 #include "functions\Image Search\checkWall.au3"
 
 #include "functions\Main Screen\checkMainScreen.au3"

@@ -1,8 +1,18 @@
 ## Change Log:
 
+### v2.7.0
+* Improved image recognition system.  Does a much better job of finding the dark elixir storage.
+* Search delay is randomized now.  You still use the same UI selection for the general speed of searching but the actual speed is randomized near the value you select.
+* Donation blacklist now added.  If you check the box to turn on blacklist then it will not donate to people if the words you list are anywhere in the request text.
+* You may now specify having a King or Queen available as a search condition. For example: if you specify that you require the King and Queen both for live bases then it will only search for dead bases until your King or Queen are available.
+* Hid some options for upgrading that didn't function properly. Will be reinstated once fixed.
+* Main loop sped up.  Less time just sitting there waiting while it's doing something.
+* Various speed and stability improvements.
+
 ### v2.6.0
 * Much faster troop deployment.  Might not want to do 1/1 anymore
 * Temporary fix for those whose camp numbers can't be read. Unfortunately this may reintroduce a problem where training gets stuck for those people.  If you have this issue please temporarily use barracks training mode until this can be fully fixed.
+
 ### v2.5.9
 * Emergency fix for occasional crash
 

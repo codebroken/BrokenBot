@@ -1,8 +1,8 @@
 # BrokenBot.org - Clash of Clans Bot
-Latest version: 2.6.0
+Latest version: 2.7.0
 
 ## Community
-Forums available for discussion at: http://brokenbot.org/
+Forums available for discussion at: http://www.brokenbot.org/page.php?p=main
 
 ### Reference
 For your convenience, and referring to pushbullet's document:

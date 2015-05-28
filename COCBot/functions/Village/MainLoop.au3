@@ -59,6 +59,9 @@ Func runBot() ;Bot that runs everything in order
 
 				While True
 					If StatusCheck() Then Return
+
+					If Not Call($strPlugInInUse & "_miniReadyCheck") Then ExitLoop
+
 					If PrepareSearch() Then
 						$AttackType = Call($strPlugInInUse & "_Search")
 						If BotStopped(False) Then Return

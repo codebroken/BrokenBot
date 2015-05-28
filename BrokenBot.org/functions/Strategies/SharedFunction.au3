@@ -54,3 +54,71 @@ Func ChkDisconnection($disconnected = False)
 	EndIf
 	Return $disconnected
 EndFunc
+
+
+Func ChkKingAvailability()
+
+	$KingAvailable = False
+	$KingUG = False
+	ClickP($TopLeftClient) ;Click Away
+	If $KingPos[0] = "" Then
+		Return False
+	Else
+		if _sleep(500) Then Return
+		Click($KingPos[0], $KingPos[1]) ;Click King Altar
+	EndIf
+
+	If _Sleep(500) Then Return
+	_CaptureRegion()
+
+	Local $KingInfoPos = _WaitForPixel(260, 581, 350, 583, Hex(0x4084B8, 6), 5, 2) ;Finds Info button, wait max 2 seconds
+	If IsArray($KingInfoPos) = False Then
+		SetLog(GetLangText("msgKAUnavailable"), $COLOR_RED)
+	Else ;check if king is available for battle
+		$KingInfoPos =  _PixelSearch(510, 589, 585, 591, Hex(0xD13D08, 6), 5) ;Finds Healing button
+		If IsArray($KingInfoPos) = False Then
+			$KingInfoPos =  _PixelSearch(510, 589, 585, 591, Hex(0xD0EC75, 6), 5) ;Finds Finish now button, when under upgrading
+			If IsArray($KingInfoPos) Then
+				$KingUG = True
+			Else
+				$KingAvailable = True
+			EndIf
+		EndIf
+	EndIf
+	Setlog (GetLangText("msgKingAvail") & $KingAvailable)
+	Return $KingAvailable
+EndFunc
+
+Func ChkQueenAvailability()
+
+	$QueenAvailable = False
+	$QueenUG = False
+
+	ClickP($TopLeftClient) ;Click Away
+	If $QueenPos[0] = "" Then
+		Return False
+	Else
+		if _sleep(500) Then Return
+		Click($QueenPos[0], $QueenPos[1]) ;Click Queen Altar
+	EndIf
+
+	If _Sleep(500) Then Return
+	_CaptureRegion()
+
+	Local $QueenInfoPos = _WaitForPixel(260, 581, 350, 583, Hex(0x4084B8, 6), 5, 2) ;Finds Info button, wait max 2 seconds
+	If IsArray($QueenInfoPos) = False Then
+		SetLog(GetLangText("msgQAUnavailable"), $COLOR_RED)
+	Else ;check if king is available for battle
+		$QueenInfoPos =  _PixelSearch(510, 589, 585, 591, Hex(0xD13D08, 6), 5) ;Finds Healing button
+		If IsArray($QueenInfoPos) = False Then
+			$QueenInfoPos =  _PixelSearch(510, 589, 585, 591, Hex(0xD0EC75, 6), 5) ;Finds Finish now button, when under upgrading
+			If IsArray($QueenInfoPos) Then
+				$QueenUG = True
+			Else
+				$QueenAvailable = True
+			EndIf
+		EndIf
+	EndIf
+	Setlog (GetLangText("msgQueenAvail") & $QueenAvailable)
+	Return $QueenAvailable
+EndFunc

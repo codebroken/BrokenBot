@@ -32,6 +32,12 @@ Func readConfig() ;Reads config and sets it to the variables
 	$ichkDonateGiants = IniRead($config, "donate", "chkDonateGiants", "0")
 	$ichkDonateAllGiants = IniRead($config, "donate", "chkDonateAllGiants", "0")
 	$itxtDonateGiants = StringReplace(IniRead($config, "donate", "txtDonateGiants", "giants|giant|any"), "|", @CRLF)
+	If IniRead($config, "donate", "chkBlacklist", "0") = 1 Then
+		GUICtrlSetState($chkBlacklist, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkBlacklist, $GUI_UNCHECKED)
+	EndIf
+	GUICtrlSetData($txtBlacklist, StringReplace(IniRead($config, "donate", "txtBlacklist", ""), "|", @CRLF))
 
 	;---------------------------------------------------------------------------------------
 	; Upgrade settings ---------------------------------------------------------------------

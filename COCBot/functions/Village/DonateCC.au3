@@ -36,64 +36,78 @@ Func DonateCC()
 
 					SetLog(GetLangText("msgChatText") & $String, $COLOR_GREEN)
 
-					If IsChecked($chkDonateBarbarians) Then
-						Local $Barbs = StringSplit(StringStripWS($itxtDonateBarbarians, 3), @CRLF)
-						If IsArray($Barbs) Then
-							For $i = 1 to $Barbs[0]
-								If CheckDonate($Barbs[$i], $String) Then
-									$Troop = GUICtrlRead($cmbDonateBarbarians)
-									GetTroopCoord()
-									DonateTroops($Troop, $ColDist, $RowDist, $AmountBarbarians)
-									ExitLoop
-								EndIf
+					$Blacklisted = False
+					If IsChecked($chkBlacklist) Then
+						$blacklist = StringSplit(guictrlread($txtBlacklist), @CRLF)
+						If IsArray($blacklist) Then
+							For $loop = 1 to $blacklist[0]
+								If StringStripWS($blacklist[$loop], 3) <> "" and StringInStr($string, StringStripWS($blacklist[$loop], 3)) Then $Blacklisted = True
 							Next
-							If $Donate Then
-								If _Sleep(500) Then ExitLoop
-								$y = $DonatePixel[1] + 10
-							EndIf
-						Else
-							SetLog(GetLangText("msgUnableToRead") & "1" & GetLangText("msgDonateRules"))
-							Return
 						EndIf
 					EndIf
-					If IsChecked($chkDonateArchers) Then
-						Local $Archers = StringSplit(StringStripWS($itxtDonateArchers, 3), @CRLF)
-						If IsArray($Archers) Then
-							For $i = 1 To $Archers[0]
-								If CheckDonate($Archers[$i], $String) Then
-									$Troop = GUICtrlRead($cmbDonateArchers)
-									GetTroopCoord()
-									DonateTroops($Troop, $ColDist, $RowDist, $AmountArchers)
-									ExitLoop
+
+					If $Blacklisted Then
+						SetLog(GetLangText("msgBlacklisted"), $COLOR_GREEN)
+					Else
+						If IsChecked($chkDonateBarbarians) Then
+							Local $Barbs = StringSplit(StringStripWS($itxtDonateBarbarians, 3), @CRLF)
+							If IsArray($Barbs) Then
+								For $i = 1 to $Barbs[0]
+									If CheckDonate($Barbs[$i], $String) Then
+										$Troop = GUICtrlRead($cmbDonateBarbarians)
+										GetTroopCoord()
+										DonateTroops($Troop, $ColDist, $RowDist, $AmountBarbarians)
+										ExitLoop
+									EndIf
+								Next
+								If $Donate Then
+									If _Sleep(500) Then ExitLoop
+									$y = $DonatePixel[1] + 10
 								EndIf
-							Next
-							If $Donate Then
-								If _Sleep(500) Then ExitLoop
-								$y = $DonatePixel[1] + 10
+							Else
+								SetLog(GetLangText("msgUnableToRead") & "1" & GetLangText("msgDonateRules"))
+								Return
 							EndIf
-						Else
-							SetLog(GetLangText("msgUnableToRead") & "2" & GetLangText("msgDonateRules"))
-							Return
 						EndIf
-					EndIf
-					If IsChecked($chkDonateGiants) Then
-						Local $Giants = StringSplit(StringStripWS($itxtDonateGiants, 3), @CRLF)
-						If IsArray($Giants) Then
-							For $i = 1 to $Giants[0]
-								If CheckDonate($Giants[$i], $String) Then
-									$Troop = GUICtrlRead($cmbDonateGiants)
-									GetTroopCoord()
-									DonateTroops($Troop, $ColDist, $RowDist, $AmountGiants)
-									ExitLoop
+						If IsChecked($chkDonateArchers) Then
+							Local $Archers = StringSplit(StringStripWS($itxtDonateArchers, 3), @CRLF)
+							If IsArray($Archers) Then
+								For $i = 1 To $Archers[0]
+									If CheckDonate($Archers[$i], $String) Then
+										$Troop = GUICtrlRead($cmbDonateArchers)
+										GetTroopCoord()
+										DonateTroops($Troop, $ColDist, $RowDist, $AmountArchers)
+										ExitLoop
+									EndIf
+								Next
+								If $Donate Then
+									If _Sleep(500) Then ExitLoop
+									$y = $DonatePixel[1] + 10
 								EndIf
-							Next
-							If $Donate Then
-								If _Sleep(500) Then ExitLoop
-								$y = $DonatePixel[1] + 10
+							Else
+								SetLog(GetLangText("msgUnableToRead") & "2" & GetLangText("msgDonateRules"))
+								Return
 							EndIf
-						Else
-							SetLog(GetLangText("msgUnableToRead") & "3" & GetLangText("msgDonateRules"))
-							Return
+						EndIf
+						If IsChecked($chkDonateGiants) Then
+							Local $Giants = StringSplit(StringStripWS($itxtDonateGiants, 3), @CRLF)
+							If IsArray($Giants) Then
+								For $i = 1 to $Giants[0]
+									If CheckDonate($Giants[$i], $String) Then
+										$Troop = GUICtrlRead($cmbDonateGiants)
+										GetTroopCoord()
+										DonateTroops($Troop, $ColDist, $RowDist, $AmountGiants)
+										ExitLoop
+									EndIf
+								Next
+								If $Donate Then
+									If _Sleep(500) Then ExitLoop
+									$y = $DonatePixel[1] + 10
+								EndIf
+							Else
+								SetLog(GetLangText("msgUnableToRead") & "3" & GetLangText("msgDonateRules"))
+								Return
+							EndIf
 						EndIf
 					EndIf
 				Else

@@ -23,6 +23,18 @@ Func Standard_LoadConfig()
 	_GUICtrlComboBox_SetCurSel($cmbDead, IniRead($configFile, "search", "DeadAndOr", "0"))
 
 
+	If IniRead($configFile, "search", "conditionDeadKingAvail", "0") = 1 Then
+		GUICtrlSetState($chkDeadKingAvail, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDeadKingAvail, $GUI_UNCHECKED)
+	EndIf
+
+	If IniRead($configFile, "search", "conditionDeadQueenAvail", "0") = 1 Then
+		GUICtrlSetState($chkDeadQueenAvail, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkDeadQueenAvail, $GUI_UNCHECKED)
+	EndIf
+
 	If IniRead($configFile, "search", "conditionDeadGoldElixir", "0") = 1 Then
 		GUICtrlSetState($chkDeadGE, $GUI_CHECKED)
 	Else
@@ -51,6 +63,18 @@ Func Standard_LoadConfig()
 		GUICtrlSetState($chkDeadMeetTHO, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkDeadMeetTHO, $GUI_UNCHECKED)
+	EndIf
+
+	If IniRead($configFile, "search", "conditionKingAvail", "0") = 1 Then
+		GUICtrlSetState($chkKingAvail, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkKingAvail, $GUI_UNCHECKED)
+	EndIf
+
+	If IniRead($configFile, "search", "conditionQueenAvail", "0") = 1 Then
+		GUICtrlSetState($chkQueenAvail, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkQueenAvail, $GUI_UNCHECKED)
 	EndIf
 
 	If IniRead($configFile, "search", "conditionGoldElixir", "0") = 1 Then
@@ -217,13 +241,7 @@ Func Standard_LoadConfig()
 	Else
 		GUICtrlSetState($chkNukeOnlyWithFullArmy, $GUI_UNCHECKED)
 	EndIf
-	If IniRead($configFile, "spells", "DESearchAcc", 1) = 1 Then
-		GUICtrlSetState($rdoMaybeSkip, $GUI_CHECKED)
-		GUICtrlSetState($rdoFalsePositive, $GUI_UNCHECKED)
-	Else
-		GUICtrlSetState($rdoMaybeSkip, $GUI_UNCHECKED)
-		GUICtrlSetState($rdoFalsePositive, $GUI_CHECKED)
-	EndIf
+
 EndFunc   ;==>Standard_LoadConfig
 
 Func Standard_SaveConfig($configFile)
@@ -251,6 +269,18 @@ Func Standard_SaveConfig($configFile)
 	IniWrite($configFile, "search", "DeadAndOr", _GUICtrlComboBox_GetCurSel($cmbDead))
 	IniWrite($configFile, "search", "AnyTHLvl", _GUICtrlComboBox_GetCurSel($cmbTH))
 	IniWrite($configFile, "search", "DeadTHLvl", _GUICtrlComboBox_GetCurSel($cmbDeadTH))
+
+	If IsChecked($chkDeadKingAvail) Then
+		IniWrite($configFile, "search", "conditionDeadKingAvail", 1)
+	Else
+		IniWrite($configFile, "search", "conditionDeadKingAvail", 0)
+	EndIf
+
+	If IsChecked($chkDeadQueenAvail) Then
+		IniWrite($configFile, "search", "conditionDeadQueenAvail", 1)
+	Else
+		IniWrite($configFile, "search", "conditionDeadQueenAvail", 0)
+	EndIf
 
 	If IsChecked($chkDeadGE) Then
 		IniWrite($configFile, "search", "conditionDeadGoldElixir", 1)
@@ -286,6 +316,18 @@ Func Standard_SaveConfig($configFile)
 		IniWrite($configFile, "search", "conditionDeadSnipe", 1)
 	Else
 		IniWrite($configFile, "search", "conditionDeadSnipe", 0)
+	EndIf
+
+	If IsChecked($chkKingAvail) Then
+		IniWrite($configFile, "search", "conditionKingAvail", 1)
+	Else
+		IniWrite($configFile, "search", "conditionKingAvail", 0)
+	EndIf
+
+	If IsChecked($chkQueenAvail) Then
+		IniWrite($configFile, "search", "conditionQueenAvail", 1)
+	Else
+		IniWrite($configFile, "search", "conditionQueenAvail", 0)
 	EndIf
 
 	If IsChecked($chkMeetGE) Then
@@ -472,9 +514,5 @@ Func Standard_SaveConfig($configFile)
 	Else
 		IniWrite($configFile, "spells", "chkNukeOnlyWithFullArmy", 0)
 	EndIf
-	If IsChecked($rdoMaybeSkip) Then
-		IniWrite($configFile, "spells", "DESearchAcc", 1)
-	Else
-		IniWrite($configFile, "spells", "DESearchAcc", 0)
-	EndIf
+
 EndFunc   ;==>Standard_SaveConfig

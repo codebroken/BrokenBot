@@ -1,3 +1,7 @@
+
+;ReadyCheck is in charge of build full army and spell.
+;When Army is full, ReadyCheck will Return True
+;Hero status check will be done later in the loop, right before start search
 Func Standard_ReadyCheck($TimeSinceNewTroop)
 
 	If $TimeSinceNewTroop > Standard_GetTrainTime() + 60 Then
@@ -25,18 +29,33 @@ Func Standard_ReadyCheck($TimeSinceNewTroop)
 		If StatusCheck() Then Return False
 	EndIf
 
+;~ 	; Verify hero availability
+;~ 	ChkKingAvailability()
+;~ 	ChkQueenAvailability()
+
+;~ 	If $stuckCount >= 3 And IsChecked($chkDeadActivate) And _
+;~ 			(Not IsChecked($chkDeadKingAvail) Or $KingAvailable) And _
+;~ 			(Not IsChecked($chkDeadQueenAvail) Or $QueenAvailable) Then
 	If $stuckCount >= 3 And IsChecked($chkDeadActivate) Then
 		$fullArmy = True
 		Return True
 	EndIf
 
+;~ 	If $stuckCount >= 3 And IsChecked($chkAnyActivate) And _
+;~ 			(Not IsChecked($chkKingAvail) Or $KingAvailable) And _
+;~ 			(Not IsChecked($chkQueenAvail) Or $QueenAvailable) Then
 	If $stuckCount >= 3 And IsChecked($chkAnyActivate) Then
 		$fullArmy = True
 		Return True
 	EndIf
 
-	If $fullarmy And IsChecked($chkDeadActivate) Then Return True
-	If $fullarmy And IsChecked($chkAnyActivate) Then Return True
+;~ 	If $fullarmy And IsChecked($chkDeadActivate) And _
+;~ 			(Not IsChecked($chkDeadKingAvail) Or $KingAvailable) And _
+;~ 			(Not IsChecked($chkDeadQueenAvail) Or $QueenAvailable) Then Return True
+;~ 	If $fullarmy And IsChecked($chkAnyActivate) And _
+;~ 			(Not IsChecked($chkKingAvail) Or $KingAvailable) And _
+;~ 			(Not IsChecked($chkQueenAvail) Or $QueenAvailable) Then Return True
+	If $fullarmy Then Return True
 
 	If IsChecked($chkMakeSpells) Then
 		If $fullSpellFactory And IsChecked($chkNukeOnly) And Not IsChecked($chkNukeOnlyWithFullArmy) Then Return True
@@ -44,6 +63,61 @@ Func Standard_ReadyCheck($TimeSinceNewTroop)
 
 	Return False
 EndFunc   ;==>Standard_ReadyCheck
+
+;Quick check before start searching
+;Check Hero status
+;If last search failed, also check spell status and army status
+;If army is not full for some reason, return false, else return true
+Func Standard_miniReadyCheck()
+
+	; Verify hero availability
+	ChkKingAvailability()
+	ChkQueenAvailability()
+	If $SearchFailed Then ;Last search failed, do additional checks
+		$fullarmy = Standard_CheckArmyCamp()
+		If not $fullarmy and $stuckCount < 3 Then
+			Return False ;Troop missing in not stuck situation, exit loop and restart training
+		Else
+			$fullarmy = True ;Set the flag again, search condition can be properly populated
+		EndIf
+		If StatusCheck() Then Return False
+
+		If IsChecked($chkMakeSpells) Then
+			$fullSpellFactory = CheckFullSpellFactory()
+			If StatusCheck() Then Return False
+		EndIf
+	Else ;SearchFailed=False
+		;reset SearchCount only when last search wasn't failed
+		$SearchCount = 0
+		$SearchFailed = False
+	EndIf
+
+	If not AdjustSearchCond() Then
+		;No search condition is valid
+		SetLog(GetLangText("msgHeroNotReady"), $COLOR_PURPLE)
+
+		If $KingUG And _
+			Not (IsChecked($chkDeadActivate) and Not IsChecked($chkDeadKingAvail)) And _
+			Not (IsChecked($chkAnyActivate) and Not IsChecked($chkKingAvail)) Then
+				;King is upgrading, and all enabled search method need king
+				SetLog(GetLangText("msgWarningKingUG"), $COLOR_RED)
+		EndIf
+		If $QueenUG And _
+			Not (IsChecked($chkDeadActivate) and Not IsChecked($chkDeadQueenAvail)) And _
+			Not (IsChecked($chkAnyActivate) and Not IsChecked($chkQueenAvail)) Then
+				;Queen is upgrading, and all enabled search method need king
+				SetLog(GetLangText("msgWarningQueenUG"), $COLOR_RED)
+		EndIf
+		;Since Hero is required and not ready, we'd better wait outside, at lease we can donate.
+		;Wait a bit before return, avoid bot being too busy ;)
+		_Sleep(20000)
+		Return False
+	EndIf
+
+	Return True
+
+EndFunc	;==>Standard_miniReadyCheck
+
 
 Func Standard_GetTrainTime()
 	$MaxTrainTime = 0
@@ -180,18 +254,19 @@ Func Standard_CheckArmyCamp()
 		If Not LocateCamp() Then Return
 		SaveConfig()
 	Else
-		If _Sleep(1000) Then Return
+		If _Sleep(500) Then Return
 		Click($ArmyPos[0], $ArmyPos[1]) ;Click Army Camp
 	EndIf
 
 	_CaptureRegion()
-	If _Sleep(1000) Then Return
+	If _Sleep(500) Then Return
 	Local $BArmyPos = _WaitForPixel(309, 581, 433, 583, Hex(0x4084B8, 6), 5) ;Finds Info button
 	If IsArray($BArmyPos) = False Then
 		SetLog(GetLangText("msgCampNA"), $COLOR_RED)
 	Else
 		Click($BArmyPos[0], $BArmyPos[1]) ;Click Info button
-		If _Sleep(2000) Then Return
+		;If _Sleep(2000) Then Return
+		_WaitForPixel(690, 150, 710, 170, Hex(0xD80407, 6), 5, 1) ;Finds Red Cross button in new popup window
 		_CaptureRegion()
 		Switch _GUICtrlComboBox_GetCurSel($cmbRaidcap)
 			Case 0 ; 10%
@@ -387,10 +462,10 @@ Func Standard_Train($reset = False)
 
 		ClickP($TopLeftClient) ;Click Away
 
-		If _Sleep(1000) Then ExitLoop
+		If _Sleep(500) Then ExitLoop
 
 		Click($barrackPos[$i][0], $barrackPos[$i][1]) ;Click Barrack
-		If _Sleep(1000) Then ExitLoop
+		If _Sleep(500) Then ExitLoop
 
 		Local $TrainPos = _PixelSearch(155, 603, 694, 605, Hex(0x9C7C37, 6), 5) ;Finds Train Troops button
 		If IsArray($TrainPos) = False Then
@@ -400,7 +475,8 @@ Func Standard_Train($reset = False)
 		Else
 			Click($TrainPos[0], $TrainPos[1]) ;Click Train Troops button
 			;SetLog(GetLangText("msgBarrack") & $i + 1 & " ...", $COLOR_GREEN)
-			If _Sleep(1000) Then ExitLoop
+			;If _Sleep(1000) Then ExitLoop
+			 _WaitForPixel(720, 150, 740, 170, Hex(0xD80404, 6), 5, 1) ;Finds Red Cross button in new Training popup window
 
 			If _GUICtrlComboBox_GetCurSel($cmbTroopComp) = 8 Then
 				Switch $i
@@ -935,11 +1011,11 @@ Func Standard_MakeSpells()
 		If $DebugMode = 2 Then _GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "SpellNA-" & @HOUR & @MIN & @SEC & ".png")
 	EndIf
 
-	If _Sleep(1000) Then Return
+	;If _Sleep(1000) Then Return
 	Local $BSpellPos = _PixelSearch(500, 603, 570, 605, Hex(0x07346F, 6), 5) ;Finds create spells button
 	If IsArray($BSpellPos) Then
 		Click($BSpellPos[0], $BSpellPos[1])
-		If _Sleep(1000) Then Return
+		_WaitForPixel(720, 150, 740, 170, Hex(0xD80404, 6), 5, 1) ;Finds Red Cross button in new Training popup window
 		SetLog(GetLangText("msgMakingSpell") & GUICtrlRead($cmbSpellCreate) & " x " & $itxtspellcap, $COLOR_BLUE)
 		Click(220 + _GUICtrlComboBox_GetCurSel($cmbSpellCreate) * 106, 320, $itxtspellcap)
 		If _Sleep(500) Then Return
@@ -949,7 +1025,7 @@ Func Standard_MakeSpells()
 		SetLog(GetLangText("msgUnableCreate"), $COLOR_RED)
 	EndIf
 
-	ClickP($TopLeftClient) ;Click Away
+	;ClickP($TopLeftClient) ;Click Away
 	If _Sleep(500) Then Return
 	ClickP($TopLeftClient) ;Click Away
 EndFunc   ;==>Standard_MakeSpells

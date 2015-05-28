@@ -27,6 +27,8 @@ EndFunc   ;==>Standard_btnSearchMode
 
 Func Standard_chkDeadActivate()
 	If IsChecked($chkDeadActivate) Then
+		GUICtrlSetState($chkDeadKingAvail, $GUI_ENABLE)
+		GUICtrlSetState($chkDeadQueenAvail, $GUI_ENABLE)
 		GUICtrlSetState($chkDeadGE, $GUI_ENABLE)
 		GUICtrlSetState($txtDeadMinGold, $GUI_ENABLE)
 		GUICtrlSetState($cmbDead, $GUI_ENABLE)
@@ -41,6 +43,8 @@ Func Standard_chkDeadActivate()
 		GUICtrlSetState($chkDeadSnipe, $GUI_ENABLE)
 		GUICtrlSetState($btnSearchMode, $GUI_ENABLE)
 	Else
+		GUICtrlSetState($chkDeadKingAvail, $GUI_DISABLE)
+		GUICtrlSetState($chkDeadQueenAvail, $GUI_DISABLE)
 		GUICtrlSetState($chkDeadGE, $GUI_DISABLE)
 		GUICtrlSetState($txtDeadMinGold, $GUI_DISABLE)
 		GUICtrlSetState($cmbDead, $GUI_DISABLE)
@@ -61,6 +65,8 @@ EndFunc   ;==>Standard_chkDeadActivate
 
 Func Standard_chkAnyActivate()
 	If IsChecked($chkAnyActivate) Then
+		GUICtrlSetState($chkKingAvail, $GUI_ENABLE)
+		GUICtrlSetState($chkQueenAvail, $GUI_ENABLE)
 		GUICtrlSetState($chkMeetGE, $GUI_ENABLE)
 		GUICtrlSetState($txtMinGold, $GUI_ENABLE)
 		GUICtrlSetState($cmbAny, $GUI_ENABLE)
@@ -75,6 +81,8 @@ Func Standard_chkAnyActivate()
 		GUICtrlSetState($chkSnipe, $GUI_ENABLE)
 		GUICtrlSetState($btnSearchMode, $GUI_ENABLE)
 	Else
+		GUICtrlSetState($chkKingAvail, $GUI_DISABLE)
+		GUICtrlSetState($chkQueenAvail, $GUI_DISABLE)
 		GUICtrlSetState($chkMeetGE, $GUI_DISABLE)
 		GUICtrlSetState($txtMinGold, $GUI_DISABLE)
 		GUICtrlSetState($cmbAny, $GUI_DISABLE)
