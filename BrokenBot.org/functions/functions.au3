@@ -8,6 +8,7 @@
 #include "GUI\WindowFixing.au3"
 
 #include "ImageSearch\checkDarkElix.au3"
+#include "ImageSearch\checkTownhall.au3"
 
 #include "Other\checkupdate.au3"
 #include "Other\GeneralFunctions.au3"
@@ -17,3 +18,4 @@
 #include "Strategies\Strategies.au3"
 
 #include "Village\TroopSize.au3"
+#include "Village\collectResources.au3"

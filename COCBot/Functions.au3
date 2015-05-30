@@ -10,7 +10,6 @@
 #include "functions\Image Search\ImageSearch.au3"
 #include "functions\Image Search\checkButtonUpgrade.au3"
 #include "functions\Image Search\checkDeadBase.au3"
-#include "functions\Image Search\checkTownhall.au3"
 #include "functions\Image Search\checkWall.au3"
 
 #include "functions\Main Screen\checkMainScreen.au3"
@@ -72,7 +71,6 @@
 #include "functions\Village\BoostAllBuilding.au3"
 #include "functions\Village\BoostBarracks.au3"
 #include "functions\Village\CheckFullSpellFactory.au3"
-#include "functions\Village\Collect.au3"
 #include "functions\Village\DonateCC.au3"
 #include "functions\Village\DonateCheckArmyCamp.au3"
 #include "functions\Village\DonateTrain.au3"

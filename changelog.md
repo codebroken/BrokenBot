@@ -1,5 +1,10 @@
 ## Change Log:
 
+### v2.7.1
+* Improved townhall recognition.  No, seriously.  It is so much better than it was before!  No more trying to attack outside townhalls that don't exist or skipping over perfectly good bases with tons of loot just because the bot can't recognize the townhall.
+* Some more dark elixir storage tweaks.  We are trying to make sure you don't waste those zaps.
+* Moved resource collection to our improved image recognition system.
+
 ### v2.7.0
 * Improved image recognition system.  Does a much better job of finding the dark elixir storage.
 * Search delay is randomized now.  You still use the same UI selection for the general speed of searching but the actual speed is randomized near the value you select.
