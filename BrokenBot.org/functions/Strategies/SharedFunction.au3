@@ -26,13 +26,15 @@ Func ChkDisconnection($disconnected = False)
 	If _ImageSearch(@ScriptDir & "\images\Lost.bmp", 1, $dummyX, $dummyY, 50) = 1 Then
 		If $dummyX > 320 and $dummyX < 350 and $dummyY > 330 and $dummyY < 350 Then
 			$disconnected = True
-			$speedBump += 500
-			If $speedBump > 5000 Then
-				$speedBump=5000
-				SetLog("Lost Connection! Already searching slowly, not changing anything.", $COLOR_RED)
-			Else
-				SetLog("Lost Connection! Slowing search speed by 0.5 secs.", $COLOR_RED)
-			EndIf
+			;Looks like lost connection is not related to search speed, test run without bump
+			SetLog("Lost Connection!", $COLOR_RED)
+;~ 			$speedBump += 500
+;~ 			If $speedBump > 5000 Then
+;~ 				$speedBump=5000
+;~ 				SetLog("Lost Connection! Already searching slowly, not changing anything.", $COLOR_RED)
+;~ 			Else
+;~ 				SetLog("Lost Connection! Slowing search speed by 0.5 secs.", $COLOR_RED)
+;~ 			EndIf
 		EndIf
 	EndIf
 

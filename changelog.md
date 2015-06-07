@@ -1,5 +1,14 @@
 ## Change Log:
 
+### v2.8.0
+* Major stability enhancements
+* Speed optimization - we cut the time it takes to find a well hidden TH by 60% from our previous release. It now takes 1.2sec on average vs never finding it or taking 20 seconds like our competitors.  **speedBoost must be enabled.
+* Precision enhancements - We have reduced our image recognition error rate from 4% down to 2.4% - Nearly 10 times better than other bots!
+* Resource collection - we had to lower the thresholds to make sure we collect some of your harder to detect resources. The side-effect is you will see it clicking walls sometimes for a fraction of a second. This is expected and controlled, it will not perform an erroneous action.
+* Implemented speedBoost - found on the config tab. Check this to locate DE and TH faster at the cost of more CPU load during searching.
+* Fixed PushBullet. We now check the server for up to 3 new commands once every minute.  Bot may respond to commands slightly slower but this will prevent us from being blocked from using their servers.
+* Various bug fixes related to searching.
+
 ### v2.7.1
 * Improved townhall recognition.  No, seriously.  It is so much better than it was before!  No more trying to attack outside townhalls that don't exist or skipping over perfectly good bases with tons of loot just because the bot can't recognize the townhall.
 * Some more dark elixir storage tweaks.  We are trying to make sure you don't waste those zaps.

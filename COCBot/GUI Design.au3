@@ -449,6 +449,9 @@ $cmbLanguage = GUICtrlCreateCombo("", 30, 130, 347, 20, BitOR($CBS_DROPDOWNLIST,
 PopulateLanguages()
 _GUICtrlComboBox_SetCurSel($cmbLanguage, _GUICtrlComboBox_FindStringExact($cmbLanguage, $StartupLanguage))
 
+$chkSpeedBoost = GUICtrlCreateCheckbox(GetLangText("chkSpeedBoost"), 40, 170, 100, 15)
+GUICtrlSetTip(-1, GetLangText("chkSpeedBoostTip"))
+
 $grpUpdate = GUICtrlCreateGroup(GetLangText("grpUpdate"), 20, 225, 375, 60)
 $chkUpdate = GUICtrlCreateCheckbox(GetLangText("chkUpdate"), 40, 250, 225, 15)
 GUICtrlSetBkColor($chkUpdate, $COLOR_WHITE)

@@ -298,6 +298,11 @@ Func saveConfig() ;Saves the controls settings to the config
 	Else
 		IniWrite($config, "config", "stayalive", 0)
 	EndIf
+	If IsChecked($chkSpeedBoost) Then
+		IniWrite($config, "config", "speedboost", 1)
+	Else
+		IniWrite($config, "config", "speedboost", 0)
+	EndIf
 
 	;---------------------------------------------------------------------------------------
 	; Base location settings ---------------------------------------------------------------

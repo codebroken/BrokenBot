@@ -11,7 +11,7 @@ Func collectResources()
 	  Do
 		  _CaptureRegion()
 		  $sendHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)
-		  $res = DllCall(@ScriptDir & "\BrokenBot.org\BrokenBot32.dll", "str", "BrokenBotMatchBuilding", "ptr", $sendHBitmap, "int", 27, "int", 3, "int", 17, "int", 1)
+		  $res = DllCall(@ScriptDir & "\BrokenBot.org\BrokenBot32.dll", "str", "BrokenBotMatchBuilding", "ptr", $sendHBitmap, "int", 27, "int", 3, "int", 17, "int", 1, "int", (IsChecked($chkSpeedBoost) ? (1) : (0)))
 		  _WinAPI_DeleteObject($sendHBitmap)
 		 If IsArray($res) Then
 		   If $res[0] = -1 and NOT $foundResource Then

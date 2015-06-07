@@ -6,7 +6,7 @@
 Func checkTownhall()
 	_CaptureRegion()
 	$sendHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)
-	$res = DllCall(@ScriptDir & "\BrokenBot.org\BrokenBot32.dll", "str", "BrokenBotMatchBuilding", "ptr", $sendHBitmap, "int", 1, "int", 3, "int", 1, "int", 1)
+	$res = DllCall(@ScriptDir & "\BrokenBot.org\BrokenBot32.dll", "str", "BrokenBotMatchBuilding", "ptr", $sendHBitmap, "int", 1, "int", 3, "int", 1, "int", 1, "int", (IsChecked($chkSpeedBoost) ? (1) : (0)))
 	_WinAPI_DeleteObject($sendHBitmap)
 	If IsArray($res) Then
 		If $res[0] = -1 Then
@@ -37,8 +37,8 @@ Func checkTownhall()
 		EndIf
 	Else
 		SetLog(GetLangText("msgDLLFailure"), $COLOR_RED)
-		$DEx = 0
-		$DEy = 0
+		$THx = 0
+		$THy = 0
 		Return "-" ; return 0
 	EndIf
 EndFunc   ;==>checkTownhall

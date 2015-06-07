@@ -121,6 +121,11 @@ Func readConfig() ;Reads config and sets it to the variables
 	Else
 		GUICtrlSetState($chkStayAlive, $GUI_UNCHECKED)
 	EndIf
+	If IniRead($config, "config", "speedboost", "0") = 1 Then
+		GUICtrlSetState($chkSpeedBoost, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkSpeedBoost, $GUI_UNCHECKED)
+	EndIf
 
 	;---------------------------------------------------------------------------------------
 	; Base location settings ---------------------------------------------------------------

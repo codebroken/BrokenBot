@@ -654,8 +654,9 @@ Func Standard_Attack($AttackMethod = 1)
 EndFunc   ;==>Standard_Attack
 
 Func Standard_DropNukes()
-	;No need to check dark storage again, already checked during search
-	;If checkDarkElix() Then
+	;Only check dark storage again when necessary
+	If $DEx+$DEy = 0 Then checkDarkElix()
+	If $DEx+$DEy > 0 Then
 		$nLSpell = -1
 		$nSpellQty = 0
 		For $i = 0 To 8
@@ -678,7 +679,7 @@ Func Standard_DropNukes()
 				$z = $z + 1
 			Until $nSpellQty = 0 Or $z = 100
 		EndIf
-	;EndIf
+	EndIf
 EndFunc   ;==>Standard_DropNukes
 
 ;Drops Clan Castle troops, given the slot and x, y coordinates.

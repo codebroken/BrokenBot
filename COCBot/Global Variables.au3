@@ -99,8 +99,12 @@ Global $prevTab = 0
 Global $slideOut = 0
 Global $slideIn = 0
 
-;Troop types
-Global Enum $eBarbarian, $eArcher, $eGiant, $eGoblin, $eWallbreaker, $eMinion, $eHog, $eValkyrie, $eKing, $eQueen, $eCastle, $eLSpell
+;Troop types, from 0 ~ 19 so far
+Global Enum $eBarbarian, $eArcher, $eGiant, $eGoblin, $eWallbreaker, _
+			$eBalloon, $eWizard, $eHealer, $eDragon, $ePekka, _
+			$eMinion, $eHog, $eValkyrie, $eGolem, $eWitch, _
+			$eLavaHound, _
+			$eKing, $eQueen, $eCastle, $eLSpell
 
 ;Attack Settings
 ; Shift outer corners 1 pixel for more random drop space

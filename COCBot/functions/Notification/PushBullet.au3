@@ -4,7 +4,7 @@
 Func _RemoteControl()
 	$oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 	$access_token = $PushBullettoken
-	$oHTTP.Open("Get", "https://api.pushbullet.com/v2/pushes?active=true", False)
+	$oHTTP.Open("Get", "https://api.pushbullet.com/v2/pushes?active=true&limit=3", False)
 	$oHTTP.SetCredentials($access_token, "", 0)
 	$oHTTP.SetRequestHeader("Content-Type", "application/json")
 	$oHTTP.Send()

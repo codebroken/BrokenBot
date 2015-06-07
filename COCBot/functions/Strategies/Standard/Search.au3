@@ -11,6 +11,9 @@ Func Standard_Search()
 
 	$hTimerClickNext = TimerInit() ;Next button already pressed before call here
 
+	;safe to reset flag here. If failed and return -1, this flag will be set again.
+	$SearchFailed = False
+
 	While 1
 		$calculateCondition = False
 		GUICtrlSetData($lblresultsearchcost, GUICtrlRead($lblresultsearchcost) + $SearchCost)
@@ -41,7 +44,10 @@ Func Standard_Search()
 			EndIf
 			$calculateCondition = True
 
+			;Initial working variables
 			$GoodBase = False
+			$DEx = 0
+			$DEy = 0
 			Local $conditionlogstr
 			$NukeAttack = False
 
@@ -74,10 +80,12 @@ Func Standard_Search()
 
 			If $THLoc = "Out" And IsChecked($chkDeadActivate) And IsChecked($chkDeadSnipe) And $BaseData[0] Then
 				SetLog(GetLangText("msgOutDeadFound"), $COLOR_PURPLE)
-				Return 0
+				$AttackMethod = 0
+				ExitLoop
 			ElseIf $THLoc = "Out" And IsChecked($chkAnyActivate) And IsChecked($chkSnipe) And Not $BaseData[0] Then
 				SetLog(GetLangText("msgOutLiveFound"), $COLOR_PURPLE)
-				Return 1
+				$AttackMethod = 1
+				ExitLoop
 			EndIf
 
 			; Variables to check whether to attack dead bases
@@ -180,7 +188,6 @@ Func Standard_Search()
 			EndIf
 
 			If $GoodBase Then
-				$SearchFailed = False
 				ExitLoop
 			Else
 				_CaptureRegion()
@@ -226,7 +233,8 @@ Func Standard_Search()
 			SetLog(GetLangText("msgPushMatch"), $COLOR_GREEN)
 		EndIf
 		SetLog(GetLangText("msgSearchComplete"), $COLOR_BLUE)
-		;Match found, reset stuckCount flag before run readycheck again.
+		;Match found, reset stuckCount flag & searchfailed falg before run readycheck again.
+		$SearchFailed = False
 		$stuckCount = 0
 		_BlockInputEx(0, "", "", $HWnD)
 		Return $AttackMethod

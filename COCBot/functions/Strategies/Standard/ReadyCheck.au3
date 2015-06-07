@@ -89,7 +89,6 @@ Func Standard_miniReadyCheck()
 	Else ;SearchFailed=False
 		;reset SearchCount only when last search wasn't failed
 		$SearchCount = 0
-		$SearchFailed = False
 	EndIf
 
 	If not AdjustSearchCond() Then
