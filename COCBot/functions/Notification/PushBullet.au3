@@ -10,8 +10,8 @@ Func _RemoteControl()
 	$oHTTP.Send()
 	$Result = $oHTTP.ResponseText
 
-	If StringInStr(StringLower($Result), '"title":"bot') Then
-		Local $title = _StringBetween($Result, '"title":"', '"', "", False)
+	If StringInStr(StringLower($Result), '"body":"bot') Then
+		Local $title = _StringBetween($Result, '"body":"', '"', "", False)
 		Local $iden = _StringBetween($Result, '"iden":"', '"', "", False)
 		For $x = 0 To UBound($title) - 1
 			If $title <> "" Or $iden <> "" Then
