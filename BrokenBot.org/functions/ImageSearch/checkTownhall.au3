@@ -15,6 +15,8 @@ Func checkTownhall()
 			$THx = 0
 			$THy = 0
 			Return "-" ; return 0
+		ElseIf $res[0] = -2 Then
+			SetLog(GetLangText("msgLicense"), $COLOR_RED)
 		Else
 			$res = StringSplit($res[0], "|", 2)
 			$THx = $res[1]
@@ -32,11 +34,11 @@ Func checkTownhall()
 			If $res[4] < 7 Then
 				Return $THText[0]
 			Else
-				Return $THText[$res[4]-6]
+				Return $THText[$res[4] - 6]
 			EndIf
 		EndIf
 	Else
-		SetLog(GetLangText("msgDLLFailure"), $COLOR_RED)
+		SetLog(GetLangText("msgDLLError"), $COLOR_RED)
 		$THx = 0
 		$THy = 0
 		Return "-" ; return 0

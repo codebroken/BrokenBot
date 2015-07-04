@@ -28,9 +28,9 @@ Func GetUpLaboratoryPos()
 		Case 3
 			Click(293, 480) ; Goblin
 		Case 4
-			Click(387, 461) ; Ballon
-		Case 5
 			Click($WBreakerX, $WBreakerY)
+		Case 5
+			Click(387, 461) ; Ballon
 		Case 6
 			Click($WizardX, $WizardY)
 		Case 7
@@ -45,41 +45,41 @@ Func GetUpLaboratoryPos()
 			Click($SpellLightningX, $SpellLightningY)
 		Case 12
 			_PostMessage_ClickDrag(552, 464, 3, 492, "left", 2000)
-			Sleep(1000)
+			_ModifiedSleep(1000)
 			Click(261, 377) ; rage
 		Case 13
 			_PostMessage_ClickDrag(552, 464, 3, 492, "left", 2000)
-			Sleep(1000)
+			_ModifiedSleep(1000)
 			_PostMessage_ClickDrag(552, 464, 3, 492, "left", 2000)
-			Sleep(1000)
+			_ModifiedSleep(1000)
 			Click(282, 470) ; jump
 		Case 14
 			_PostMessage_ClickDrag(552, 464, 3, 492, "left", 2000)
-			Sleep(1000)
+			_ModifiedSleep(1000)
 			Click(370, 366) ; freeze
 		Case 15
 			_PostMessage_ClickDrag(552, 464, 3, 492, "left", 2000)
-			Sleep(1000)
+			_ModifiedSleep(1000)
 			Click(370, 474) ; minion
 		Case 16
 			_PostMessage_ClickDrag(552, 464, 3, 492, "left", 2000)
-			Sleep(1000)
+			_ModifiedSleep(1000)
 			Click(488, 477) ; hog
 		Case 17
 			_PostMessage_ClickDrag(552, 464, 3, 492, "left", 2000)
-			Sleep(1000)
+			_ModifiedSleep(1000)
 			Click(591, 364) ; valkrye
 		Case 18
 			_PostMessage_ClickDrag(552, 464, 3, 492, "left", 2000)
-			Sleep(1000)
+			_ModifiedSleep(1000)
 			Click(590, 474); golem
 		Case 19
 			_PostMessage_ClickDrag(552, 464, 3, 492, "left", 2000)
-			Sleep(1000)
+			_ModifiedSleep(1000)
 			Click(578, 474) ; witch
 		Case 20
 			_PostMessage_ClickDrag(552, 464, 3, 492, "left", 2000)
-			Sleep(1000)
+			_ModifiedSleep(1000)
 			Click(690, 368) ; lava
 		Case 21
 			GUICtrlSetState($chkLab, $GUI_UNCHECKED)

@@ -10,7 +10,7 @@ Func PrepareSearch() ;Click attack button and find match button, will break shie
 		If _WaitForColor(513, 416, Hex(0x5DAC10, 6), 50, 1) Then
 			Click(513, 416)
 		EndIf
-		If _WaitForColor(30, 505, Hex(0xE80008, 6), 50, 10) Then Return True
+		If _WaitForColor(36, 523, Hex(0xEE5056, 6), 50, 10) Then Return True
 	EndIf
 	Return False
 EndFunc   ;==>PrepareSearch

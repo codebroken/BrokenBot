@@ -81,16 +81,13 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	GUICtrlSetData($txtWallMinGold, $itxtWallMinGold)
 	GUICtrlSetData($txtWallMinElixir, $itxtWallMinElixir)
 
-	_GUICtrlComboBox_SetCurSel($cmbUnitDelay, $icmbUnitDelay)
-	_GUICtrlComboBox_SetCurSel($cmbWaveDelay, $icmbWaveDelay)
-
-;Lab
-    If $ichkLab = 1 Then
-        GUICtrlSetState($chkLab, $GUI_CHECKED)
-    Else
-        GUICtrlSetState($chkLab, $GUI_UNCHECKED)
-    EndIf
-    _GUICtrlComboBox_SetCurSel($cmbLaboratory, $icmbLaboratory)
+	;Lab
+	If $ichkLab = 1 Then
+		GUICtrlSetState($chkLab, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkLab, $GUI_UNCHECKED)
+	EndIf
+	_GUICtrlComboBox_SetCurSel($cmbLaboratory, $icmbLaboratory)
 
 	;General Settings--------------------------------------------------------------------------
 	If $frmBotPosX <> -32000 Then
@@ -129,6 +126,11 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	Else
 		GUICtrlSetState($chkWideEdge, $GUI_UNCHECKED)
 	EndIf
+	If $iClearField = 1 Then
+		GUICtrlSetState($chkClearField, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkClearField, $GUI_UNCHECKED)
+	EndIf
 
 	If $ichkBotStop = 1 Then
 		GUICtrlSetState($chkBotStop, $GUI_CHECKED)
@@ -138,7 +140,6 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	_GUICtrlComboBox_SetCurSel($cmbBotCommand, $icmbBotCommand)
 	_GUICtrlComboBox_SetCurSel($cmbBotCond, $icmbBotCond)
 
-	GUICtrlSetData($txtCapacity, $itxtcampCap)
 	GUICtrlSetData($txtSpellCap, $itxtspellCap)
 
 	If $TakeLootSnapShot = 1 Then
@@ -172,6 +173,12 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 		GUICtrlSetState($lblvillagereport, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($lblvillagereport, $GUI_UNCHECKED)
+	EndIf
+
+	If $PushBulletchatlog = 1 Then
+		GUICtrlSetState($lblchatlog, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($lblchatlog, $GUI_UNCHECKED)
 	EndIf
 
 	If $PushBulletmatchfound = 1 Then

@@ -1,6 +1,10 @@
 Func runBot() ;Bot that runs everything in order
 	Local $AttackType
 	While 1
+		If TimerDiff($hUpdateTimer) > (1000 * 60 * 60 * 12) Then
+			checkupdate()
+		EndIf
+
 		; Configuration and cleanup
 		$Restart = False
 		LootLogCleanup(100)
@@ -17,8 +21,11 @@ Func runBot() ;Bot that runs everything in order
 		VillageReport()
 		If StatusCheck() Then Return
 
-;~ 		CheckCostPerSearch()
-;~ 		If StatusCheck() Then Return
+		CheckCostPerSearch()
+		If StatusCheck() Then Return
+
+		clearField()
+		If StatusCheck() Then Return
 
 		If $Checkrearm Then
 			ReArm()
@@ -45,6 +52,11 @@ Func runBot() ;Bot that runs everything in order
 		If StatusCheck() Then Return
 
 		UpgradeWall()
+		If StatusCheck() Then Return
+
+		If $PushBulletEnabled = 1 And $PushBulletchatlog = 1 Then
+			ReadChatLog(Not $ChatInitialized)
+		EndIf
 		If StatusCheck() Then Return
 
 		Switch $CurrentMode
@@ -92,7 +104,10 @@ Func runBot() ;Bot that runs everything in order
 
 				If Not $fullarmy Then Donate_Train()
 				If StatusCheck() Then Return False
+
+				If _Sleep(5000) Then Return
 			Case $modeDonate
+				If _Sleep(5000) Then Return
 				; Why is this even a mode?
 			Case $modeExperience
 				Experience()
@@ -125,9 +140,9 @@ Func Idle($Plugin) ;Sequence that runs until Full Army
 			$prevCamp = $CurCamp
 			$hTroopTimer = TimerInit()
 		EndIf
-		If $CurCamp = 0 or $CurCamp = "" Then $hTroopTimer = TimerInit() ; Not a good fix, but will stop errors for people whose troop size can't be read for now
+		If $CurCamp = 0 Or $CurCamp = "" Then $hTroopTimer = TimerInit() ; Not a good fix, but will stop errors for people whose troop size can't be read for now
 		$TimeSinceTroop = TimerDiff($hTroopTimer) / 1000
-		SetLog(GetLangText("msgTimeIdle") & Floor(Floor($TimeIdle / 60) / 60) & GetLangText("msgTimeIdleHours")& Floor(Mod(Floor($TimeIdle / 60), 60)) & GetLangText("msgTimeIdleMin") & Floor(Mod($TimeIdle, 60)) & GetLangText("msgTimeIdleSec"), $COLOR_ORANGE)
+		SetLog(GetLangText("msgTimeIdle") & Floor(Floor($TimeIdle / 60) / 60) & GetLangText("msgTimeIdleHours") & Floor(Mod(Floor($TimeIdle / 60), 60)) & GetLangText("msgTimeIdleMin") & Floor(Mod($TimeIdle, 60)) & GetLangText("msgTimeIdleSec"), $COLOR_ORANGE)
 		If _Sleep(30000) Then ExitLoop
 	WEnd
 EndFunc   ;==>Idle

@@ -31,11 +31,11 @@ Global $CampFull[4] = [328, 535, 0xD03840, 20] ;
 
 Global $DropTrophiesStartPoint = [34, 310]
 Global $TrainBtn[4] = [541, 602, 0x728BB0, 20] ;
-Global $TrainBarbarian[4] = [261, 366, 0x39D8E0, 20] ;
-Global $TrainArcher[4] = [369, 366, 0x33B9C6, 24] ;
-Global $TrainGiant[4] = [475, 366, 0x3DD8E0, 20] ;
-Global $TrainGoblin[4] = [581, 366, 0x39D8E0, 20] ;
-Global $TrainWallbreaker[4] = [688, 366, 0x3AD8E0, 20] ;
+Global $TrainBarbarian[4] = [216, 325, 0xF09D1C, 30] ;
+Global $TrainArcher[4] = [330, 323, 0xE84070, 30] ;
+Global $TrainGiant[4] = [419, 319, 0xF88409, 30] ;
+Global $TrainGoblin[4] = [549, 328, 0xFB4C24, 30] ;
+Global $TrainWallbreaker[4] = [635, 335, 0x473940, 30] ;
 
 Global $TrainMinion[4] = [261, 365, 0x43D9E2, 28] ;
 ;Global $TrainMinion[4]				= [261, 365, 0x5DDCE5, 10] ;
@@ -48,31 +48,123 @@ Global $NextBtn[2] = [750, 500]
 
 Func SelectDropTroupe($troop)
 	Click(68 + (72 * $troop), 595)
+	_CaptureRegion()
+	$GlobalColor = CommonColor(54 + (72 * $troop), 585, 30, 35)
 EndFunc   ;==>SelectDropTroupe
 
 ; Read the quantity for a given troop
 Func ReadTroopQuantity($troop)
-	Return Number(getNormal(40 + (72 * $troop), 565))
+	_CaptureRegion()
+	If _ColorCheck(_GetPixelColor(44 + (72 * $troop), 576), Hex(0xFFFFFF, 6), 20) Then
+		$ReturnQty = ReadText(43 + (72 * $troop), 578, 54, $textDeployNumber)
+	Else
+		$ReturnQty = ReadText(43 + (72 * $troop), 583, 54, $textDeployNumber)
+	EndIf
+	$ReturnQty = StringStripWS($ReturnQty, 8)
+	If StringLeft($ReturnQty, 1) = "x" Then $ReturnQty = StringRight($ReturnQty, StringLen($ReturnQty) - 1)
+	Return $ReturnQty
 EndFunc   ;==>ReadTroopQuantity
 
 Func IdentifyTroopKind($position)
-	_CaptureRegion()
-	$TroopPixel = _GetPixelColor(68 + (72 * $position), 595)
-	If _ColorCheck($TroopPixel, Hex(0xF8B020, 6), 5) Then Return $eBarbarian ;Check if slot is Barbarian
-	If _ColorCheck($TroopPixel, Hex(0xD83F68, 6), 5) Then Return $eArcher ;Check if slot is Archer
-	If _ColorCheck($TroopPixel, Hex(0x7BC950, 6), 5) Then Return $eGoblin ;Check if slot is Goblin
-	If _ColorCheck($TroopPixel, Hex(0xF8D49E, 6), 5) Then Return $eGiant ;Check if slot is Giant
-	If _ColorCheck($TroopPixel, Hex(0x60A4D0, 6), 5) Then Return $eWallbreaker ;Check if slot is Wallbreaker
-	If _ColorCheck(_GetPixelColor(45 + (72 * $position), 584), Hex(0xEFBC6F, 6), 10) Then Return $eWallbreaker ;Check if slot is Wallbreaker
-	If _ColorCheck(_GetPixelColor(68 + (72 * $position), 586), Hex(0x162038, 6), 5) Then Return $eMinion ;Check if slot is Minions
-	If _ColorCheck($TroopPixel, Hex(0x603B30, 6), 5) Then Return $eHog ;Check if slot is Hogs
-	If _ColorCheck($TroopPixel, Hex(0xB9645F, 6), 5) Then Return $eValkyrie ;Check if slot is Valkyries
-	If _ColorCheck($TroopPixel, Hex(0xF8EB79, 6), 5) Then Return $eKing ;Check if slot is King
-	;$OtherPixel = _GetPixelColor(68 + (72 * $position), 588)
 
-	If _ColorCheck(_GetPixelColor(68 + (72 * $position), 588), Hex(0x7031F0, 6), 5) Then Return $eQueen ;Check if slot is Queen
-	If _ColorCheck(_GetPixelColor(68 + (72 * $position), 588), Hex(0x7832F8, 6), 5) Then Return $eQueen ;Check if slot is Queen
-	If _ColorCheck(_GetPixelColor(68 + (72 * $position), 585), Hex(0x68ACD4, 6), 5) Then Return $eCastle ;Check if slot is Clan Castle
-	If _ColorCheck(_GetPixelColor(68 + (72 * $position), 632), Hex(0x0426EC, 6), 7) Then Return $eLSpell ;Check if slot is Lightning Spell
-	Return -1
+;~ 	If $position = 0 Then
+;~ 		Click(68 + 72, 595)
+;~ 	Else
+;~ 		Click(68, 595)
+;~ 	EndIf
+;~ 	If $position < 2 Then
+;~ 		If _Sleep(500) Then Return
+;~ 	EndIf
+
+	_CaptureRegion(32 + (72 * $position), 595, 104 + (72 * $position), 665)
+	$sendHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)
+	$resDeploy = DllCall(@ScriptDir & "\BrokenBot.org\BrokenBot32.dll", "str", "BrokenBotGetDeploy", "ptr", $sendHBitmap, "int", 201, "int", 3, "int", 1, "int", 0, "int", (IsChecked($chkSpeedBoost) ? (1) : (0)))
+	_WinAPI_DeleteObject($sendHBitmap)
+	If IsArray($resDeploy) Then
+		If $resDeploy[0] = -1 Then
+			$found = -1
+			; check for a large troop image
+			_CaptureRegion(32 + (72 * $position), 595, 104 + (72 * $position), 665)
+			$sendHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)
+			$resDeploy = DllCall(@ScriptDir & "\BrokenBot.org\BrokenBot32.dll", "str", "BrokenBotGetDeploy", "ptr", $sendHBitmap, "int", 203, "int", 3, "int", 1, "int", 0, "int", (IsChecked($chkSpeedBoost) ? (1) : (0)))
+			_WinAPI_DeleteObject($sendHBitmap)
+			If IsArray($resDeploy) Then
+				If $resDeploy[0] = -1 Then
+					$found = -1
+				ElseIf $resDeploy[0] = -2 Then
+					SetLog(GetLangText("msgLicense"), $COLOR_RED)
+					$found = -1
+				Else
+					$deploySplit = StringSplit($resDeploy[0], "|", 2)
+					$found = $deploySplit[5]
+				EndIf
+			Else
+				$found = -1
+				SetLog(GetLangText("msgDLLError"), $COLOR_RED)
+			EndIf
+		ElseIf $resDeploy[0] = -2 Then
+			SetLog(GetLangText("msgLicense"), $COLOR_RED)
+			$found = -1
+		Else
+			$deploySplit = StringSplit($resDeploy[0], "|", 2)
+			$found = $deploySplit[5]
+		EndIf
+	Else
+		$found = -1
+		SetLog(GetLangText("msgDLLError"), $COLOR_RED)
+	EndIf
+
+	Switch $found
+		Case 1
+			Return $eBarbarian
+		Case 2
+			Return $eArcher
+		Case 3
+			Return $eGoblin
+		Case 4
+			Return $eGiant
+		Case 5
+			Return $eWallbreaker
+		Case 6
+			Return $eBalloon
+		Case 7
+			Return $eWizard
+		Case 8
+			Return $eHealer
+		Case 9
+			Return $eDragon
+		Case 10
+			Return $ePekka
+		Case 11
+			Return $eMinion
+		Case 12
+			Return $eHog
+		Case 13
+			Return $eValkyrie
+		Case 14
+			Return $eGolem
+		Case 15
+			Return $eWitch
+		Case 16
+			Return $eLavaHound
+		Case 17
+			Return $eKing
+		Case 18
+			Return $eQueen
+		Case 19
+			Return $eLSpell
+		Case 20
+			Return -1
+		Case 21
+			Return -1
+		Case 22
+			Return -1
+		Case 23
+			Return -1
+		Case Else
+			_CaptureRegion()
+			If _ColorCheck(_GetPixelColor(43 + (72 * $position), 604), Hex(0x5B9CD0, 6), 20) Then Return $eCastle ;Check if slot is Clan Castle
+			Return -1
+	EndSwitch
+
 EndFunc   ;==>IdentifyTroopKind

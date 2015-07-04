@@ -6,6 +6,7 @@ Func saveConfig() ;Saves the controls settings to the config
 	;---------------------------------------------------------------------------------------
 	IniWrite($config, "general", "MinTrophy", GUICtrlRead($txtMinimumTrophy))
 	IniWrite($config, "general", "MaxTrophy", GUICtrlRead($txtMaxTrophy))
+	IniWrite($config, "general", "MinSnipe", GUICtrlRead($txtSnipeBelow))
 	IniWrite($config, "general", "Command", _GUICtrlComboBox_GetCurSel($cmbBotCommand))
 	IniWrite($config, "general", "Cond", _GUICtrlComboBox_GetCurSel($cmbBotCond))
 	If IsChecked($chkNoAttack) Then
@@ -157,11 +158,11 @@ Func saveConfig() ;Saves the controls settings to the config
 ;~ 	IniWrite($config, "upgrade", "PosX6", GUICtrlRead($txtUpgradeX6))
 
 	If IsChecked($chkLab) Then
-        IniWrite($config, "upgrade", "auto-uptroops", 1)
-    Else
-        IniWrite($config, "upgrade", "auto-uptroops", 0)
-    EndIf
-    IniWrite($config, "upgrade", "troops-name", _GUICtrlComboBox_GetCurSel($cmbLaboratory))
+		IniWrite($config, "upgrade", "auto-uptroops", 1)
+	Else
+		IniWrite($config, "upgrade", "auto-uptroops", 0)
+	EndIf
+	IniWrite($config, "upgrade", "troops-name", _GUICtrlComboBox_GetCurSel($cmbLaboratory))
 	;---------------------------------------------------------------------------------------
 	; Notification settings ----------------------------------------------------------------
 	;---------------------------------------------------------------------------------------
@@ -174,6 +175,11 @@ Func saveConfig() ;Saves the controls settings to the config
 		IniWrite($config, "notification", "villagereport", 1)
 	Else
 		IniWrite($config, "notification", "villagereport", 0)
+	EndIf
+	If IsChecked($lblchatlog) Then
+		IniWrite($config, "notification", "chatlog", 1)
+	Else
+		IniWrite($config, "notification", "chatlog", 0)
 	EndIf
 	If IsChecked($lblmatchfound) Then
 		IniWrite($config, "notification", "matchfound", 1)
@@ -222,7 +228,11 @@ Func saveConfig() ;Saves the controls settings to the config
 		IniWrite($config, "notification", "attackimage", 0)
 	EndIf
 	IniWrite($config, "notification", "user", GUICtrlRead($inppushuser))
-
+;~ 	If IsChecked($chkBBSendData) Then
+;~ 		IniWrite($config, "brokenbot.org", "senddata", 1)
+;~ 	Else
+;~ 		IniWrite($config, "brokenbot.org", "senddata", 0)
+;~ 	EndIf
 	;---------------------------------------------------------------------------------------
 	; Misc settings ------------------------------------------------------------------------
 	;---------------------------------------------------------------------------------------
@@ -242,7 +252,6 @@ Func saveConfig() ;Saves the controls settings to the config
 	Else
 		IniWrite($config, "misc", "Collect", 0)
 	EndIf
-	IniWrite($config, "misc", "capacity", GUICtrlRead($txtCapacity))
 	IniWrite($config, "misc", "spellcap", GUICtrlRead($txtSpellCap))
 	IniWrite($config, "misc", "reconnectdelay", GUICtrlRead($txtReconnect))
 	IniWrite($config, "misc", "returnhomedelay", GUICtrlRead($txtReturnh))
@@ -251,6 +260,11 @@ Func saveConfig() ;Saves the controls settings to the config
 		IniWrite($config, "misc", "WideEdge", 1)
 	Else
 		IniWrite($config, "misc", "WideEdge", 0)
+	EndIf
+	If IsChecked($chkClearField) Then
+		IniWrite($config, "misc", "ClearField", 1)
+	Else
+		IniWrite($config, "misc", "ClearField", 0)
 	EndIf
 	If IsChecked($chkTakeLootSS) Then
 		IniWrite($config, "misc", "TakeLootSnapShot", 1)
@@ -277,7 +291,7 @@ Func saveConfig() ;Saves the controls settings to the config
 	; Config settings ----------------------------------------------------------------------
 	;---------------------------------------------------------------------------------------
 	$array = _GUICtrlComboBox_GetListArray($cmbLanguage)
-	IniWrite($config, "config", "language", $array[_GUICtrlComboBox_GetCurSel($cmbLanguage)+1])
+	IniWrite($config, "config", "language", $array[_GUICtrlComboBox_GetCurSel($cmbLanguage) + 1])
 	If IsChecked($chkBackground) Then
 		IniWrite($config, "config", "Background", 1)
 	Else
@@ -334,6 +348,6 @@ Func saveConfig() ;Saves the controls settings to the config
 		IniWrite($config, "position", "xBarrack" & $i + 1, $barrackPos[$i][0])
 		IniWrite($config, "position", "yBarrack" & $i + 1, $barrackPos[$i][1])
 	Next
-    IniWrite($config, "position", "LabPosX", $LabPos[0])
-    IniWrite($config, "position", "LabPosY", $LabPos[1])
+	IniWrite($config, "position", "LabPosX", $LabPos[0])
+	IniWrite($config, "position", "LabPosY", $LabPos[1])
 EndFunc   ;==>saveConfig

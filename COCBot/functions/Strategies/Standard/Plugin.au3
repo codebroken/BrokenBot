@@ -6,6 +6,7 @@
 #include "PrepNextBattle.au3"
 #include "ReadyCheck.au3"
 #include "Search.au3"
+#include "AdjustCollPos.au3"
 
 $StratNames = "Standard"
 

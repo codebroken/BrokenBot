@@ -15,38 +15,44 @@
 ;==========================================================================
 Func GoldElixirChange()
 	Local $Gold1, $Gold2
-	;Local $GoldChange, $ElixirChange, $DarkChange
 	Local $Elixir1, $Elixir2
 	Local $Dark1, $Dark2
-	While 1
-		$Gold1 = getGold(51, 66)
-		$Elixir1 = getElixir(51, 66 + 29)
-		$Dark1 = getDarkElixir(51, 66 + 57)
-		If _Sleep(10000) Then Return
-		$Gold2 = getGold(51, 66)
-		$Elixir2 = getElixir(51, 66 + 29)
-		$Dark2 = getDarkElixir(51, 66 + 57)
-;~ 		If $Gold2 <> "" Or $Elixir2 <> "" Then
-;~ 			$GoldChange = $Gold2
-;~ 			$ElixirChange = $Elixir2
-;~ 		EndIf
-		If ($Gold2 = "" And $Elixir2 = "") Then
+	Local $ExitOkay = False
+	Local $FirstTime = True
+	$ExitTimer = TimerInit()
+	$Gold1 = ReadText(50, 70, 150, $textVillageSearch)
+	$Elixir1 = ReadText(50, 99, 150, $textVillageSearch)
+	$Dark1 = ReadText(50, 128, 80, $textVillageSearch)
+
+	$NoResources = False
+
+	While True
+		$Gold2 = ReadText(50, 70, 150, $textVillageSearch)
+		$Elixir2 = ReadText(50, 99, 150, $textVillageSearch)
+		$Dark2 = ReadText(50, 128, 80, $textVillageSearch)
+		If ($Gold1 <> $Gold2 Or $Elixir1 <> $Elixir2 Or $Dark1 <> $Dark2) Then
+			If TimerDiff($ExitTimer)/1000 > ($itxtReturnh/2) Then
+				SetLog(GetLangText("msgLootChange"), $COLOR_GREEN)
+			EndIf
+			If Not $NoResources Then $ExitTimer = TimerInit()
+			$Gold1 = ReadText(50, 70, 150, $textVillageSearch)
+			$Elixir1 = ReadText(50, 99, 150, $textVillageSearch)
+			$Dark1 = ReadText(50, 128, 80, $textVillageSearch)
+		ElseIf TimerDiff($ExitTimer)/1000 > $itxtReturnh Then
+			If Not $NoResources Then SetLog(GetLangText("msgNoIncome"), $COLOR_GREEN)
+			Return
+		ElseIf ($Gold2 = "" And $Elixir2 = "" And $Dark2 = "") Then
 			SetLog(GetLangText("msgBattleFinished"), $COLOR_GREEN)
-			Return False
+			Return
 		ElseIf ($Gold2 = 0 And $Elixir2 = 0 And ((getTrophy(51, 66 + 90) = "") ? (True) : ($Dark2 = 0))) Then
-			SetLog(GetLangText("msgNoResource") & $itxtReturnh & GetLangText("msgSeconds"), $COLOR_GREEN)
-			If _Sleep($itxtReturnh * 1000) Then Return
-			;GUICtrlSetData($lblresultvillagesattacked, GUICtrlRead($lblresultvillagesattacked) + 1)
-			Return False
-		ElseIf ($Gold1 = $Gold2 And $Elixir1 = $Elixir2 And $Dark1 = $Dark2) Then
-			SetLog(GetLangText("msgNoIncome") & $itxtReturnh & GetLangText("msgSeconds"), $COLOR_BLUE)
-			If _Sleep($itxtReturnh * 1000) Then Return
-			;GUICtrlSetData($lblresultvillagesattacked, GUICtrlRead($lblresultvillagesattacked) + 1)
-			Return False
-		Else
-			SetLog(GetLangText("msgLootChange"), $COLOR_GREEN)
-			Return True
+			If Not $NoResources Then
+				SetLog(GetLangText("msgNoResource") & $itxtReturnh & GetLangText("msgSeconds"), $COLOR_GREEN)
+				$NoResources = True
+				$ExitTimer = TimerInit()
+			EndIf
 		EndIf
-		ExitLoop
+		If _Sleep(100) Then Return
 	WEnd
+
 EndFunc   ;==>GoldElixirChange
+

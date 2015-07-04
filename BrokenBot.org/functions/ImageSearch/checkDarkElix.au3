@@ -16,6 +16,8 @@ Func checkDarkElix()
 			$DEx = 0
 			$DEy = 0
 			Return False ; return 0
+		ElseIf $res[0] = -2 Then
+			SetLog(GetLangText("msgLicense"), $COLOR_RED)
 		Else
 			$res = StringSplit($res[0], "|", 2)
 			$DEx = $res[1]
@@ -33,7 +35,7 @@ Func checkDarkElix()
 			Return True
 		EndIf
 	Else
-		SetLog(GetLangText("msgDLLFailure"), $COLOR_RED)
+		SetLog(GetLangText("msgDLLError"), $COLOR_RED)
 		$DEx = 0
 		$DEy = 0
 		Return False ; return 0

@@ -1,5 +1,45 @@
 ## Change Log:
 
+### v3.1.0
+* Custom troops fixed, you no longer just have to use barracks training
+* Modified sniping - improved, but still occasionally having a few issues with attacking wrong side of base, please continue bringing incorrect behaviour to our attention
+* Longer time available to click "Attack Now" button
+* King/Queen activation modified
+* Better stopping attack during snipe if you have gained a star
+* More text reading improvements
+* Fixed behaviour when using donate/train only mode
+* More non English languages now supported - if you find issues, please report them and use English
+* Various crashes fixed
+
+### v3.0.5 BETA
+* Fixed early return home
+* Sniping:  Now leaves after one star is achieved
+* CC troops can now be deployed
+* Zapping will now zap DE pumps of dead bases
+* Multi-language support is hopefully restored
+
+### v3.0.0 BETA
+* Compatible with Clash of Clans™ July 2015 Update - but not yet optimized in order to get you up and getting loot faster as we continue development.
+* "My Stats" submission. Results of your earnings can now be submitted and viewed online.  This will allow you to monitor and trend your income over time, in 15min increments. Click “My Stats” in the forum navigation to view.
+* - On "Services" tab enter username and password for BrokenBot.org forums and click on the validate button.  If your settings are correct then it will change to say “VALID”. Don't worry about password field being empty after clicking the button, it is now stored encrypted on your computer away from all other BrokenBot files.
+* - BrokenBot will attempt to submit after every attack but will only succeed every 15min to limit the load on the server. Do not worry if you see it fail submitting as long as your username and password are verified in the “Services” tab. It will re-attempt.
+* "Stats" tab. The stats are now correctly read and summarized in this tab of the bot.
+* New donation text and resource reading. We have implemented our brand new text and number reading functionality. No more will the bot stop reading after not knowing a letter or a symbol! Finally perfect donations for all.
+* Town Hall sniping. Now if the bot attacks a Town Hall by sniping, either based on search conditions page or the “Snipe if trophies below” setting, it will send out a “trickle attack”.  BrokenBot sends progressively larger waves if it does not recognize a loot change or there has been a long delay.  The bot stops deploying more troops once you have earned one star. The order of troops is hardcoded, but it starts with barbarians and archers and progressively adds stronger troops including heroes and your clan castle if things get really bad if selected/available.
+* New UI option on “General” tab: "Snipe if trophies below". Enter a number here and if you have fewer trophies than this value, it will snipe both live and dead outside Town Halls to bring your trophy count up. Will continue using normal search conditions and attacks at the same time if a target is found.
+* Collector attacking. You can now focus attacks on the resource collectors.  There are 2 options available described below.  They can be chosen on the attack methods tab.  Both methods must temporarily activate red-line mode if you don't have it already active.  They will only focus attacks on those collectors near the outer edges of the base (existence of walls does not mean the collector is inside).
+* - Attack collectors - deploy all troops: This method will deploy all the troops you have, spread out among all the collectors.
+* - Attack collectors - troop saver: This method deploys a few troops on some of the collectors. Once the income has stopped it checks to see what collectors are still left standing and if you haven't already sent troops there it does another round of attacking.
+* Clear the Field.  Checking "Clear the Field" on the "Misc" tab will have the bot remove obstacles that it finds if you have a free builder.  It will only remove up to 5 obstacles with each loop.  Also it will not touch your holiday themed obstacles so those are safe.
+* BrokenBot attack visualization / Debug Mode.  If you have debug mode checked then you can actually see what the bot is trying to attack and where it is dropping troops as it works.  Works best with background mode activated but will try to show you its actions even if you don't have it on.  If you do have background mode on and BlueStacks isn't hidden then it will pop up on top of any other work you may be doing.
+* Dark Elixir Zapping - BrokenBot will now zap DE Drills due to the Clash of Clans™ July 2015 update. We are aware that it will zap regardless of the base being dead or alive and will resolve shortly.
+* Modified decision to return home.  Will now return home quicker if the battle is completely ended, and will start the delay again if it senses a change in loot.  Previously if your loot stopped changing then it would return home after a set time even if you starting gaining loot again.
+* Changed the way attack delays are processed.  You now get more accurate and consistent (but still randomized) delays between dropping troops and waves of troops.  Also modified available choices for troop delay for those that want an even longer delay between deploying troops.
+* Cost per search.  This is now implemented fully automatically.
+* Average hourly income stats. These are only shown in the log (GUI is crowded enough) and are shown after each attack. “Stat submission” must be enabled to view this information.
+* Lower CPU utilization. Changed bot to use less CPU when idling.  Thanks w0lv3r1nixclash
+* "PushBullet" tab renamed to "Services".
+
 ### v2.8.0
 * Major stability enhancements
 * Speed optimization - we cut the time it takes to find a well hidden TH by 60% from our previous release. It now takes 1.2sec on average vs never finding it or taking 20 seconds like our competitors.  **speedBoost must be enabled.

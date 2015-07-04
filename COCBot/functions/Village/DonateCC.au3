@@ -26,22 +26,28 @@ Func DonateCC()
 			If IsArray($DonatePixel) Then
 				$Donate = False
 				If Not (IsChecked($chkDonateAllBarbarians) Or IsChecked($chkDonateAllArchers) Or IsChecked($chkDonateAllGiants)) Then
-					_CaptureRegion(0, 0, 435, $DonatePixel[1] + 50)
-					Local $String = getString($DonatePixel[1] - 28)
-					If $String = "" Then
-						$String = getString($DonatePixel[1] - 17)
+					If Not _SatSearch(34, $DonatePixel[1] - 29, 20, 10, 20, 100) Then
+						; Multiline text
+						If Not _SatSearch(34, $DonatePixel[1] - 42, 20, 10, 20, 100) Then
+							$String = ReadText(34, $DonatePixel[1] - 40, 274, $textChat)
+							$String &= " " & ReadText(34, $DonatePixel[1] - 27, 274, $textChat)
+							$String &= " " & ReadText(34, $DonatePixel[1] - 14, 274, $textChat)
+						Else
+							$String = ReadText(34, $DonatePixel[1] - 27, 274, $textChat)
+							$String &= " " & ReadText(34, $DonatePixel[1] - 14, 274, $textChat)
+						EndIf
 					Else
-						$String = $String & @CRLF & getString($DonatePixel[1] - 17)
+						$String = ReadText(34, $DonatePixel[1] - 14, 274, $textChat)
 					EndIf
 
 					SetLog(GetLangText("msgChatText") & $String, $COLOR_GREEN)
 
 					$Blacklisted = False
 					If IsChecked($chkBlacklist) Then
-						$blacklist = StringSplit(guictrlread($txtBlacklist), @CRLF)
+						$blacklist = StringSplit(GUICtrlRead($txtBlacklist), @CRLF)
 						If IsArray($blacklist) Then
-							For $loop = 1 to $blacklist[0]
-								If StringStripWS($blacklist[$loop], 3) <> "" and StringInStr($string, StringStripWS($blacklist[$loop], 3)) Then $Blacklisted = True
+							For $loop = 1 To $blacklist[0]
+								If StringStripWS($blacklist[$loop], 3) <> "" And StringInStr($String, StringStripWS($blacklist[$loop], 3)) Then $Blacklisted = True
 							Next
 						EndIf
 					EndIf
@@ -52,7 +58,7 @@ Func DonateCC()
 						If IsChecked($chkDonateBarbarians) Then
 							Local $Barbs = StringSplit(StringStripWS($itxtDonateBarbarians, 3), @CRLF)
 							If IsArray($Barbs) Then
-								For $i = 1 to $Barbs[0]
+								For $i = 1 To $Barbs[0]
 									If CheckDonate($Barbs[$i], $String) Then
 										$Troop = GUICtrlRead($cmbDonateBarbarians)
 										GetTroopCoord()
@@ -92,7 +98,7 @@ Func DonateCC()
 						If IsChecked($chkDonateGiants) Then
 							Local $Giants = StringSplit(StringStripWS($itxtDonateGiants, 3), @CRLF)
 							If IsArray($Giants) Then
-								For $i = 1 to $Giants[0]
+								For $i = 1 To $Giants[0]
 									If CheckDonate($Giants[$i], $String) Then
 										$Troop = GUICtrlRead($cmbDonateGiants)
 										GetTroopCoord()
@@ -122,7 +128,7 @@ Func DonateCC()
 						$TroopAmount = Number(GUICtrlRead($NoOfGiants))
 					EndIf
 					GetTroopCoord()
-					If $RowDist = -1 or $ColDist = -1 Then
+					If $RowDist = -1 Or $ColDist = -1 Then
 						SetLog(GetLangText("msgUnableToDetermine") & $Troop)
 						ExitLoop
 					Else
@@ -154,6 +160,7 @@ Func DonateCC()
 
 	If _Sleep(1000) Then Return
 	SetLog(GetLangText("msgFinishedDonating"), $COLOR_BLUE)
+
 	_CaptureRegion()
 	If _ColorCheck(_GetPixelColor(331, 330), Hex(0xF0A03B, 6), 20) Then
 		Click(331, 330) ;Clicks chat thing
@@ -223,7 +230,7 @@ EndFunc   ;==>CheckDonate
 
 Func DonateTroops($Troop, $i, $Row, $number)
 	Local $x, $y
-	If IsArray(_PixelSearch(119, $DonatePixel[1], 204, $DonatePixel[1]+4, Hex(0x262926, 6), 10)) Then
+	If IsArray(_PixelSearch(119, $DonatePixel[1], 204, $DonatePixel[1] + 4, Hex(0x262926, 6), 10)) Then
 		Click($DonatePixel[0], $DonatePixel[1] + 15)
 	Else
 		SetLog(GetLangText("msgNoDonateButton"))
@@ -298,7 +305,7 @@ Func GetTroopCoord()
 	EndSwitch
 
 	Switch $Troop
-		Case GetLangText("troopNamePlBarbarian"), GetLangText("troopNameBarbarian"),  GetLangText("troopNamePlArcher"), GetLangText("troopNameArcher"), GetLangText("troopNamePlGiant"), GetLangText("troopNameGiant"), GetLangText("troopNamePlGoblin"), GetLangText("troopNameGoblin"), GetLangText("troopNamePlWallBreaker"), GetLangText("troopNameWallBreaker"), GetLangText("troopNamePlBalloon"), GetLangText("troopNameBalloon"), GetLangText("troopNamePlWizard"), GetLangText("troopNameWizard")
+		Case GetLangText("troopNamePlBarbarian"), GetLangText("troopNameBarbarian"), GetLangText("troopNamePlArcher"), GetLangText("troopNameArcher"), GetLangText("troopNamePlGiant"), GetLangText("troopNameGiant"), GetLangText("troopNamePlGoblin"), GetLangText("troopNameGoblin"), GetLangText("troopNamePlWallBreaker"), GetLangText("troopNameWallBreaker"), GetLangText("troopNamePlBalloon"), GetLangText("troopNameBalloon"), GetLangText("troopNamePlWizard"), GetLangText("troopNameWizard")
 			$RowDist = 0
 		Case GetLangText("troopNamePlHealer"), GetLangText("troopNameHealer"), GetLangText("troopNamePlDragon"), GetLangText("troopNameDragon"), GetLangText("troopNamePlPEKKA"), GetLangText("troopNamePEKKA"), GetLangText("troopDarkPlMinion"), GetLangText("troopDarkMinion"), GetLangText("troopDarkPlHog"), GetLangText("troopDarkHog"), GetLangText("troopDarkPlValkyrie"), GetLangText("troopDarkValkyrie"), GetLangText("troopDarkPlGolem"), GetLangText("troopDarkGolem")
 			$RowDist = 1

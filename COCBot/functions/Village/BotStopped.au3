@@ -6,7 +6,7 @@ Func BotStopped($CheckLimits = True)
 	If $CheckLimits Then
 		If IsChecked($chkBotStop) Then
 			$MeetCondStop = False
-			Local $TrophyCount = getOther(50, 74, "Trophy")
+			Local $TrophyCount = Number(ReadText(59, 75, 60, $textMainScreen))
 			Local $TrophyMax = Number($TrophyCount) > Number($itxtMaxTrophy)
 			If $TrophyMax Then
 				$Trophy = "Max. Trophy Reached!"
