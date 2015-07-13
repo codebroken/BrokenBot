@@ -131,7 +131,7 @@ Func Standard_Search()
 					$deadEnabled = True
 					If _GUICtrlComboBox_GetCurSel($cmbDead) = 0 Then ; And
 						If $DG = False Or $DE = False Then $conditionDeadPass = False
-					ElseIf _GUICtrlComboBox_GetCurSel($cmbDead) = 1 ; And
+					ElseIf _GUICtrlComboBox_GetCurSel($cmbDead) = 1 Then ; And
 						If $DG = False And $DE = False Then $conditionDeadPass = False
 					Else
 						If $DET=False Then $conditionDeadPass=False
