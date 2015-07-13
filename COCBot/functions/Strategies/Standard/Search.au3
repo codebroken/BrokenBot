@@ -4,7 +4,7 @@ Func Standard_Search()
 	Local $skippedVillages
 	Local $conditionlogstr
 	Local $AttackMethod
-	Local $DG, $DE, $DD, $DT, $G, $E, $D, $T
+	Local $DG, $DE, $DD, $DT, $G, $E, $D, $T, $DET
 	Local $calculateCondition
 
 	_WinAPI_EmptyWorkingSet(WinGetProcess($Title)) ; Reduce BlueStacks Memory Usage
@@ -97,6 +97,7 @@ Func Standard_Search()
 			$E = (Number($BaseData[3]) >= Number($MinElixir))
 			$D = (Number($BaseData[4]) >= Number($MinDark))
 			$T = (Number($BaseData[5]) >= Number($MinTrophy))
+			$DET = ((Number($BaseData[2]) + Number($BaseData[3])) >= (Number($MinDeadGold) + (Number($MinDeadElixir))))
 
 			$THL = -1
 			$THLO = -1
@@ -130,8 +131,10 @@ Func Standard_Search()
 					$deadEnabled = True
 					If _GUICtrlComboBox_GetCurSel($cmbDead) = 0 Then ; And
 						If $DG = False Or $DE = False Then $conditionDeadPass = False
-					Else ; Or
+					ElseIf _GUICtrlComboBox_GetCurSel($cmbDead) = 1 Then ; And
 						If $DG = False And $DE = False Then $conditionDeadPass = False
+					Else
+						If $DET=False Then $conditionDeadPass=False
 					EndIf
 				EndIf
 
@@ -328,8 +331,10 @@ Func AdjustSearchCond()
 		If IsChecked($chkDeadGE) Then
 			If _GUICtrlComboBox_GetCurSel($cmbDead) = 0 Then
 				$conditionlogstr = $conditionlogstr & " Gold: " & $MinDeadGold & " And " & "Elixir: " & $MinDeadElixir
-			Else
+			ElseIf _GUICtrlComboBox_GetCurSel($cmbDead) = 1 Then
 				$conditionlogstr = $conditionlogstr & " Gold: " & $MinDeadGold & " Or " & "Elixir: " & $MinDeadElixir
+			Else
+				$conditionlogstr = $conditionlogstr & " Gold " &  " + " & "Elixir: " & ($MinDeadGold+$MinDeadElixir)
 			EndIf
 		EndIf
 		If IsChecked($chkDeadMeetDE) Then
