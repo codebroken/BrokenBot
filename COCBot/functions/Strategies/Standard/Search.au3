@@ -4,7 +4,7 @@ Func Standard_Search()
 	Local $skippedVillages
 	Local $conditionlogstr
 	Local $AttackMethod
-	Local $DG, $DE, $DD, $DT, $G, $E, $D, $T
+	Local $DG, $DE, $DD, $DT, $G, $E, $D, $T, $DET
 	Local $calculateCondition
 
 	_WinAPI_EmptyWorkingSet(WinGetProcess($Title)) ; Reduce BlueStacks Memory Usage
