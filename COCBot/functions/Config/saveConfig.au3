@@ -157,6 +157,20 @@ Func saveConfig() ;Saves the controls settings to the config
 ;~ 	IniWrite($config, "upgrade", "PosY6", GUICtrlRead($txtUpgradeY6))
 ;~ 	IniWrite($config, "upgrade", "PosX6", GUICtrlRead($txtUpgradeX6))
 
+	;UpgradeHeroes
+	If IsChecked($chkUpgradeKing) = $GUI_CHECKED Then	;==>upgradeking
+        IniWrite($config, "Upgrade", "UpKing", 1)
+    Else
+        IniWrite($config, "Upgrade", "UpKing", 0)
+    EndIf
+
+	If IsChecked($chkUpgradeQueen) = $GUI_CHECKED Then	;==>upgradequeen
+        IniWrite($config, "Upgrade", "UpQueen", 1)
+    Else
+        IniWrite($config, "Upgrade", "UpQueen", 0)
+    EndIf
+    IniWrite($config, "Upgrade", "KeepFreeBuilder", GUICtrlRead($txtKeepFreeBuilder)) ;==>FreeBuilderBox
+
 	If IsChecked($chkLab) Then
 		IniWrite($config, "upgrade", "auto-uptroops", 1)
 	Else

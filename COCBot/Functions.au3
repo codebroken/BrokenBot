@@ -77,6 +77,7 @@
 #include "functions\Village\DropTrophy.au3"
 #include "functions\Village\isGoldFull.au3"
 #include "functions\Village\isElixirFull.au3"
+#include "functions\Village\isDarkElixirFull.au3"
 #include "functions\Village\LocateBuildings.au3"
 #include "functions\Village\MainLoop.au3"
 #include "functions\Village\ReArm.au3"
@@ -87,3 +88,4 @@
 #include "functions\Village\VillageReport.au3"
 #include "functions\Village\CheckCostPerSearch.au3"
 #include "functions\Village\UpTroops.au3"
+#include "functions\Village\UpgradeHeroes.au3" ;==>upgradeHeroes

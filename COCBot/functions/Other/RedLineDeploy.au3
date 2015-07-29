@@ -31,7 +31,7 @@ $AimTH = 2
 $AimPoint = 3
 
 Func RedLineDeploy($x, $y, $times = 1, $speed = 0, $CenteredOn = 1, $BufferDist = -1, $CenterX = 395, $CenterY = 314, $RandomizeBuffer = 6)
-	If $BufferDist - 1 Then $BufferDist = GUICtrlRead($sldAcc) + 10
+	If $BufferDist = - 1 Then $BufferDist = GUICtrlRead($sldAcc) + 10
 	If $RandomizeBuffer > 0 Then
 		$BufferDist = $BufferDist + _Random_Gaussian($RandomizeBuffer / 2, $RandomizeBuffer / 6.2) ; Randomly distributes buffer zone from $BufferDist to $BufferDist + $RandomizeBuffer
 	EndIf
@@ -180,6 +180,7 @@ Func SeekEdges()
 				$Grid[$i][$j][2] = 1
 			Next
 		Next
+		FindCenter()
 		Return
 	Else
 		$mH = 75 + 10 * ((GUICtrlRead($sldAcc) - 10) / 90)
@@ -195,35 +196,24 @@ Func SeekEdges()
 	Next
 
 	For $loop = 1 To 5
-		_CaptureRegion()
-		$hCheckHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)
-		$ret = ""
-		$ret = DllCall(@ScriptDir & "\BrokenBot.org\BrokenBot32.dll", "str", "BrokenBotRedLineCheck", "ptr", $hCheckHBitmap, "int", $mH, "int", $mS, "int", $ci, "int", $cl, "int", $cr)
-		_WinAPI_DeleteObject($hCheckHBitmap)
+		$ret = CallHelper("0 0 860 720 BrokenBotRedLineCheck " & $mH & " " & $mS & " " & $ci & " " & $cl & " " & $cr, 3)
 
-		If IsArray($ret) Then
-			If $ret[0] = -2 Then
-				SetLog(GetLangText("msgLicense"), $COLOR_RED)
-				For $i = 0 To 42
-					For $j = 0 To 42
-						$Grid[$i][$j][2] = 1
-					Next
-				Next
-			Else
-				$Array = StringSplit($ret[0], "|", 2)
-				For $i = 0 To (43 * 43) - 1
-					If $Grid[Floor($i / 43)][Mod($i, 43)][2] = 0 Then
-						$Grid[Floor($i / 43)][Mod($i, 43)][2] = $Array[$i]
-					EndIf
-				Next
-			EndIf
-		Else
+		If $ret = $DLLLicense or $ret = $DLLFailed Or $ret = $DLLTimeout Then
+			If $ret = $DLLLicense Then SetLog(GetLangText("msgLicense"), $COLOR_RED)
 			For $i = 0 To 42
 				For $j = 0 To 42
 					$Grid[$i][$j][2] = 1
 				Next
 			Next
+		Else
+			$Array = StringSplit($ret, "|", 2)
+			For $i = 0 To (43 * 43) - 1
+				If $Grid[Floor($i / 43)][Mod($i, 43)][2] = 0 Then
+					$Grid[Floor($i / 43)][Mod($i, 43)][2] = $Array[$i]
+				EndIf
+			Next
 		EndIf
+
 		For $i = 0 To 41
 			For $j = 0 To 41
 				If ($Grid[$i][$j][2] > 0 And $Grid[$i][$j + 1][2] > 0) Then ; Up and to the right edges

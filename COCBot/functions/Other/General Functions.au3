@@ -88,24 +88,31 @@ Func Open()
 		SetLog(GetLangText("msgStartingBS"), $COLOR_GREEN)
 		_ModifiedSleep(290)
 		SetLog(GetLangText("msgWaitingBS"), $COLOR_GREEN)
+		$Initiate = 0
 		Check()
 	Else ;If 32-Bit
 		ShellExecute("C:\Program Files\BlueStacks\HD-StartLauncher.exe")
 		SetLog(GetLangText("msgStartingBS"), $COLOR_GREEN)
 		_ModifiedSleep(290)
 		SetLog(GetLangText("msgWaitingBS"), $COLOR_GREEN)
+		$Initiate = 0
 		Check()
 	EndIf
 EndFunc   ;==>Open
 
 Func Check()
-	If IsArray(ControlGetPos($Title, "_ctl.Window", "[CLASS:BlueStacksApp; INSTANCE:1]")) Then
-		SetLog(GetLangText("msgBSLoaded") & ($Initiate) & GetLangText("msgBSLoadSecs"), $COLOR_GREEN)
-		Initiate()
+	If $Initiate > 90 Then
+		restartBlueStack()
+		$Initiate = 0
 	Else
-		_ModifiedSleep(1000)
-		$Initiate = $Initiate + 1
-		Check()
+		If IsArray(ControlGetPos($Title, "_ctl.Window", "[CLASS:BlueStacksApp; INSTANCE:1]")) Then
+			SetLog(GetLangText("msgBSLoaded") & ($Initiate) & GetLangText("msgBSLoadSecs"), $COLOR_GREEN)
+			Initiate()
+		Else
+			_ModifiedSleep(1000)
+			$Initiate = $Initiate + 1
+			Check()
+		EndIf
 	EndIf
 EndFunc   ;==>Check
 

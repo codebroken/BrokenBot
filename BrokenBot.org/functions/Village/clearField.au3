@@ -11,19 +11,17 @@ Func clearField()
 			SetLog(GetLangText("msgNoBuilders"), $COLOR_RED)
 			Return
 		EndIf
-		$hDLL = DllOpen(@ScriptDir & "\BrokenBot.org\BrokenBot32.dll")
-		_CaptureRegion()
-		$sendHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)
-		$res = DllCall($hDLL, "str", "BrokenBotMatchObject", "ptr", $sendHBitmap, "int", 25, "int", 3, "int", 5, "int", 4, "int", (IsChecked($chkSpeedBoost) ? (1) : (0)))
-		_WinAPI_DeleteObject($sendHBitmap)
-		If IsArray($res) Then
-			If $res[0] = -1 Then
+
+		$res = CallHelper("0 0 860 720 BrokenBotMatchObject 25 5 4")
+
+		If $res <> $DLLFailed And $res <> $DLLTimeout Then
+			If $res = $DLLNegative Then
 				; failed to find any obstacles to clear on the field
 				SetLog(GetLangText("msgNoClearField"), $COLOR_RED)
-			ElseIf $res[0] = -2 Then
+			ElseIf $res = $DLLLicense Then
 				SetLog(GetLangText("msgLicense"), $COLOR_RED)
 			Else
-				$expRet = StringSplit($res[0], "|", 2)
+				$expRet = StringSplit($res, "|", 2)
 				$numObstacle = $expRet[0]
 				If $DebugMode = 1 Then SetLog("Total " & $numObstacle & " Obstacles.")
 				For $j = 1 To UBound($expRet) - 1 Step 6
@@ -41,13 +39,12 @@ Func clearField()
 					_Sleep(300)
 					Click($ObsX, $ObsY)
 					_Sleep(1000)
-					_CaptureRegion()
-					$sendHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)
-					$resUI = DllCall($hDLL, "str", "BrokenBotMatchButton", "ptr", $sendHBitmap, "int", 110, "int", 3, "int", 1, "int", 3, "int", (IsChecked($chkSpeedBoost) ? (1) : (0))) ; remove icon
-					_WinAPI_DeleteObject($sendHBitmap)
-					If IsArray($resUI) Then
-						If $resUI[0] = -1 Or $resUI[0] = -2 Then ExitLoop
-						$expUIRet = StringSplit($resUI[0], "|", 2)
+
+					$resUI = CallHelper("0 0 860 720 BrokenBotMatchButton 110 1 3")
+
+					If $resUI <> $DLLFailed And $resUI <> $DLLTimeout Then
+						If $resUI = -1 Or $resUI = -2 Then ExitLoop
+						$expUIRet = StringSplit($resUI, "|", 2)
 						If $DebugMode = 1 Then SetLog("Obstacle X:" & $expUIRet[1] & " Y:" & $expUIRet[2])
 						_Sleep(300)
 						Click($expUIRet[1], $expUIRet[2])
@@ -55,31 +52,27 @@ Func clearField()
 						$UIWait = 0
 						Do
 							_Sleep(300)
-							_CaptureRegion()
-							$sendHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)
-							$resUI = DllCall($hDLL, "str", "BrokenBotMatchButton", "ptr", $sendHBitmap, "int", 111, "int", 3, "int", 1, "int", 3, "int", (IsChecked($chkSpeedBoost) ? (1) : (0))) ; cancel build icon
-							_WinAPI_DeleteObject($sendHBitmap)
-							$expUIRet = StringSplit($resUI[0], "|", 2)
+
+							$resUI = CallHelper("0 0 860 720 BrokenBotMatchButton 111 1 3")
+
+							$expUIRet = StringSplit($resUI, "|", 2)
 							If $expUIRet[0] = -1 Or $expUIRet[0] = -2 Then ExitLoop
 							_Sleep(5000)
 							$UIWait += 1
 						Until $UIWait = 12
 					Else
-						DllClose($hDLL)
 						SetLog(GetLangText("msgDLLError"), $COLOR_RED)
 						Return False ; return 0
 					EndIf
 				Next
 			EndIf
 		Else
-			DllClose($hDLL)
 			SetLog(GetLangText("msgDLLError"), $COLOR_RED)
 			Return False ; return 0
 		EndIf
 		If $numCleared > 0 Then
 			SetLog(GetLangText("msgClearedField") & $numCleared, $COLOR_BLUE)
 		EndIf
-		DllClose($hDLL)
 	EndIf
 	Return
 EndFunc   ;==>clearField
