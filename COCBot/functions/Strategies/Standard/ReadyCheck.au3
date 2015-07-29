@@ -8,7 +8,7 @@ Func Standard_ReadyCheck($TimeSinceNewTroop)
 			$FirstStart = True
 			SetLog(GetLangText("msgAppearsStuck"))
 			$stuckCount += 1
-		ElseIf $stuckCount = 3 Then
+		ElseIf $stuckCount >= 3 Then
 			SetLog(GetLangText("msgSevereStuck"))
 			$stuckCount += 1
 		EndIf
@@ -28,12 +28,18 @@ Func Standard_ReadyCheck($TimeSinceNewTroop)
 		If StatusCheck() Then Return False
 	EndIf
 
-	If $stuckCount >= 3 And (IsChecked($chkDeadActivate) Or IsChecked($chkAnyActivate)) Then $fullarmy = True
+	If $stuckCount >= 3 And (IsChecked($chkDeadActivate) Or IsChecked($chkAnyActivate)) Then
+		$fullarmy = True
+	EndIf
 
-	If $fullarmy And (IsChecked($chkDeadActivate) Or IsChecked($chkAnyActivate)) Then Return True
+	If $fullarmy And (IsChecked($chkDeadActivate) Or IsChecked($chkAnyActivate)) Then
+		Return True
+	EndIf
 
 	If IsChecked($chkMakeSpells) Then
-		If $fullSpellFactory And IsChecked($chkNukeOnly) And Not IsChecked($chkNukeOnlyWithFullArmy) Then Return True
+		If $fullSpellFactory And IsChecked($chkNukeOnly) And Not IsChecked($chkNukeOnlyWithFullArmy) Then
+			Return True
+		EndIf
 	EndIf
 
 	Return False
@@ -241,19 +247,19 @@ Func Standard_CheckArmyCamp()
 		Click($BArmyPos[0], $BArmyPos[1]) ;Click Info button
 		_WaitForPixel(690, 150, 710, 170, Hex(0xD80407, 6), 5, 1) ;Finds Red Cross button in new popup window
 		If _Sleep(200) Then Return
-		For $readattempts = 1 to 3
-			$CurCamp = StringStripWS(ReadText(426, 194, 280, $textWindows), 3)
-			$CurCamp = StringStripWS(StringMid($CurCamp, Stringinstr($CurCamp, ":") + 1), 3)
+		For $readattempts = 1 to 20
+			$CurCamp = StringStripWS(ReadText(426, 194, 280, $textWindows), 8)
+			$CurCamp = StringStripWS(StringMid($CurCamp, Stringinstr($CurCamp, ":") + 1), 8)
 			$itxtcampCap = StringMid($CurCamp, Stringinstr($CurCamp, "/") + 1)
-			If Number($itxtcampCap) > 0 And Number($itxtcampCap) < 300 Then
+			If Number($itxtcampCap) > 0 And Number($itxtcampCap) < 300 And StringIsDigit($itxtcampCap) Then
 				$CurCamp = StringLeft($CurCamp, StringInStr($CurCamp, "/") - 1)
-				If Number($CurCamp) >= 0 And Number($CurCamp) <= $itxtcampCap Then
+				If Number($CurCamp) >= 0 And Number($CurCamp) <= $itxtcampCap And StringIsDigit($CurCamp) Then
 					SetLog(GetLangText("msgTotalCampCap") & $CurCamp & "/" & $itxtcampCap, $COLOR_GREEN)
 					ExitLoop
 				EndIf
 			EndIf
 			If _Sleep(500) Then Return
-			If $readattempts = 3 Then
+			If $readattempts = 20 Then
 				SetLog(GetLangText("msgTotalCampCap") & GetLangText("lblUnknownCap"), $COLOR_GREEN)
 				$CurCamp = 0
 				If $itxtcampCap = 0 then $itxtcampCap = 240
@@ -275,7 +281,7 @@ Func Standard_CheckArmyCamp()
 			For $i = 0 To 6
 				Local $TroopKind = _GetPixelColor(254 + 62 * $i, 375)
 				Local $TroopKind2 = _GetPixelColor(264 + 62 * $i, 380)
-				Local $TroopName = 0
+				Local $TroopName = ""
 				Local $TroopQ = StringStripWS(ReadText(239 + (62 * $i), 350, 37, $textWindows), 3)
 				If StringLeft($TroopQ, 1) = "x" Then $TroopQ = StringRight($TroopQ, StringLen($TroopQ) - 1)
 				$TroopQ = Number($TroopQ)
@@ -304,6 +310,7 @@ Func Standard_CheckArmyCamp()
 					If ($FirstStart) Then $CurValkyrie -= $TroopQ
 					$TroopName = "Valkyries"
 				EndIf
+				If $TroopName = "" Then $TroopName = "Unknown"
 				If $TroopQ <> 0 Then SetLog("- " & $TroopName & " " & $TroopQ, $COLOR_GREEN)
 			Next
 		EndIf
@@ -352,6 +359,95 @@ Func Standard_TrainIt($TroopKind, $howMuch = 1, $iSleep = 100)
 		EndIf
 	EndIf
 EndFunc   ;==>Standard_TrainIt
+
+Func Standard_GetTrainPosDll()
+	$res = CallHelper("170 290 700 500 BrokenBotMatchObject 200 6 0")
+
+	If $res <> $DLLFailed And $res <> $DLLTimeout Then
+		If $res = $DLLLicense Then
+			SetLog(GetLangText("msgLicense"), $COLOR_RED)
+		ElseIf $res = $DLLNegative Then
+			; failed to find training buttons
+			SetLog(GetLangText("Failed finding troop training..."), $COLOR_RED)
+			Return False
+		Else
+			$expRet = StringSplit($res, "|", 2)
+			$numTroops = $expRet[0]
+			$foundMinion = false
+			$foundHog = false
+			$foundValkyrie = false
+			For $j = 1 To UBound($expRet) - 1 Step 6
+				$ResX = $expRet[$j] + 170
+				$ResY = $expRet[$j + 1] + 290
+				$ResID = $expRet[$j + 4]
+				If $ResX = 0 And $ResY = 0 Then ExitLoop
+
+				;Only deal with minions, hogs, valks for now
+				If $ResID = 11 Then ;minions
+					$foundMinion = true
+					$TrainMinionDll[0] = $ResX
+					$TrainMinionDll[1] = $ResY
+				ElseIf $ResID = 12 Then ;hogs
+					$foundHog = true
+					$TrainHogDll[0] = $ResX
+					$TrainHogDll[1] = $ResY
+				ElseIf $ResID = 13 Then ;valks
+					$foundValkyrie = true
+					$TrainValkyrieDll[0] = $ResX
+					$TrainValkyrieDll[1] = $ResY
+				EndIf
+			Next
+
+			If Not $foundMinion Then
+				$TrainMinionDll[0] = -1
+				$TrainMinionDll[1] = -1
+			EndIf
+
+			If Not $foundHog Then
+				$TrainHogDll[0] = -1
+				$TrainHogDll[1] = -1
+			EndIf
+
+			If Not $foundValkyrie Then
+				$TrainValkyrieDll[0] = -1
+				$TrainValkyrieDll[1] = -1
+			EndIf
+
+			If $DebugMode = 2 Then
+				SetLog("Minions: X:" & $TrainMinionDll[0] & " Y:" & $TrainMinionDll[1])
+				SetLog("Hogs: X:" & $TrainHogDll[0] & " Y:" & $TrainHogDll[1])
+				SetLog("Valkyries: X:" & $TrainValkyrieDll[0] & " Y:" & $TrainValkyrieDll[1])
+			EndIf
+
+			Return True
+		EndIf
+	Else
+		SetLog(GetLangText("msgDLLError"), $COLOR_RED)
+		$ResX = 0
+		$ResY = 0
+		Return False ; return 0
+	EndIf
+EndFunc   ;==>Standard_GetTrainPosDll
+
+Func Standard_TrainItDll($TroopKind, $howMuch = 1, $iSleep = 100)
+	Switch $TroopKind
+		Case $eMinion
+			$pos = $TrainMinionDll
+		Case $eHog
+			$pos = $TrainHogDll
+		Case $eValkyrie
+			$pos = $TrainValkyrieDll
+		Case Else
+			SetLog(GetLangText("msgDontKnow") & $TroopKind & GetLangText("msgYet"))
+			Return
+	EndSwitch
+	If $pos[0] <> -1 Then
+		ClickP($pos, $howMuch, 20)
+		If _Sleep($iSleep) Then Return False
+		Return True
+	EndIf
+
+EndFunc   ;==>Standard_TrainItDll
 
 Func Standard_Train($reset = False)
 	resetBarracksError()
@@ -428,7 +524,6 @@ Func Standard_Train($reset = False)
 	Local $BarrackControl
 	Local $expUIRet[2]
 
-	$hDLL = DllOpen(@ScriptDir & "\BrokenBot.org\BrokenBot32.dll")
 	For $i = 0 To 3
 
 		If _Sleep(500) Then ExitLoop
@@ -440,18 +535,15 @@ Func Standard_Train($reset = False)
 		Click($barrackPos[$i][0], $barrackPos[$i][1]) ;Click Barrack
 		If _Sleep(500) Then ExitLoop
 
-		_CaptureRegion()
-		$sendHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)
-		$resUI = DllCall($hDLL, "str", "BrokenBotMatchButton", "ptr", $sendHBitmap, "int", 108, "int", 3, "int", 1, "int", 3, "int", (IsChecked($chkSpeedBoost) ? (1) : (0)))
-		_WinAPI_DeleteObject($sendHBitmap)
 		$expUIRet[0] = -1
-		If IsArray($resUI) Then
-			If $resUI[0] = -1 Then
+		$resUI = CallHelper("0 0 860 720 BrokenBotMatchButton 108 1 3")
+		If $resUI <> $DLLFailed And $resUI <> $DLLTimeout Then
+			If $resUI = $DLLNegative Then
 				; Didn't find button
-			ElseIf $resUI[0] = -2 Then
+			ElseIf $resUI = $DLLLicense Then
 				SetLog(GetLangText("msgLicense"), $COLOR_RED)
 			Else
-				$expUIRet = StringSplit($resUI[0], "|", 2)
+				$expUIRet = StringSplit($resUI, "|", 2)
 			EndIf
 		Else
 			SetLog(GetLangText("msgDLLError"), $COLOR_RED)
@@ -476,63 +568,74 @@ Func Standard_Train($reset = False)
 						$BarrackControl = $cmbBarrack4
 				EndSwitch
 				_CaptureRegion()
+				Local $safeguarding = 0
 				Switch _GUICtrlComboBox_GetCurSel($BarrackControl)
 					Case 0
-						While _ColorCheck(_GetPixelColor(216, 325), Hex(0xF09D1C, 6), 30)
+						While _ColorCheck(_GetPixelColor(216, 325), Hex(0xF09D1C, 6), 30) And ($safeguarding < 200)
+							$safeguarding += 1
 							Click(216, 325, 75) ;Barbarian
 							If _Sleep(150) Then ExitLoop
 							_CaptureRegion()
 						WEnd
 					Case 1
-						While _ColorCheck(_GetPixelColor(330, 323), Hex(0xE84070, 6), 30)
+						While _ColorCheck(_GetPixelColor(330, 323), Hex(0xE84070, 6), 30) And ($safeguarding < 200)
+							$safeguarding += 1
 							Click(325, 320, 75) ;Archer
 							If _Sleep(150) Then ExitLoop
 							_CaptureRegion()
 						WEnd
 					Case 2
-						While _ColorCheck(_GetPixelColor(419, 319), Hex(0xF88409, 6), 30)
+						While _ColorCheck(_GetPixelColor(419, 319), Hex(0xF88409, 6), 30) And ($safeguarding < 200)
+							$safeguarding += 1
 							Click(419, 319, 20) ;Giant
 							If _Sleep(150) Then ExitLoop
 							_CaptureRegion()
 						WEnd
 					Case 3
-						While _ColorCheck(_GetPixelColor(549, 328), Hex(0xFB4C24, 6), 30)
+						While _ColorCheck(_GetPixelColor(549, 328), Hex(0xFB4C24, 6), 30) And ($safeguarding < 200)
+							$safeguarding += 1
 							Click(535, 320, 75) ;Goblin
 							If _Sleep(150) Then ExitLoop
 							_CaptureRegion()
 						WEnd
 					Case 4
-						While _ColorCheck(_GetPixelColor(685, 327), Hex(0x9E4716, 6), 30)
-							Click(685, 327, 20) ;Wall Breaker
+						While _ColorCheck(_GetPixelColor(685, 327), Hex(0x9E4716, 6), 30) And ($safeguarding < 200)
+							$safeguarding += 1
+							Click(641, 341, 20) ;Wall Breaker
 							If _Sleep(150) Then ExitLoop
 							_CaptureRegion()
 						WEnd
 					Case 5
-						While _ColorCheck(_GetPixelColor(213, 418), Hex(0x861F15, 6), 30)
+						While _ColorCheck(_GetPixelColor(213, 418), Hex(0x861F15, 6), 30) And ($safeguarding < 200)
+							$safeguarding += 1
 							Click(213, 418, 20) ;Balloon
 							If _Sleep(150) Then ExitLoop
 							_CaptureRegion()
 						WEnd
 					Case 6
-						While _ColorCheck(_GetPixelColor(340, 449), Hex(0xF09C85, 6), 30)
+						While _ColorCheck(_GetPixelColor(340, 449), Hex(0xF09C85, 6), 30) And ($safeguarding < 200)
+							$safeguarding += 1
 							Click(325, 425, 20) ;Wizard
 							If _Sleep(150) Then ExitLoop
 							_CaptureRegion()
 						WEnd
 					Case 7
-						While _ColorCheck(_GetPixelColor(440, 445), Hex(0xFDD8C0, 6), 30)
+						While _ColorCheck(_GetPixelColor(440, 445), Hex(0xFDD8C0, 6), 30) And ($safeguarding < 200)
+							$safeguarding += 1
 							Click(440, 445, 10) ;Healer
 							If _Sleep(150) Then ExitLoop
 							_CaptureRegion()
 						WEnd
 					Case 8
-						While _ColorCheck(_GetPixelColor(539, 444), Hex(0x302848, 6), 30)
+						While _ColorCheck(_GetPixelColor(539, 444), Hex(0x302848, 6), 30) And ($safeguarding < 200)
+							$safeguarding += 1
 							Click(539, 444, 10) ;Dragon
 							If _Sleep(150) Then ExitLoop
 							_CaptureRegion()
 						WEnd
 					Case 9
-						While _ColorCheck(_GetPixelColor(647, 440), Hex(0x456180, 6), 30)
+						While _ColorCheck(_GetPixelColor(647, 440), Hex(0x456180, 6), 30) And ($safeguarding < 200)
+							$safeguarding += 1
 							Click(647, 440, 10) ;PEKKA
 							If _Sleep(150) Then ExitLoop
 							_CaptureRegion()
@@ -738,288 +841,530 @@ Func Standard_Train($reset = False)
 	Else
 		SetLog(GetLangText("msgTrainingComp"), $COLOR_BLUE)
 	EndIf
-	$FirstStart = False
 
 ;~ 	BEGIN DARK TROOPS
-;~ 		If $ichkDarkTroop = 0 Then Return
-;~ 		Local $TrainPos[2]
-;~ 		If $DarkBarrackPos[0][0] = "" And GUICtrlRead($txtDarkBarrack1) <> "0" And GUICtrlRead($txtDarkBarrack2) <> "0" Then
-;~ 			LocateDarkBarrack()
-;~ 			SaveConfig()
-;~ 			If _Sleep(2000) Then Return
-;~ 		EndIf
+	$ichkDarkTroop = Not (($DarkBarrackTroop[0] = 3 And $DarkBarrackTroop[1] = 3 And $DarkBarrackTroopNext[0] = 3 And $DarkBarrackTroopNext[0] = 3) Or (GUICtrlRead($txtDarkBarrack1) + GUICtrlRead($txtDarkBarrack2) + GUICtrlRead($txtDarkBarrack1Next) + GUICtrlRead($txtDarkBarrack2Next) = 0))
+ 	If $ichkDarkTroop = False Then
+		$FirstStart = False
+		Return
+	EndIf
+	$DarkBarrackTroop[0] = _GUICtrlComboBox_GetCurSel($cmbDarkBarrack1)
+	$DarkBarrackTroop[1] = _GUICtrlComboBox_GetCurSel($cmbDarkBarrack2)
 
-;~ 		Global $LeftRax1, $LeftRax2, $TrainDrax1, $TrainDrax2, $ClickRax1, $ClickRax2
+	$DarkBarrackTroopNext[0] = _GUICtrlComboBox_GetCurSel($cmbDarkBarrack1Next)
+	$DarkBarrackTroopNext[1] = _GUICtrlComboBox_GetCurSel($cmbDarkBarrack2Next)
 
-;~ 		If $fullArmy Or $FirstDarkTrain Then
-;~ 		$TrainDrax1 = True
-;~ 		$TrainDrax2 = True
-;~ 		EndIf
 
-;~ 		If $TrainDrax1 = False And $TrainDrax2 = False Then Return
 
-;~ 		SetLog(GetLangText("msgTrainingDark"), $COLOR_BLUE)
-;~ 		For $i = 0 To 1
-;~ 		If _Sleep(500) Then ExitLoop
+ 	Local $TrainPos[2]
+ 	If $DarkBarrackPos[0][0] = "" And GUICtrlRead($txtDarkBarrack1) <> "0" And GUICtrlRead($txtDarkBarrack2) <> "0" Then
+ 		LocateDarkBarrack()
+ 		SaveConfig()
+ 		If _Sleep(2000) Then Return
+ 	EndIf
 
-;~ 		ClickP($TopLeftClient) ;Click Away
+ 	Global $LeftRax1, $LeftRax2, $TrainDrax1, $TrainDrax2, $ClickRax1, $ClickRax2
+	Global $LeftRax1Next, $LeftRax2Next, $TrainDrax1Next, $TrainDrax2Next, $ClickRax1Next, $ClickRax2Next
+	Global $FirstDarkTrain, $FirstDarkTrain2, $FirstDarkTrainNext, $FirstDarkTrain2Next
 
-;~ 		If _Sleep(500) Then ExitLoop
-;~ 		Click($DarkBarrackPos[$i][0], $DarkBarrackPos[$i][1]) ;Click Dark Barrack
-;~ 		If _Sleep(500) Then ExitLoop
+ 	If $fullArmy Or $FirstStart Then
+		$TrainDrax1 = True
+		$TrainDrax2 = True
+		$TrainDrax1Next = True
+		$TrainDrax2Next = True
+		$FirstDarkTrain = true
+		$FirstDarkTrain2 = true
+		$FirstDarkTrainNext = true
+		$FirstDarkTrain2Next = true
+ 	EndIf
 
-;~ 		Local $TrainPos = _PixelSearch(155, 603, 694, 605, Hex(0x603818, 6), 5) ;Finds Train Troops button
-;~ 	    _CaptureRegion()
-;~ 		If _Sleep(500) Then ExitLoop
-;~ 		$sendHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)
-;~ 		$res = DllCall($hDLL, "str", "BrokenBotMatchButton", "ptr", $sendHBitmap, "int", 108, "int", 3, "int", 1, "int", 3, "int", (IsChecked($chkSpeedBoost) ? (1) : (0))) ; remove icon
-;~ 		_WinAPI_DeleteObject($sendHBitmap)
-;~ 		If IsArray($res) Then
-;~ 			If $res[0] = -1 Then
-;~ 			   SetLog(GetLangText("msgDarkBarrack") & $i + 1 & GetLangText("msgNotAvailable"), $COLOR_RED)
-;~ 			   Return
-;~ 			ElseIf $res[0] = -2 Then
-;~ 				SetLog(GetLangText("msgLicense"), $COLOR_RED)
-;~ 			 Else
-;~ 			   $expUIRet = StringSplit($res[0], "|", 2)
-;~ 			   $TrainPos[0] = $expUIRet[1]
-;~ 			   $TrainPos[1] = $expUIRet[2]
-;~ 			   If $DebugMode = 1 Then SetLog("DB Train:" & $TrainPos[0] & " Y:" & $TrainPos[1])
-;~ 			EndIf
-;~ 	    EndIf
-;~ 		Click($TrainPos[0], $TrainPos[1]) ;Click Train Troops button
-;~ 		If _Sleep(800) Then ExitLoop
-;~ 		If $fullArmy Or $FirstDarkTrain Then
-;~ 		If Not _ColorCheck(_GetPixelColor(497, 195), Hex(0xE0E4D0, 6), 20) Then
-;~ 		Click(496, 190, 80, 2)
-;~ 		EndIf
-;~ 		EndIf
+ 	If $TrainDrax1 = False And $TrainDrax2 = False And $TrainDrax1Next = False And $TrainDrax2Next = False Then Return
 
-;~ 		;Dark Barrack 1
-;~ 		If GUICtrlRead($txtDarkBarrack1) <> "0" And $i = 0 And $TrainDrax1 = True Then
-;~ 		$itxtDarkBarrack1 = GUICtrlRead($txtDarkBarrack1)
-;~ 		If $DarkBarrackTroop[$i] = 0 Then
-;~ 		Local $troopMinion = Number(getOther(171 + 107 * 0, 278, "Barrack"))
-;~ 		If $itxtDarkBarrack1 <= 20 And ($fullArmy Or $FirstDarkTrain) Then
-;~ 		   Standard_TrainIt($eMinion, $itxtDarkBarrack1)
-;~ 		   $TrainDrax1 = False
-;~ 		   SetLog("Dark Barrack 1 Train Minion Completed...", $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $itxtDarkBarrack1 > 20 And ($fullArmy Or $FirstDarkTrain) Then
-;~ 		   Standard_TrainIt($eMinion, 20)
-;~ 		   $LeftRax1 = ($itxtDarkBarrack1 - 20)
-;~ 		   $ClickRax1 = $LeftRax1
-;~ 		   SetLog("Dark Barrack 1 Minion Remaining : " & $LeftRax1, $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $LeftRax1 > 1 And ($troopMinion < 20) And $LeftRax1 > ($troopMinion < 20) Then
-;~ 		   Standard_TrainIt($eMinion, (20 - $troopMinion))
-;~ 		   $LeftRax1 = ($ClickRax1 - (20 - $troopMinion))
-;~ 		   $ClickRax1 = $LeftRax1
-;~ 		   SetLog("Dark Barrack 1 Minion Remaining : " & $LeftRax1, $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $LeftRax1 > 1 And ($troopMinion < 20) And $LeftRax1 <= ($troopMinion < 20) Then
-;~ 		   Standard_TrainIt($eMinion, $LeftRax1)
-;~ 		   $TrainDrax1 = False
-;~ 		   SetLog("Dark Barrack 1 Train Minion Completed...", $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $LeftRax1 <= 1 And ($troopMinion < 20) Then
-;~ 		   Standard_TrainIt($eMinion, $LeftRax1)
-;~ 		   $TrainDrax1 = False
-;~ 		   SetLog("Dark Barrack 1 Train Minion Completed...", $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		Else
-;~ 			SetLog("Dark Barrack 1 Training in progress, Minion Remaining : " & $LeftRax1, $COLOR_BLUE)
-;~ 			$FirstDarkTrain = False
-;~ 		EndIf
-;~ 		EndIf
 
-;~ 		If $DarkBarrackTroop[$i] = 1 Then
-;~ 		Local $troopHog = Number(getOther(171 + 107 * 1, 278, "Barrack"))
-;~ 		If $itxtDarkBarrack1 <= 10 And ($fullArmy Or $FirstDarkTrain) Then
-;~ 		   Standard_TrainIt($eHog, $itxtDarkBarrack1)
-;~ 		   $TrainDrax1 = False
-;~ 		   SetLog("Dark Barrack 1 Train Hog Completed...", $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $itxtDarkBarrack1 > 10 And ($fullArmy Or $FirstDarkTrain) Then
-;~ 		   Standard_TrainIt($eHog, 10)
-;~ 		   $LeftRax1 = ($itxtDarkBarrack1 - 10)
-;~ 		   $ClickRax1 = $LeftRax1
-;~ 		   SetLog("Dark Barrack 1 Hog Remaining : " & $LeftRax1, $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $LeftRax1 > 1 And ($troopHog < 10) And $LeftRax1 > ($troopHog < 10) Then
-;~ 		   Standard_TrainIt($eHog, (10 - $troopHog))
-;~ 		   $LeftRax1 = ($ClickRax1 - (10 - $troopHog))
-;~ 		   $ClickRax1 = $LeftRax1
-;~ 		   SetLog("Dark Barrack 1 Hog Remaining : " & $LeftRax1, $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $LeftRax1 > 1 And ($troopHog < 10) And $LeftRax1 <= ($troopHog < 10) Then
-;~ 		   Standard_TrainIt($eHog, $LeftRax1)
-;~ 		   $TrainDrax1 = False
-;~ 		   SetLog("Dark Barrack 1 Train Hog Completed...", $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $LeftRax1 <= 1 And ($troopHog < 10) Then
-;~ 		   Standard_TrainIt($eHog, $LeftRax1)
-;~ 		   $TrainDrax1 = False
-;~ 		   SetLog("Dark Barrack 1 Train Hog Completed...", $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		Else
-;~ 		   SetLog("Dark Barrack 1 Training in progress, Hog Remaining : " & $LeftRax1, $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		EndIf
-;~ 		EndIf
 
-;~ 		If $DarkBarrackTroop[$i] = 2 Then
-;~ 		Local $troopValkyrie = Number(getOther(171 + 107 * 2, 278, "Barrack"))
-;~ 		If $itxtDarkBarrack1 <= 7 And ($fullArmy Or $FirstDarkTrain) Then
-;~ 		   Standard_TrainIt($eValkyrie, $itxtDarkBarrack1)
-;~ 		   $TrainDrax1 = False
-;~ 		   SetLog("Dark Barrack 1 Train Valkyrie Completed...", $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $itxtDarkBarrack1 > 7 And ($fullArmy Or $FirstDarkTrain) Then
-;~ 		   Standard_TrainIt($eValkyrie, 7)
-;~ 		   $LeftRax1 = ($itxtDarkBarrack1 - 7)
-;~ 		   $ClickRax1 = $LeftRax1
-;~ 		   SetLog("Dark Barrack 1 Valkyrie Remaining : " & $LeftRax1, $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $LeftRax1 > 1 And ($troopValkyrie < 7) And $LeftRax1 > ($troopValkyrie < 7) Then
-;~ 		   Standard_TrainIt($eValkyrie, (7 - $troopValkyrie))
-;~ 		   $LeftRax1 = ($ClickRax1 - (7 - $troopValkyrie))
-;~ 		   $ClickRax1 = $LeftRax1
-;~ 		   SetLog("Dark Barrack 1 Valkyrie Remaining : " & $LeftRax1, $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $LeftRax1 > 1 And ($troopValkyrie < 7) And $LeftRax1 <= ($troopValkyrie < 7) Then
-;~ 		   Standard_TrainIt($eValkyrie, $LeftRax1)
-;~ 		   $TrainDrax1 = False
-;~ 		   SetLog("Dark Barrack 1 Train Valkyrie Completed...", $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $LeftRax1 <= 1 And ($troopValkyrie < 7) Then
-;~ 		   Standard_TrainIt($eValkyrie, $LeftRax1)
-;~ 		   $TrainDrax1 = False
-;~ 		   SetLog("Dark Barrack 1 Train Valkyrie Completed...", $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		Else
-;~ 		   SetLog("Dark Barrack 1 Training in progress, Valkyrie Remaining : " & $LeftRax1, $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		EndIf
-;~ 		EndIf
-;~ 		EndIf
+ 	SetLog(GetLangText("msgTrainingDark"), $COLOR_BLUE)
+ 	For $i = 0 To 1
+ 		If _Sleep(500) Then ExitLoop
 
-;~ 		;Dark Barrack 2
-;~ 		If GUICtrlRead($txtDarkBarrack2) <> "0" And $i = 1 And $TrainDrax2 = True Then
-;~ 		$itxtDarkBarrack2 = GUICtrlRead($txtDarkBarrack2)
-;~ 		If $DarkBarrackTroop[$i] = 0 Then
-;~ 		Local $troopMinion2 = Number(getOther(171 + 107 * 0, 278, "Barrack"))
-;~ 		If $itxtDarkBarrack2 <= 20 And ($fullArmy Or $FirstDarkTrain) Then
-;~ 		   Standard_TrainIt($eMinion, $itxtDarkBarrack2)
-;~ 		   $TrainDrax2 = False
-;~ 		   SetLog("Dark Barrack 2 Train Minion Completed...", $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $itxtDarkBarrack2 > 20 And ($fullArmy Or $FirstDarkTrain) Then
-;~ 		   Standard_TrainIt($eMinion, 20)
-;~ 		   $LeftRax2 = ($itxtDarkBarrack2 - 20)
-;~ 		   $ClickRax2 = $LeftRax2
-;~ 		   SetLog("Dark Barrack 2 Minion Remaining : " & $LeftRax2, $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $LeftRax2 > 1 And ($troopMinion2 < 20) And $LeftRax2 > ($troopMinion2 < 20) Then
-;~ 		   Standard_TrainIt($eMinion, (20 - $troopMinion2))
-;~ 		   $LeftRax2 = ($ClickRax2 - (20 - $troopMinion2))
-;~ 		   $ClickRax2 = $LeftRax2
-;~ 		   SetLog("Dark Barrack 2 Minion Remaining : " & $LeftRax2, $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $LeftRax2 > 1 And ($troopMinion2 < 20) And $LeftRax2 <= ($troopMinion2 < 20) Then
-;~ 		   Standard_TrainIt($eMinion, $LeftRax2)
-;~ 		   $TrainDrax2 = False
-;~ 		   SetLog("Dark Barrack 2 Train Minion Completed...", $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $LeftRax2 <= 1 And ($troopMinion2 < 20) Then
-;~ 		   Standard_TrainIt($eMinion, $LeftRax2)
-;~ 		   $TrainDrax2 = False
-;~ 		   SetLog("Dark Barrack 2 Train Minion Completed...", $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		Else
-;~ 		   SetLog("Dark Barrack 2 Training in progress, Minion Remaining : " & $LeftRax2, $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		EndIf
-;~ 		EndIf
+ 		ClickP($TopLeftClient) ;Click Away
 
-;~ 		If $DarkBarrackTroop[$i] = 1 Then
-;~ 		Local $troopHog2 = Number(getOther(171 + 107 * 1, 278, "Barrack"))
-;~ 		   If $itxtDarkBarrack2 <= 10 And ($fullArmy Or $FirstDarkTrain) Then
-;~ 		   Standard_TrainIt($eHog, $itxtDarkBarrack2)
-;~ 		   $TrainDrax2 = False
-;~ 		   SetLog("Dark Barrack 2 Train Hog Completed...", $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $itxtDarkBarrack2 > 10 And ($fullArmy Or $FirstDarkTrain) Then
-;~ 		   Standard_TrainIt($eHog, 10)
-;~ 		   $LeftRax2 = ($itxtDarkBarrack2 - 10)
-;~ 		   $ClickRax2 = $LeftRax2
-;~ 		   SetLog("Dark Barrack 2 Hog Remaining : " & $LeftRax2, $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $LeftRax2 > 1 And ($troopHog2 < 10) And $LeftRax2 > ($troopHog2 < 10) Then
-;~ 		   Standard_TrainIt($eHog, (10 - $troopHog2))
-;~ 		   $LeftRax2 = ($ClickRax2 - (10 - $troopHog2))
-;~ 		   $ClickRax2 = $LeftRax2
-;~ 		   SetLog("Dark Barrack 2 Hog Remaining : " & $LeftRax2, $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $LeftRax2 > 1 And ($troopHog2 < 10) And $LeftRax2 <= ($troopHog2 < 10) Then
-;~ 		   Standard_TrainIt($eHog, $LeftRax2)
-;~ 		   $TrainDrax2 = False
-;~ 		   SetLog("Dark Barrack 2 Train Hog Completed...", $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $LeftRax2 <= 1 And ($troopHog2 < 10) Then
-;~ 		   Standard_TrainIt($eHog, $LeftRax2)
-;~ 		   $TrainDrax2 = False
-;~ 		   SetLog("Dark Barrack 2 Train Hog Completed...", $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		Else
-;~ 		   SetLog("Dark Barrack 2 Training in progress, Hog Remaining : " & $LeftRax2, $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		EndIf
-;~ 		EndIf
+ 		If _Sleep(500) Then ExitLoop
+ 		Click($DarkBarrackPos[$i][0], $DarkBarrackPos[$i][1]) ;Click Dark Barrack
+ 		If _Sleep(500) Then ExitLoop
 
-;~ 		If $DarkBarrackTroop[$i] = 2 Then
-;~ 		Local $troopValkyrie2 = Number(getOther(171 + 107 * 2, 278, "Barrack"))
-;~ 		If $itxtDarkBarrack2 <= 7 And ($fullArmy Or $FirstDarkTrain) Then
-;~ 		   Standard_TrainIt($eValkyrie, $itxtDarkBarrack2)
-;~ 		   $TrainDrax2 = False
-;~ 		   SetLog("Dark Barrack 2 Train Valkyrie Completed...", $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $itxtDarkBarrack2 > 7 And ($fullArmy Or $FirstDarkTrain) Then
-;~ 		   Standard_TrainIt($eValkyrie, 7)
-;~ 		   $LeftRax2 = ($itxtDarkBarrack2 - 7)
-;~ 		   $ClickRax2 = $LeftRax2
-;~ 		   SetLog("Dark Barrack 2 Valkyrie Remaining : " & $LeftRax2, $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $LeftRax2 > 1 And ($troopValkyrie2 < 7) And $LeftRax2 > ($troopValkyrie2 < 7) Then
-;~ 		   Standard_TrainIt($eValkyrie, (7 - $troopValkyrie2))
-;~ 		   $LeftRax2 = ($ClickRax2 - (7 - $troopValkyrie2))
-;~ 		   $ClickRax2 = $LeftRax2
-;~ 		   SetLog("Dark Barrack 2 Valkyrie Remaining : " & $LeftRax2, $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $LeftRax2 > 1 And ($troopValkyrie2 < 7) And $LeftRax2 <= ($troopValkyrie2 < 7) Then
-;~ 		   Standard_TrainIt($eValkyrie, $LeftRax2)
-;~ 		   $TrainDrax2 = False
-;~ 		   SetLog("Dark Barrack 2 Train Valkyrie Completed...", $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		ElseIf $LeftRax2 <= 1 And ($troopValkyrie2 < 7) Then
-;~ 		   Standard_TrainIt($eValkyrie, $LeftRax2)
-;~ 		   $TrainDrax2 = False
-;~ 		   SetLog("Dark Barrack 2 Train Valkyrie Completed...", $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		Else
-;~ 		   SetLog("Dark Barrack 2 Training in progress, Valkyrie Remaining : " & $LeftRax2, $COLOR_BLUE)
-;~ 		   $FirstDarkTrain = False
-;~ 		EndIf
-;~ 		EndIf
-;~ 		EndIf
+		$res = CallHelper("0 0 860 720 BrokenBotMatchObject 108 3 0")
+ 		If $res <> $DLLFailed And $res <> $DLLTimeout Then
+			If $res = $DLLNegative Then
+ 			   SetLog(GetLangText("msgDarkBarrack") & $i + 1 & GetLangText("msgNotAvailable"), $COLOR_RED)
+ 			   Return
+ 			ElseIf $res = $DLLLicense Then
+ 				SetLog(GetLangText("msgLicense"), $COLOR_RED)
+ 			Else
+ 			   $expUIRet = StringSplit($res, "|", 2)
+ 			   $TrainPos[0] = $expUIRet[1]
+ 			   $TrainPos[1] = $expUIRet[2]
+ 			   If $DebugMode = 2 Then SetLog("DB Train:" & $TrainPos[0] & " Y:" & $TrainPos[1])
+ 			EndIf
+ 	    EndIf
+ 		Click($TrainPos[0], $TrainPos[1]) ;Click Train Troops button
+ 		If _Sleep(800) Then ExitLoop
 
-;~ 		If _Sleep(100) Then ExitLoop
-;~ 		Click($TopLeftClient[0], $TopLeftClient[1], 2, 250); Click away twice with 250ms delay
-;~    Next
-;~ 		SetLog(GetLangText("msgDarkTroopComplete"), $COLOR_BLUE)
-;~ 		$FirstDarkTrain = False
+		_CaptureRegion()
+ 		If $fullArmy Or $FirstStart Then ;Reset troops on first loop, or if army is full to start cooking for next attack
+			If Not _ColorCheck(_GetPixelColor(502, 179), Hex(0xD1D0C2, 6), 20) Then
+				Click(502, 179, 80, 2)
+			EndIf
+ 		EndIf
+
+		Standard_GetTrainPosDll()
+
+ 		;Dark Barrack 1
+ 		If GUICtrlRead($txtDarkBarrack1) <> "0" And $i = 0 And $TrainDrax1 = True Then
+			$itxtDarkBarrack1 = GUICtrlRead($txtDarkBarrack1)
+			If $DarkBarrackTroop[$i] = 0 Then
+				Local $troopMinion = Number(getOther(171 + 107 * 0, 278, "Barrack"))
+				If $itxtDarkBarrack1 <= 20 And ($fullArmy Or $FirstDarkTrain) Then
+				   Standard_TrainItDll($eMinion, $itxtDarkBarrack1)
+				   $TrainDrax1 = False
+				   SetLog("Dark Barrack 1 Train Minion Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain = False
+				ElseIf $itxtDarkBarrack1 > 20 And ($fullArmy Or $FirstDarkTrain) Then
+				   Standard_TrainItDll($eMinion, 20)
+				   $LeftRax1 = ($itxtDarkBarrack1 - 20)
+				   $ClickRax1 = $LeftRax1
+				   SetLog("Dark Barrack 1 Minion Remaining : " & $LeftRax1, $COLOR_BLUE)
+				   $FirstDarkTrain = False
+				ElseIf $LeftRax1 > 1 And ($troopMinion < 20) And $LeftRax1 > ($troopMinion < 20) Then
+				   Standard_TrainItDll($eMinion, (20 - $troopMinion))
+				   $LeftRax1 = ($ClickRax1 - (20 - $troopMinion))
+				   $ClickRax1 = $LeftRax1
+				   SetLog("Dark Barrack 1 Minion Remaining : " & $LeftRax1, $COLOR_BLUE)
+				   $FirstDarkTrain = False
+				ElseIf $LeftRax1 > 1 And ($troopMinion < 20) And $LeftRax1 <= ($troopMinion < 20) Then
+				   Standard_TrainItDll($eMinion, $LeftRax1)
+				   $TrainDrax1 = False
+				   SetLog("Dark Barrack 1 Train Minion Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain = False
+				ElseIf $LeftRax1 <= 1 And ($troopMinion < 20) Then
+				   Standard_TrainItDll($eMinion, $LeftRax1)
+				   $TrainDrax1 = False
+				   SetLog("Dark Barrack 1 Train Minion Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain = False
+				Else
+					SetLog("Dark Barrack 1 Training in progress, Minion Remaining : " & $LeftRax1, $COLOR_BLUE)
+					$FirstDarkTrain = False
+				EndIf
+			EndIf
+
+			If $DarkBarrackTroop[$i] = 1 Then
+				Local $troopHog = Number(getOther(171 + 107 * 1, 278, "Barrack"))
+				If $itxtDarkBarrack1 <= 10 And ($fullArmy Or $FirstDarkTrain) Then
+				   Standard_TrainItDll($eHog, $itxtDarkBarrack1)
+				   $TrainDrax1 = False
+				   SetLog("Dark Barrack 1 Train Hog Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain = False
+				ElseIf $itxtDarkBarrack1 > 10 And ($fullArmy Or $FirstDarkTrain) Then
+				   Standard_TrainItDll($eHog, 10)
+				   $LeftRax1 = ($itxtDarkBarrack1 - 10)
+				   $ClickRax1 = $LeftRax1
+				   SetLog("Dark Barrack 1 Hog Remaining : " & $LeftRax1, $COLOR_BLUE)
+				   $FirstDarkTrain = False
+				ElseIf $LeftRax1 > 1 And ($troopHog < 10) And $LeftRax1 > ($troopHog < 10) Then
+				   Standard_TrainItDll($eHog, (10 - $troopHog))
+				   $LeftRax1 = ($ClickRax1 - (10 - $troopHog))
+				   $ClickRax1 = $LeftRax1
+				   SetLog("Dark Barrack 1 Hog Remaining : " & $LeftRax1, $COLOR_BLUE)
+				   $FirstDarkTrain = False
+				ElseIf $LeftRax1 > 1 And ($troopHog < 10) And $LeftRax1 <= ($troopHog < 10) Then
+				   Standard_TrainItDll($eHog, $LeftRax1)
+				   $TrainDrax1 = False
+				   SetLog("Dark Barrack 1 Train Hog Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain = False
+				ElseIf $LeftRax1 <= 1 And ($troopHog < 10) Then
+				   Standard_TrainItDll($eHog, $LeftRax1)
+				   $TrainDrax1 = False
+				   SetLog("Dark Barrack 1 Train Hog Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain = False
+				Else
+				   SetLog("Dark Barrack 1 Training in progress, Hog Remaining : " & $LeftRax1, $COLOR_BLUE)
+				   $FirstDarkTrain = False
+				EndIf
+			EndIf
+
+			If $DarkBarrackTroop[$i] = 2 Then
+				Local $troopValkyrie = Number(getOther(171 + 107 * 2, 278, "Barrack"))
+				If $itxtDarkBarrack1 <= 7 And ($fullArmy Or $FirstDarkTrain) Then
+				   Standard_TrainItDll($eValkyrie, $itxtDarkBarrack1)
+				   $TrainDrax1 = False
+				   SetLog("Dark Barrack 1 Train Valkyrie Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain = False
+				ElseIf $itxtDarkBarrack1 > 7 And ($fullArmy Or $FirstDarkTrain) Then
+				   Standard_TrainItDll($eValkyrie, 7)
+				   $LeftRax1 = ($itxtDarkBarrack1 - 7)
+				   $ClickRax1 = $LeftRax1
+				   SetLog("Dark Barrack 1 Valkyrie Remaining : " & $LeftRax1, $COLOR_BLUE)
+				   $FirstDarkTrain = False
+				ElseIf $LeftRax1 > 1 And ($troopValkyrie < 7) And $LeftRax1 > ($troopValkyrie < 7) Then
+				   Standard_TrainItDll($eValkyrie, (7 - $troopValkyrie))
+				   $LeftRax1 = ($ClickRax1 - (7 - $troopValkyrie))
+				   $ClickRax1 = $LeftRax1
+				   SetLog("Dark Barrack 1 Valkyrie Remaining : " & $LeftRax1, $COLOR_BLUE)
+				   $FirstDarkTrain = False
+				ElseIf $LeftRax1 > 1 And ($troopValkyrie < 7) And $LeftRax1 <= ($troopValkyrie < 7) Then
+				   Standard_TrainItDll($eValkyrie, $LeftRax1)
+				   $TrainDrax1 = False
+				   SetLog("Dark Barrack 1 Train Valkyrie Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain = False
+				ElseIf $LeftRax1 <= 1 And ($troopValkyrie < 7) Then
+				   Standard_TrainItDll($eValkyrie, $LeftRax1)
+				   $TrainDrax1 = False
+				   SetLog("Dark Barrack 1 Train Valkyrie Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain = False
+				Else
+				   SetLog("Dark Barrack 1 Training in progress, Valkyrie Remaining : " & $LeftRax1, $COLOR_BLUE)
+				   $FirstDarkTrain = False
+				EndIf
+			EndIf
+ 		EndIf
+
+		;Second Troop type
+		If GUICtrlRead($txtDarkBarrack1Next) <> "0" And $i = 0 And $TrainDrax1Next = True Then
+			$itxtDarkBarrack1Next = GUICtrlRead($txtDarkBarrack1Next)
+			If $DarkBarrackTroopNext[$i] = 0 Then
+				Local $troopMinion = Number(getOther(171 + 107 * 0, 278, "Barrack"))
+				If $itxtDarkBarrack1Next <= 20 And ($fullArmy Or $FirstDarkTrainNext) Then
+				   Standard_TrainItDll($eMinion, $itxtDarkBarrack1Next)
+				   $TrainDrax1Next = False
+				   SetLog("Dark Barrack 1 Train Minion Completed...", $COLOR_BLUE)
+				   $FirstDarkTrainNext = False
+				ElseIf $itxtDarkBarrack1Next > 20 And ($fullArmy Or $FirstDarkTrainNext) Then
+				   Standard_TrainItDll($eMinion, 20)
+				   $LeftRax1Next = ($itxtDarkBarrack1Next - 20)
+				   $ClickRax1Next = $LeftRax1Next
+				   SetLog("Dark Barrack 1 Minion Remaining : " & $LeftRax1Next, $COLOR_BLUE)
+				   $FirstDarkTrainNext = False
+				ElseIf $LeftRax1Next > 1 And ($troopMinion < 20) And $LeftRax1Next > ($troopMinion < 20) Then
+				   Standard_TrainItDll($eMinion, (20 - $troopMinion))
+				   $LeftRax1Next = ($ClickRax1Next - (20 - $troopMinion))
+				   $ClickRax1Next = $LeftRax1Next
+				   SetLog("Dark Barrack 1 Minion Remaining : " & $LeftRax1Next, $COLOR_BLUE)
+				   $FirstDarkTrainNext = False
+				ElseIf $LeftRax1Next > 1 And ($troopMinion < 20) And $LeftRax1Next <= ($troopMinion < 20) Then
+				   Standard_TrainItDll($eMinion, $LeftRax1Next)
+				   $TrainDrax1Next = False
+				   SetLog("Dark Barrack 1 Train Minion Completed...", $COLOR_BLUE)
+				   $FirstDarkTrainNext = False
+				ElseIf $LeftRax1Next <= 1 And ($troopMinion < 20) Then
+				   Standard_TrainItDll($eMinion, $LeftRax1Next)
+				   $TrainDrax1Next = False
+				   SetLog("Dark Barrack 1 Train Minion Completed...", $COLOR_BLUE)
+				   $FirstDarkTrainNext = False
+				Else
+					SetLog("Dark Barrack 1 Training in progress, Minion Remaining : " & $LeftRax1Next, $COLOR_BLUE)
+					$FirstDarkTrainNext = False
+				EndIf
+			EndIf
+
+			If $DarkBarrackTroopNext[$i] = 1 Then
+				Local $troopHog = Number(getOther(171 + 107 * 1, 278, "Barrack"))
+				If $itxtDarkBarrack1Next <= 10 And ($fullArmy Or $FirstDarkTrainNext) Then
+				   Standard_TrainItDll($eHog, $itxtDarkBarrack1Next)
+				   $TrainDrax1Next = False
+				   SetLog("Dark Barrack 1 Train Hog Completed...", $COLOR_BLUE)
+				   $FirstDarkTrainNext = False
+				ElseIf $itxtDarkBarrack1Next > 10 And ($fullArmy Or $FirstDarkTrainNext) Then
+				   Standard_TrainItDll($eHog, 10)
+				   $LeftRax1Next = ($itxtDarkBarrack1Next - 10)
+				   $ClickRax1Next = $LeftRax1Next
+				   SetLog("Dark Barrack 1 Hog Remaining : " & $LeftRax1Next, $COLOR_BLUE)
+				   $FirstDarkTrainNext = False
+				ElseIf $LeftRax1Next > 1 And ($troopHog < 10) And $LeftRax1Next > ($troopHog < 10) Then
+				   Standard_TrainItDll($eHog, (10 - $troopHog))
+				   $LeftRax1Next = ($ClickRax1Next - (10 - $troopHog))
+				   $ClickRax1Next = $LeftRax1Next
+				   SetLog("Dark Barrack 1 Hog Remaining : " & $LeftRax1Next, $COLOR_BLUE)
+				   $FirstDarkTrainNext = False
+				ElseIf $LeftRax1Next > 1 And ($troopHog < 10) And $LeftRax1Next <= ($troopHog < 10) Then
+				   Standard_TrainItDll($eHog, $LeftRax1Next)
+				   $TrainDrax1Next = False
+				   SetLog("Dark Barrack 1 Train Hog Completed...", $COLOR_BLUE)
+				   $FirstDarkTrainNext = False
+				ElseIf $LeftRax1Next <= 1 And ($troopHog < 10) Then
+				   Standard_TrainItDll($eHog, $LeftRax1Next)
+				   $TrainDrax1Next = False
+				   SetLog("Dark Barrack 1 Train Hog Completed...", $COLOR_BLUE)
+				   $FirstDarkTrainNext = False
+				Else
+				   SetLog("Dark Barrack 1 Training in progress, Hog Remaining : " & $LeftRax1Next, $COLOR_BLUE)
+				   $FirstDarkTrainNext = False
+				EndIf
+			EndIf
+
+			If $DarkBarrackTroopNext[$i] = 2 Then
+				Local $troopValkyrie = Number(getOther(171 + 107 * 2, 278, "Barrack"))
+				If $itxtDarkBarrack1Next <= 7 And ($fullArmy Or $FirstDarkTrainNext) Then
+				   Standard_TrainItDll($eValkyrie, $itxtDarkBarrack1Next)
+				   $TrainDrax1Next = False
+				   SetLog("Dark Barrack 1 Train Valkyrie Completed...", $COLOR_BLUE)
+				   $FirstDarkTrainNext = False
+				ElseIf $itxtDarkBarrack1Next > 7 And ($fullArmy Or $FirstDarkTrainNext) Then
+				   Standard_TrainItDll($eValkyrie, 7)
+				   $LeftRax1Next = ($itxtDarkBarrack1Next - 7)
+				   $ClickRax1Next = $LeftRax1Next
+				   SetLog("Dark Barrack 1 Valkyrie Remaining : " & $LeftRax1Next, $COLOR_BLUE)
+				   $FirstDarkTrainNext = False
+				ElseIf $LeftRax1Next > 1 And ($troopValkyrie < 7) And $LeftRax1Next > ($troopValkyrie < 7) Then
+				   Standard_TrainItDll($eValkyrie, (7 - $troopValkyrie))
+				   $LeftRax1Next = ($ClickRax1Next - (7 - $troopValkyrie))
+				   $ClickRax1Next = $LeftRax1Next
+				   SetLog("Dark Barrack 1 Valkyrie Remaining : " & $LeftRax1Next, $COLOR_BLUE)
+				   $FirstDarkTrainNext = False
+				ElseIf $LeftRax1Next > 1 And ($troopValkyrie < 7) And $LeftRax1Next <= ($troopValkyrie < 7) Then
+				   Standard_TrainItDll($eValkyrie, $LeftRax1Next)
+				   $TrainDrax1Next = False
+				   SetLog("Dark Barrack 1 Train Valkyrie Completed...", $COLOR_BLUE)
+				   $FirstDarkTrainNext = False
+				ElseIf $LeftRax1Next <= 1 And ($troopValkyrie < 7) Then
+				   Standard_TrainItDll($eValkyrie, $LeftRax1Next)
+				   $TrainDrax1Next = False
+				   SetLog("Dark Barrack 1 Train Valkyrie Completed...", $COLOR_BLUE)
+				   $FirstDarkTrainNext = False
+				Else
+				   SetLog("Dark Barrack 1 Training in progress, Valkyrie Remaining : " & $LeftRax1Next, $COLOR_BLUE)
+				   $FirstDarkTrainNext = False
+				EndIf
+			EndIf
+ 		EndIf
+
+ 		;Dark Barrack 2
+ 		If GUICtrlRead($txtDarkBarrack2) <> "0" And $i = 1 And $TrainDrax2 = True Then
+			$itxtDarkBarrack2 = GUICtrlRead($txtDarkBarrack2)
+			If $DarkBarrackTroop[$i] = 0 Then
+				Local $troopMinion2 = Number(getOther(171 + 107 * 0, 278, "Barrack"))
+				If $itxtDarkBarrack2 <= 20 And ($fullArmy Or $FirstDarkTrain2) Then
+				   Standard_TrainItDll($eMinion, $itxtDarkBarrack2)
+				   $TrainDrax2 = False
+				   SetLog("Dark Barrack 2 Train Minion Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain2 = False
+				ElseIf $itxtDarkBarrack2 > 20 And ($fullArmy Or $FirstDarkTrain2) Then
+				   Standard_TrainItDll($eMinion, 20)
+				   $LeftRax2 = ($itxtDarkBarrack2 - 20)
+				   $ClickRax2 = $LeftRax2
+				   SetLog("Dark Barrack 2 Minion Remaining : " & $LeftRax2, $COLOR_BLUE)
+				   $FirstDarkTrain2 = False
+				ElseIf $LeftRax2 > 1 And ($troopMinion2 < 20) And $LeftRax2 > ($troopMinion2 < 20) Then
+				   Standard_TrainItDll($eMinion, (20 - $troopMinion2))
+				   $LeftRax2 = ($ClickRax2 - (20 - $troopMinion2))
+				   $ClickRax2 = $LeftRax2
+				   SetLog("Dark Barrack 2 Minion Remaining : " & $LeftRax2, $COLOR_BLUE)
+				   $FirstDarkTrain2 = False
+				ElseIf $LeftRax2 > 1 And ($troopMinion2 < 20) And $LeftRax2 <= ($troopMinion2 < 20) Then
+				   Standard_TrainItDll($eMinion, $LeftRax2)
+				   $TrainDrax2 = False
+				   SetLog("Dark Barrack 2 Train Minion Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain2 = False
+				ElseIf $LeftRax2 <= 1 And ($troopMinion2 < 20) Then
+				   Standard_TrainItDll($eMinion, $LeftRax2)
+				   $TrainDrax2 = False
+				   SetLog("Dark Barrack 2 Train Minion Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain2 = False
+				Else
+				   SetLog("Dark Barrack 2 Training in progress, Minion Remaining : " & $LeftRax2, $COLOR_BLUE)
+				   $FirstDarkTrain2 = False
+				EndIf
+			EndIf
+
+			If $DarkBarrackTroop[$i] = 1 Then
+				Local $troopHog2 = Number(getOther(171 + 107 * 1, 278, "Barrack"))
+				If $itxtDarkBarrack2 <= 10 And ($fullArmy Or $FirstDarkTrain2) Then
+				   Standard_TrainItDll($eHog, $itxtDarkBarrack2)
+				   $TrainDrax2 = False
+				   SetLog("Dark Barrack 2 Train Hog Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain2 = False
+				ElseIf $itxtDarkBarrack2 > 10 And ($fullArmy Or $FirstDarkTrain2) Then
+				   Standard_TrainItDll($eHog, 10)
+				   $LeftRax2 = ($itxtDarkBarrack2 - 10)
+				   $ClickRax2 = $LeftRax2
+				   SetLog("Dark Barrack 2 Hog Remaining : " & $LeftRax2, $COLOR_BLUE)
+				   $FirstDarkTrain2 = False
+				ElseIf $LeftRax2 > 1 And ($troopHog2 < 10) And $LeftRax2 > ($troopHog2 < 10) Then
+				   Standard_TrainItDll($eHog, (10 - $troopHog2))
+				   $LeftRax2 = ($ClickRax2 - (10 - $troopHog2))
+				   $ClickRax2 = $LeftRax2
+				   SetLog("Dark Barrack 2 Hog Remaining : " & $LeftRax2, $COLOR_BLUE)
+				   $FirstDarkTrain2 = False
+				ElseIf $LeftRax2 > 1 And ($troopHog2 < 10) And $LeftRax2 <= ($troopHog2 < 10) Then
+				   Standard_TrainItDll($eHog, $LeftRax2)
+				   $TrainDrax2 = False
+				   SetLog("Dark Barrack 2 Train Hog Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain2 = False
+				ElseIf $LeftRax2 <= 1 And ($troopHog2 < 10) Then
+				   Standard_TrainItDll($eHog, $LeftRax2)
+				   $TrainDrax2 = False
+				   SetLog("Dark Barrack 2 Train Hog Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain2 = False
+				Else
+				   SetLog("Dark Barrack 2 Training in progress, Hog Remaining : " & $LeftRax2, $COLOR_BLUE)
+				   $FirstDarkTrain2 = False
+				EndIf
+			EndIf
+
+			If $DarkBarrackTroop[$i] = 2 Then
+				Local $troopValkyrie2 = Number(getOther(171 + 107 * 2, 278, "Barrack"))
+				If $itxtDarkBarrack2 <= 7 And ($fullArmy Or $FirstDarkTrain2) Then
+				   Standard_TrainItDll($eValkyrie, $itxtDarkBarrack2)
+				   $TrainDrax2 = False
+				   SetLog("Dark Barrack 2 Train Valkyrie Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain2 = False
+				ElseIf $itxtDarkBarrack2 > 7 And ($fullArmy Or $FirstDarkTrain2) Then
+				   Standard_TrainItDll($eValkyrie, 7)
+				   $LeftRax2 = ($itxtDarkBarrack2 - 7)
+				   $ClickRax2 = $LeftRax2
+				   SetLog("Dark Barrack 2 Valkyrie Remaining : " & $LeftRax2, $COLOR_BLUE)
+				   $FirstDarkTrain2 = False
+				ElseIf $LeftRax2 > 1 And ($troopValkyrie2 < 7) And $LeftRax2 > ($troopValkyrie2 < 7) Then
+				   Standard_TrainItDll($eValkyrie, (7 - $troopValkyrie2))
+				   $LeftRax2 = ($ClickRax2 - (7 - $troopValkyrie2))
+				   $ClickRax2 = $LeftRax2
+				   SetLog("Dark Barrack 2 Valkyrie Remaining : " & $LeftRax2, $COLOR_BLUE)
+				   $FirstDarkTrain2 = False
+				ElseIf $LeftRax2 > 1 And ($troopValkyrie2 < 7) And $LeftRax2 <= ($troopValkyrie2 < 7) Then
+				   Standard_TrainItDll($eValkyrie, $LeftRax2)
+				   $TrainDrax2 = False
+				   SetLog("Dark Barrack 2 Train Valkyrie Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain2 = False
+				ElseIf $LeftRax2 <= 1 And ($troopValkyrie2 < 7) Then
+				   Standard_TrainItDll($eValkyrie, $LeftRax2)
+				   $TrainDrax2 = False
+				   SetLog("Dark Barrack 2 Train Valkyrie Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain2 = False
+				Else
+				   SetLog("Dark Barrack 2 Training in progress, Valkyrie Remaining : " & $LeftRax2, $COLOR_BLUE)
+				   $FirstDarkTrain2 = False
+				EndIf
+			EndIf
+ 		EndIf
+
+		;Second Troop type
+		If GUICtrlRead($txtDarkBarrack2Next) <> "0" And $i = 1 And $TrainDrax2Next = True Then
+			$itxtDarkBarrack2Next = GUICtrlRead($txtDarkBarrack2Next)
+			If $DarkBarrackTroopNext[$i] = 0 Then
+				Local $troopMinion = Number(getOther(171 + 107 * 0, 278, "Barrack"))
+				If $itxtDarkBarrack2Next <= 20 And ($fullArmy Or $FirstDarkTrain2Next) Then
+				   Standard_TrainItDll($eMinion, $itxtDarkBarrack2Next)
+				   $TrainDrax2Next = False
+				   SetLog("Dark Barrack 2 Train Minion Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain2Next = False
+				ElseIf $itxtDarkBarrack2Next > 20 And ($fullArmy Or $FirstDarkTrain2Next) Then
+				   Standard_TrainItDll($eMinion, 20)
+				   $LeftRax2Next = ($itxtDarkBarrack2Next - 20)
+				   $ClickRax2Next = $LeftRax2Next
+				   SetLog("Dark Barrack 2 Minion Remaining : " & $LeftRax2Next, $COLOR_BLUE)
+				   $FirstDarkTrain2Next = False
+				ElseIf $LeftRax2Next > 1 And ($troopMinion < 20) And $LeftRax2Next > ($troopMinion < 20) Then
+				   Standard_TrainItDll($eMinion, (20 - $troopMinion))
+				   $LeftRax2Next = ($ClickRax2Next - (20 - $troopMinion))
+				   $ClickRax2Next = $LeftRax2Next
+				   SetLog("Dark Barrack 2 Minion Remaining : " & $LeftRax2Next, $COLOR_BLUE)
+				   $FirstDarkTrain2Next = False
+				ElseIf $LeftRax2Next > 1 And ($troopMinion < 20) And $LeftRax2Next <= ($troopMinion < 20) Then
+				   Standard_TrainItDll($eMinion, $LeftRax2Next)
+				   $TrainDrax2Next = False
+				   SetLog("Dark Barrack 2 Train Minion Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain2Next = False
+				ElseIf $LeftRax2Next <= 1 And ($troopMinion < 20) Then
+				   Standard_TrainItDll($eMinion, $LeftRax2Next)
+				   $TrainDrax2Next = False
+				   SetLog("Dark Barrack 2 Train Minion Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain2Next = False
+				Else
+					SetLog("Dark Barrack 2 Training in progress, Minion Remaining : " & $LeftRax2Next, $COLOR_BLUE)
+					$FirstDarkTrain2Next = False
+				EndIf
+			EndIf
+
+			If $DarkBarrackTroopNext[$i] = 1 Then
+				Local $troopHog = Number(getOther(171 + 107 * 1, 278, "Barrack"))
+				If $itxtDarkBarrack2Next <= 10 And ($fullArmy Or $FirstDarkTrain2Next) Then
+				   Standard_TrainItDll($eHog, $itxtDarkBarrack2Next)
+				   $TrainDrax2Next = False
+				   SetLog("Dark Barrack 2 Train Hog Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain2Next = False
+				ElseIf $itxtDarkBarrack2Next > 10 And ($fullArmy Or $FirstDarkTrain2Next) Then
+				   Standard_TrainItDll($eHog, 10)
+				   $LeftRax2Next = ($itxtDarkBarrack2Next - 10)
+				   $ClickRax2Next = $LeftRax2Next
+				   SetLog("Dark Barrack 2 Hog Remaining : " & $LeftRax2Next, $COLOR_BLUE)
+				   $FirstDarkTrain2Next = False
+				ElseIf $LeftRax2Next > 1 And ($troopHog < 10) And $LeftRax2Next > ($troopHog < 10) Then
+				   Standard_TrainItDll($eHog, (10 - $troopHog))
+				   $LeftRax2Next = ($ClickRax2Next - (10 - $troopHog))
+				   $ClickRax2Next = $LeftRax2Next
+				   SetLog("Dark Barrack 2 Hog Remaining : " & $LeftRax2Next, $COLOR_BLUE)
+				   $FirstDarkTrain2Next = False
+				ElseIf $LeftRax2Next > 1 And ($troopHog < 10) And $LeftRax2Next <= ($troopHog < 10) Then
+				   Standard_TrainItDll($eHog, $LeftRax2Next)
+				   $TrainDrax2Next = False
+				   SetLog("Dark Barrack 2 Train Hog Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain2Next = False
+				ElseIf $LeftRax2Next <= 1 And ($troopHog < 10) Then
+				   Standard_TrainItDll($eHog, $LeftRax2Next)
+				   $TrainDrax2Next = False
+				   SetLog("Dark Barrack 2 Train Hog Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain2Next = False
+				Else
+				   SetLog("Dark Barrack 2 Training in progress, Hog Remaining : " & $LeftRax2Next, $COLOR_BLUE)
+				   $FirstDarkTrain2Next = False
+				EndIf
+			EndIf
+
+			If $DarkBarrackTroopNext[$i] = 2 Then
+				Local $troopValkyrie = Number(getOther(171 + 107 * 2, 278, "Barrack"))
+				If $itxtDarkBarrack2Next <= 7 And ($fullArmy Or $FirstDarkTrain2Next) Then
+				   Standard_TrainItDll($eValkyrie, $itxtDarkBarrack2Next)
+				   $TrainDrax2Next = False
+				   SetLog("Dark Barrack 2 Train Valkyrie Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain2Next = False
+				ElseIf $itxtDarkBarrack2Next > 7 And ($fullArmy Or $FirstDarkTrain2Next) Then
+				   Standard_TrainItDll($eValkyrie, 7)
+				   $LeftRax2Next = ($itxtDarkBarrack2Next - 7)
+				   $ClickRax2Next = $LeftRax2Next
+				   SetLog("Dark Barrack 2 Valkyrie Remaining : " & $LeftRax2Next, $COLOR_BLUE)
+				   $FirstDarkTrain2Next = False
+				ElseIf $LeftRax2Next > 1 And ($troopValkyrie < 7) And $LeftRax2Next > ($troopValkyrie < 7) Then
+				   Standard_TrainItDll($eValkyrie, (7 - $troopValkyrie))
+				   $LeftRax2Next = ($ClickRax2Next - (7 - $troopValkyrie))
+				   $ClickRax2Next = $LeftRax2Next
+				   SetLog("Dark Barrack 2 Valkyrie Remaining : " & $LeftRax2Next, $COLOR_BLUE)
+				   $FirstDarkTrain2Next = False
+				ElseIf $LeftRax2Next > 1 And ($troopValkyrie < 7) And $LeftRax2Next <= ($troopValkyrie < 7) Then
+				   Standard_TrainItDll($eValkyrie, $LeftRax2Next)
+				   $TrainDrax2Next = False
+				   SetLog("Dark Barrack 2 Train Valkyrie Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain2Next = False
+				ElseIf $LeftRax2Next <= 1 And ($troopValkyrie < 7) Then
+				   Standard_TrainItDll($eValkyrie, $LeftRax2Next)
+				   $TrainDrax2Next = False
+				   SetLog("Dark Barrack 2 Train Valkyrie Completed...", $COLOR_BLUE)
+				   $FirstDarkTrain2Next = False
+				Else
+				   SetLog("Dark Barrack 2 Training in progress, Valkyrie Remaining : " & $LeftRax2Next, $COLOR_BLUE)
+				   $FirstDarkTrain2Next = False
+				EndIf
+			EndIf
+ 		EndIf
+
+
+ 		If _Sleep(100) Then ExitLoop
+ 		Click($TopLeftClient[0], $TopLeftClient[1], 2, 250); Click away twice with 250ms delay
+    Next
+	SetLog(GetLangText("msgDarkTroopComplete"), $COLOR_BLUE)
+	$FirstDarkTrain = False
+	$FirstDarkTrain2 = False
+	$FirstDarkTrainNext = False
+	$FirstDarkTrain2Next = False
+	$FirstStart = False
 ;~ 	END DARK TROOPS
-	DllClose($hDLL)
 EndFunc   ;==>Standard_Train
 
 Func Standard_MakeSpells()

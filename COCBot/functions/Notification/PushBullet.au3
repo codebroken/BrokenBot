@@ -72,12 +72,15 @@ Func _PushBullet($pTitle = "", $pMessage = "")
 EndFunc   ;==>_PushBullet
 
 Func _Push($pTitle, $pMessage)
+	Local $Date = @MDAY & "." & @MON & "." & @YEAR
+	Local $Time = @HOUR & "." & @MIN & "." & @SEC
 	If StringStripWS(GUICtrlRead($inppushuser), 3) <> "" Then $pTitle = "[" & StringStripWS(GUICtrlRead($inppushuser), 3) & "] " & $pTitle
 	$oHTTP = ObjCreate("WinHTTP.WinHTTPRequest.5.1")
 	$access_token = $PushBullettoken
 	$oHTTP.Open("Post", "https://api.pushbullet.com/v2/pushes", False)
 	$oHTTP.SetCredentials($access_token, "", 0)
 	$oHTTP.SetRequestHeader("Content-Type", "application/json")
+	$pMessage = $Date & " at " & $Time & "\n" & $pMessage
 	Local $pPush = '{"type": "note", "title": "' & $pTitle & '", "body": "' & $pMessage & '"}'
 	$oHTTP.Send($pPush)
 EndFunc   ;==>_Push

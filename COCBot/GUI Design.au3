@@ -38,10 +38,10 @@ $txtLog = _GUICtrlRichEdit_Create($frmBot, "", 16, 45, 385, 200, BitOR($ES_MULTI
 $Controls = GUICtrlCreateGroup(GetLangText("Controls"), 15, 245, 385, 41)
 $chkBotStop = GUICtrlCreateCheckbox("", 37, 264, 16, 16)
 $cmbBotCommand = GUICtrlCreateCombo("", 60, 260, 110, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-GUICtrlSetData(-1, GetLangText("cmbBotCommand"), GetLangText("cmbBotCommandDefault"))
+GUICtrlSetData(-1, GetLangText("cmbBotPre") & GetLangText("cmbBotCommand"), GetLangText("cmbBotCommandDefault"))
 $lblPC = GUICtrlCreateLabel(GetLangText("lblPC"), 178, 264, 25, 17)
 $cmbBotCond = GUICtrlCreateCombo("", 198, 260, 163, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-GUICtrlSetData(-1, GetLangText("cmbBotCond"), GetLangText("cmbBotCondDefault"))
+GUICtrlSetData(-1, GetLangText("cmbBotCondAdd") & GetLangText("cmbBotCondMore") & GetLangText("cmbBotCond"), GetLangText("cmbBotCondDefault"))
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 $otherSettings = GUICtrlCreateGroup(GetLangText("otherSettings"), 15, 290, 385, 66)
@@ -185,6 +185,16 @@ GUICtrlSetOnEvent(-1, "btnLocateUp3")
 GUICtrlSetState(-1, $GUI_DISABLE)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
+$chkUpgradeKing = GUICtrlCreateCheckbox(GetLangText("chkUpgradeKing"), 30, 170, 80, 17)	;==> upgrade king
+GUICtrlSetTip(-1, GetLangText("lblUpgradeHeroes"))
+$chkUpgradeQueen = GUICtrlCreateCheckbox(GetLangText("chkUpgradeQueen"), 130, 170, 95, 17)	;==> upgrade queen
+GUICtrlSetTip(-1, GetLangText("lblUpgradeHeroes"))
+
+$lblbuilderfree = GUICtrlCreateLabel(GetLangText("lblbuilderfree"), 245, 172, 95, 17) ;==>FreeBuilderBox
+$txtKeepFreeBuilder = GUICtrlCreateInput("1", 340, 168, 20, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+GUICtrlSetTip(-1, GetLangText("lblKeepFreeBuilder"))
+
+
 ;~ $Upgrade2 = GUICtrlCreateGroup(GetLangText("Upgrade2"), 20, 165, 375, 125)
 ;~ $chkUpgrade4 = GUICtrlCreateCheckbox(GetLangText("chkUpgrade4"), 30, 192, 80, 17)
 ;~ $lblUP4PosX = GUICtrlCreateLabel(GetLangText("lblUPPosX"), 112, 194, 40, 17)
@@ -215,7 +225,7 @@ GUICtrlCreateGroup("", -99, -99, 1, 1)
 $grpLaboratory = GUICtrlCreateGroup(GetLangText("grpLaboratory"), 20, 295, 375, 55)
 $chkLab = GUICtrlCreateCheckbox(GetLangText("chkLab"), 30, 320, 100, 17)
 GUICtrlCreateLabel(GetLangText("lblLab"), 185, 320, 100, 17)
-$cmbLabList = GetLangText("troopNamePlBarbarian") & "|" & GetLangText("troopNamePlArcher") & "|" & GetLangText("troopNamePlGiant") & "|" & GetLangText("troopNamePlGoblin") & "|" & GetLangText("troopNamePlWallBreaker") & "|" & GetLangText("troopNamePlBalloon") & "|" & GetLangText("troopNamePlWizard") & "|" & GetLangText("troopNamePlHealer") & "|" & GetLangText("troopNamePlDragon") & "|" & GetLangText("troopNamePlPEKKA") & "|" & GetLangText("spellNameLightning") & "|" & GetLangText("spellNameHealing") & "|" & GetLangText("spellNameRage") & "|" & GetLangText("spellNameJump") & "|" & GetLangText("spellNameFreeze") & "|" & GetLangText("troopDarkPlMinion") & "|" & GetLangText("troopDarkPlHog") & "|" & GetLangText("troopDarkPlValkyrie") & "|" & GetLangText("troopDarkPlGolem") & "|" & GetLangText("troopDarkPlWitch") & "|" & GetLangText("troopDarkPlLavaHound") & "|" & GetLangText("cmbNothing")
+$cmbLabList = GetLangText("troopNamePlBarbarian") & "|" & GetLangText("troopNamePlArcher") & "|" & GetLangText("troopNamePlGiant") & "|" & GetLangText("troopNamePlGoblin") & "|" & GetLangText("troopNamePlWallBreaker") & "|" & GetLangText("troopNamePlBalloon") & "|" & GetLangText("troopNamePlWizard") & "|" & GetLangText("troopNamePlHealer") & "|" & GetLangText("troopNamePlDragon") & "|" & GetLangText("troopNamePlPEKKA") & "|" & GetLangText("spellNameLightning") & "|" & GetLangText("spellNameHealing") & "|" & GetLangText("spellNameRage") & "|" & GetLangText("spellNameJump") & "|" & GetLangText("spellNameFreeze") & "|" & GetLangText("spellNamePoison") & "|" & GetLangText("spellNameEarthquake") & "|" & GetLangText("spellNameHaste") & "|" & GetLangText("troopDarkPlMinion") & "|" & GetLangText("troopDarkPlHog") & "|" & GetLangText("troopDarkPlValkyrie") & "|" & GetLangText("troopDarkPlGolem") & "|" & GetLangText("troopDarkPlWitch") & "|" & GetLangText("troopDarkPlLavaHound") & "|" & GetLangText("cmbNothing")
 $cmbLaboratory = GUICtrlCreateCombo("", 285, 317, 100, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 GUICtrlSetData(-1, $cmbLabList, GetLangText("troopNamePlBarbarian"))
 GUICtrlCreateGroup("", -99, -99, 1, 1)

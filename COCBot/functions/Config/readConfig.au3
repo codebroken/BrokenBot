@@ -50,6 +50,11 @@ Func readConfig() ;Reads config and sets it to the variables
 	$itxtWallMinElixir = IniRead($config, "upgrade", "minwallelixir", "0")
 	$icmbTolerance = IniRead($config, "upgrade", "walltolerance", "0")
 
+	;UpgradeHeroes
+	$ichkUpgradeKing = IniRead($config, "Upgrade", "UpKing", "0")	;==>upgradeking
+	$ichkUpgradeQueen = IniRead($config, "Upgrade", "UpQueen", "0")	;==>upgradequeen
+	$itxtKeepFreeBuilder = IniRead($config, "Upgrade", "KeepFreeBuilder", "1") ;==>FreeBuilderBox
+
 	;Laboratory
 	$ichkLab = IniRead($config, "upgrade", "auto-uptroops", "0")
 	$icmbLaboratory = IniRead($config, "upgrade", "troops-name", "0")

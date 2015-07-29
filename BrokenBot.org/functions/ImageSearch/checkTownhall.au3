@@ -4,24 +4,31 @@
 ; You **MAY NOT SOLICIT DONATIONS** from any project which includes any part of the code in this sub-directory without express written consent of BrokenBot.org
 ;
 Func checkTownhall()
-	_CaptureRegion()
-	$sendHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)
-	$res = DllCall(@ScriptDir & "\BrokenBot.org\BrokenBot32.dll", "str", "BrokenBotMatchBuilding", "ptr", $sendHBitmap, "int", 1, "int", 3, "int", 1, "int", 1, "int", (IsChecked($chkSpeedBoost) ? (1) : (0)))
-	_WinAPI_DeleteObject($sendHBitmap)
-	If IsArray($res) Then
-		If $res[0] = -1 Then
+	$res = CallHelper("0 0 860 720 BrokenBotMatchBuilding 1 1 1")
+
+	If $res = $DLLFailed or $res = $DLLTimeout Then
+		SetLog(GetLangText("msgDLLError"), $COLOR_RED)
+		$THx = 0
+		$THy = 0
+		Return "-" ; return 0
+	Else
+		If $res = $DLLNegative Then
 			; failed to find TH
-			If $DebugMode = 1 Then _GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "NegTH-" & @HOUR & @MIN & @SEC & ".png")
+			If $DebugMode = 1 Then
+				_CaptureRegion()
+				_GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "NegTH-" & @HOUR & @MIN & @SEC & ".png")
+			EndIf
 			$THx = 0
 			$THy = 0
 			Return "-" ; return 0
-		ElseIf $res[0] = -2 Then
+		ElseIf $res = $DLLLicense Then
 			SetLog(GetLangText("msgLicense"), $COLOR_RED)
 		Else
-			$res = StringSplit($res[0], "|", 2)
+			$res = StringSplit($res, "|", 2)
 			$THx = $res[1]
 			$THy = $res[2]
 			If $DebugMode = 1 Then
+				_CaptureRegion()
 				$hClone = _GDIPlus_BitmapCloneArea($hBitmap, $THx - 30, $THy - 30, 60, 60, _GDIPlus_ImageGetPixelFormat($hBitmap))
 				$j = 1
 				Do
@@ -37,10 +44,5 @@ Func checkTownhall()
 				Return $THText[$res[4] - 6]
 			EndIf
 		EndIf
-	Else
-		SetLog(GetLangText("msgDLLError"), $COLOR_RED)
-		$THx = 0
-		$THy = 0
-		Return "-" ; return 0
 	EndIf
 EndFunc   ;==>checkTownhall

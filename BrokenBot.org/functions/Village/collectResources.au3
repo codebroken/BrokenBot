@@ -9,21 +9,18 @@ Func collectResources()
 	If $ichkCollect = 1 Then
 		SetLog(GetLangText("msgCollecting"), $COLOR_BLUE)
 		Do
-			_CaptureRegion()
-			$sendHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)
-			$res = DllCall(@ScriptDir & "\BrokenBot.org\BrokenBot32.dll", "str", "BrokenBotMatchObject", "ptr", $sendHBitmap, "int", 27, "int", 3, "int", 17, "int", 1, "int", (IsChecked($chkSpeedBoost) ? (1) : (0)))
-			_WinAPI_DeleteObject($sendHBitmap)
-			If IsArray($res) Then
-				If $res[0] = -2 Then
+			$res = CallHelper("0 0 860 720 BrokenBotMatchObject 27 17 1")
+			If $res <> $DLLFailed And $res <> $DLLTimeout Then
+				If $res = $DLLLicense Then
 					SetLog(GetLangText("msgLicense"), $COLOR_RED)
-				ElseIf $res[0] = -1 And Not $foundResource Then
+				ElseIf $res = $DLLNegative And Not $foundResource Then
 					; failed to find Resources
 					SetLog(GetLangText("msgNoResources"), $COLOR_RED)
 					$ResX = 0
 					$ResY = 0
 					ExitLoop
 				Else
-					$expRet = StringSplit($res[0], "|", 2)
+					$expRet = StringSplit($res, "|", 2)
 					$numBldg = $expRet[0]
 					For $j = 1 To UBound($expRet) - 1 Step 6
 						$ResX = $expRet[$j]

@@ -23,19 +23,19 @@ Func Donate_CheckArmyCamp()
 		Click($BArmyPos[0], $BArmyPos[1]) ;Click Info button
 		_WaitForPixel(690, 150, 710, 170, Hex(0xD80407, 6), 5, 1) ;Finds Red Cross button in new popup window
 		If _Sleep(200) Then Return
-		For $readattempts = 1 to 3
-			$CurCamp = StringStripWS(ReadText(426, 194, 280, $textWindows), 3)
-			$CurCamp = StringStripWS(StringMid($CurCamp, Stringinstr($CurCamp, ":") + 1), 3)
+		For $readattempts = 1 to 20
+			$CurCamp = StringStripWS(ReadText(426, 194, 280, $textWindows), 8)
+			$CurCamp = StringStripWS(StringMid($CurCamp, Stringinstr($CurCamp, ":") + 1), 8)
 			Local $itxtcampCap = StringMid($CurCamp, Stringinstr($CurCamp, "/") + 1)
-			If Number($itxtcampCap) > 0 And Number($itxtcampCap) < 300 Then
+			If Number($itxtcampCap) > 0 And Number($itxtcampCap) < 300 And StringIsDigit($itxtcampCap) Then
 				$CurCamp = StringLeft($CurCamp, StringInStr($CurCamp, "/") - 1)
-				If Number($CurCamp) >= 0 And Number($CurCamp) <= $itxtcampCap Then
+				If Number($CurCamp) >= 0 And Number($CurCamp) <= $itxtcampCap And StringIsDigit($itxtcampCap) Then
 					SetLog(GetLangText("msgTotalCampCap") & $CurCamp & "/" & $itxtcampCap, $COLOR_GREEN)
 					ExitLoop
 				EndIf
 			EndIf
 			If _Sleep(500) Then Return
-			If $readattempts = 3 Then
+			If $readattempts = 20 Then
 				SetLog(GetLangText("msgTotalCampCap") & GetLangText("lblUnknownCap"), $COLOR_GREEN)
 				$CurCamp = 0
 				If $itxtcampCap = 0 then $itxtcampCap = 240
@@ -57,7 +57,7 @@ Func Donate_CheckArmyCamp()
 			For $i = 0 To 6
 				Local $TroopKind = _GetPixelColor(254 + 62 * $i, 375)
 				Local $TroopKind2 = _GetPixelColor(264 + 62 * $i, 380)
-				Local $TroopName = 0
+				Local $TroopName = ""
 				Local $TroopQ = StringStripWS(ReadText(239 + (62 * $i), 350, 37, $textWindows), 3)
 				If StringLeft($TroopQ, 1) = "x" Then $TroopQ = StringRight($TroopQ, StringLen($TroopQ) - 1)
 				$TroopQ = Number($TroopQ)
@@ -86,6 +86,7 @@ Func Donate_CheckArmyCamp()
 					If ($FirstStart) Then $CurValkyrie -= $TroopQ
 					$TroopName = "Valkyries"
 				EndIf
+				If $TroopName = "" Then $TroopName = "Unknown"
 				If $TroopQ <> 0 Then SetLog("- " & $TroopName & " " & $TroopQ, $COLOR_GREEN)
 			Next
 		EndIf

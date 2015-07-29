@@ -3,12 +3,12 @@
 #pragma compile(Icon, "BrokenBot.org\images\icons\brokenbot.ico")
 #pragma compile(FileDescription, BrokenBot.org - Clash of Clans Bot)
 #pragma compile(ProductName, BrokenBot.org - Clash of Clans Bot)
-#pragma compile(ProductVersion, 3.1.0)
-#pragma compile(FileVersion, 3.1.0)
+#pragma compile(ProductVersion, 3.2.0)
+#pragma compile(FileVersion, 3.2.0)
 
 #include <GUIConstants.au3>
 
-$sBotVersion = "3.1.0"
+$sBotVersion = "3.2.0"
 $sBotTitle = "BrokenBot.org - Break FREE - v" & $sBotVersion
 
 If FileExists(@ScriptDir & "\.developer") Then

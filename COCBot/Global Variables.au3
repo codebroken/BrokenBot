@@ -137,8 +137,8 @@ Global Enum $eBarbarian, $eArcher, $eGiant, $eGoblin, $eWallbreaker, _
 ; Shift outer corners 1 pixel for more random drop space
 Global $TopLeft[5][2] = [[78, 280], [169, 204], [233, 161], [295, 114], [367, 65]]
 Global $TopRight[5][2] = [[481, 62], [541, 103], [590, 145], [656, 189], [780, 277]]
-Global $BottomLeft[5][2] = [[78, 343], [141, 390], [209, 447], [275, 493], [338, 540]]
-Global $BottomRight[5][2] = [[524, 538], [596, 485], [655, 441], [716, 394], [780, 345]]
+Global $BottomLeft[5][2] = [[78, 343], [141, 390], [209, 447], [275, 493], [363, 560]]
+Global $BottomRight[5][2] = [[510, 560], [596, 485], [655, 441], [716, 394], [780, 345]]
 Global $FurthestTopLeft[5][2] = [[28, 314], [0, 0], [0, 0], [0, 0], [430, 9]]
 Global $FurthestTopRight[5][2] = [[430, 9], [0, 0], [0, 0], [0, 0], [820, 313]]
 Global $FurthestBottomLeft[5][2] = [[28, 314], [0, 0], [0, 0], [0, 0], [440, 612]]
@@ -240,6 +240,7 @@ Global $icmbTolerance
 Global $itxtReconnect
 Global $DarkBarrackPos[2][2]
 Global $DarkBarrackTroop[2]
+Global $DarkBarrackTroopNext[2]
 Global $iTimeTroops = 0
 Global $iTimeGiant = 120
 Global $iTimeWall = 120
@@ -360,28 +361,6 @@ Global $ichkLab
 Global $icmbLaboratory
 Global $itxtLabX = -1
 Global $itxtLabY = -1
-Global $UpBar2X = 175
-Global $UpBar2Y = 379
-Global $UpArchX = 180
-Global $UpArchY = 468
-Global $GiantsX = 307
-Global $GiantsY = 361
-Global $WBreakerX = 373
-Global $WBreakerY = 373
-Global $WizardX = 489
-Global $WizardY = 323
-Global $UpHealX = 515
-Global $UpHealY = 431
-Global $UpDragonX = 591
-Global $UpDragonY = 388
-Global $UpPekkaX = 612
-Global $UpPekkaY = 479
-Global $SpellHealX = 527
-Global $SpellHealY = 381
-Global $SpellLightningX = 549
-Global $SpellLightningY = 461
-Global $SpellRageX = 650
-Global $SpellRageY = 372
 Global $LabPos[2]
 
 Global $FontSize
@@ -398,3 +377,6 @@ Global $MinDark
 Global $MinTrophy
 Global $MaxTH
 Global $iNukeLimit
+
+Global $ichkUpgradeKing, $ichkUpgradeQueen
+Global $itxtKeepFreeBuilder
