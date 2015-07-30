@@ -38,10 +38,10 @@ $txtLog = _GUICtrlRichEdit_Create($frmBot, "", 16, 45, 385, 200, BitOR($ES_MULTI
 $Controls = GUICtrlCreateGroup(GetLangText("Controls"), 15, 245, 385, 41)
 $chkBotStop = GUICtrlCreateCheckbox("", 37, 264, 16, 16)
 $cmbBotCommand = GUICtrlCreateCombo("", 60, 260, 110, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-GUICtrlSetData(-1, GetLangText("cmbBotPre") & GetLangText("cmbBotCommand"), GetLangText("cmbBotCommandDefault"))
+GUICtrlSetData(-1, GetLangText("cmbBotCommand"), GetLangText("cmbBotCommandDefault"))
 $lblPC = GUICtrlCreateLabel(GetLangText("lblPC"), 178, 264, 25, 17)
 $cmbBotCond = GUICtrlCreateCombo("", 198, 260, 163, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-GUICtrlSetData(-1, GetLangText("cmbBotCondAdd") & GetLangText("cmbBotCondMore") & GetLangText("cmbBotCond"), GetLangText("cmbBotCondDefault"))
+GUICtrlSetData(-1, GetLangText("cmbBotCond"), GetLangText("cmbBotCondDefault"))
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 $otherSettings = GUICtrlCreateGroup(GetLangText("otherSettings"), 15, 290, 385, 66)
@@ -67,9 +67,6 @@ GUICtrlSetLimit(-1, 4)
 $lblMaxTrophy2 = GUICtrlCreateLabel("-", 349, 308, 5, 17)
 $txtMaxTrophy = GUICtrlCreateInput("9999", 360, 308, 32, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 GUICtrlSetLimit(-1, 4)
-$lblSnipeBelow = GUICtrlCreateLabel(GetLangText("lblSnipeBelow"), 232, 331, 75, 17)
-$txtSnipeBelow = GUICtrlCreateInput("0", 360, 331, 32, 16, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-GUICtrlSetLimit(-1, 4)
 
 ; ---------------------------------------------------------------------------------------------------------------------
 ; Strategies ----------------------------------------------------------------------------------------------------------
@@ -81,14 +78,10 @@ $btnRefresh = GUICtrlCreateButton(GetLangText("btnRefresh"), 210, 240, 185, 20)
 $AtkSpeed = GUICtrlCreateGroup(GetLangText("AtkSpeed"), 15, 275, 385, 79)
 $lblUnitDelay = GUICtrlCreateLabel(GetLangText("lblUnitDelay"), 30, 292, 75, 17)
 $cmbUnitDelay = GUICtrlCreateCombo("", 90, 289, 50, 17, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-$delaystring = "1"
-For $i = 2 To 20
-	$delaystring &= "|" & String($i)
-Next
-GUICtrlSetData(-1, $delaystring, "5")
+GUICtrlSetData(-1, "1|2|3|4|5|6|7|8|9|10", "5")
 $lblWaveDelay = GUICtrlCreateLabel(GetLangText("lblWaveDelay"), 155, 292, 75, 17)
 $cmbWaveDelay = GUICtrlCreateCombo("", 225, 289, 50, 17, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-GUICtrlSetData(-1, $delaystring, "5")
+GUICtrlSetData(-1, "1|2|3|4|5|6|7|8|9|10", "5")
 $lblAttackdelay = GUICtrlCreateLabel(GetLangText("lblAttackdelay"), 35, 315, 350, 67, $SS_CENTER)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
@@ -185,16 +178,6 @@ GUICtrlSetOnEvent(-1, "btnLocateUp3")
 GUICtrlSetState(-1, $GUI_DISABLE)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
-$chkUpgradeKing = GUICtrlCreateCheckbox(GetLangText("chkUpgradeKing"), 30, 170, 80, 17)	;==> upgrade king
-GUICtrlSetTip(-1, GetLangText("lblUpgradeHeroes"))
-$chkUpgradeQueen = GUICtrlCreateCheckbox(GetLangText("chkUpgradeQueen"), 130, 170, 95, 17)	;==> upgrade queen
-GUICtrlSetTip(-1, GetLangText("lblUpgradeHeroes"))
-
-$lblbuilderfree = GUICtrlCreateLabel(GetLangText("lblbuilderfree"), 245, 172, 95, 17) ;==>FreeBuilderBox
-$txtKeepFreeBuilder = GUICtrlCreateInput("1", 340, 168, 20, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
-GUICtrlSetTip(-1, GetLangText("lblKeepFreeBuilder"))
-
-
 ;~ $Upgrade2 = GUICtrlCreateGroup(GetLangText("Upgrade2"), 20, 165, 375, 125)
 ;~ $chkUpgrade4 = GUICtrlCreateCheckbox(GetLangText("chkUpgrade4"), 30, 192, 80, 17)
 ;~ $lblUP4PosX = GUICtrlCreateLabel(GetLangText("lblUPPosX"), 112, 194, 40, 17)
@@ -225,16 +208,16 @@ GUICtrlSetTip(-1, GetLangText("lblKeepFreeBuilder"))
 $grpLaboratory = GUICtrlCreateGroup(GetLangText("grpLaboratory"), 20, 295, 375, 55)
 $chkLab = GUICtrlCreateCheckbox(GetLangText("chkLab"), 30, 320, 100, 17)
 GUICtrlCreateLabel(GetLangText("lblLab"), 185, 320, 100, 17)
-$cmbLabList = GetLangText("troopNamePlBarbarian") & "|" & GetLangText("troopNamePlArcher") & "|" & GetLangText("troopNamePlGiant") & "|" & GetLangText("troopNamePlGoblin") & "|" & GetLangText("troopNamePlWallBreaker") & "|" & GetLangText("troopNamePlBalloon") & "|" & GetLangText("troopNamePlWizard") & "|" & GetLangText("troopNamePlHealer") & "|" & GetLangText("troopNamePlDragon") & "|" & GetLangText("troopNamePlPEKKA") & "|" & GetLangText("spellNameLightning") & "|" & GetLangText("spellNameHealing") & "|" & GetLangText("spellNameRage") & "|" & GetLangText("spellNameJump") & "|" & GetLangText("spellNameFreeze") & "|" & GetLangText("spellNamePoison") & "|" & GetLangText("spellNameEarthquake") & "|" & GetLangText("spellNameHaste") & "|" & GetLangText("troopDarkPlMinion") & "|" & GetLangText("troopDarkPlHog") & "|" & GetLangText("troopDarkPlValkyrie") & "|" & GetLangText("troopDarkPlGolem") & "|" & GetLangText("troopDarkPlWitch") & "|" & GetLangText("troopDarkPlLavaHound") & "|" & GetLangText("cmbNothing")
+$cmbLabList = GetLangText("troopNamePlBarbarian") & "|" & GetLangText("troopNamePlArcher") & "|" & GetLangText("troopNamePlGiant") & "|" & GetLangText("troopNamePlGoblin") & "|" & GetLangText("troopNamePlWallBreaker") & "|" & GetLangText("troopNamePlBalloon") & "|" & GetLangText("troopNamePlWizard") & "|" & GetLangText("troopNamePlHealer") & "|" & GetLangText("troopNamePlDragon") & "|" & GetLangText("troopNamePlPEKKA") & "|" & GetLangText("spellNameLightning") & "|" & GetLangText("spellNameHealing") & "|" & GetLangText("spellNameRage") & "|" & GetLangText("spellNameJump") & "|" & GetLangText("spellNameFreeze") & "|" & GetLangText("troopDarkPlMinion") & "|" & GetLangText("troopDarkPlHog") & "|" & GetLangText("troopDarkPlValkyrie") & "|" & GetLangText("troopDarkPlGolem") & "|" & GetLangText("troopDarkPlWitch") & "|" & GetLangText("troopDarkPlLavaHound") & "|" & GetLangText("cmbNothing")
 $cmbLaboratory = GUICtrlCreateCombo("", 285, 317, 100, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 GUICtrlSetData(-1, $cmbLabList, GetLangText("troopNamePlBarbarian"))
 GUICtrlCreateGroup("", -99, -99, 1, 1)
 
 ; ---------------------------------------------------------------------------------------------------------------------
-; Services ------------------------------------------------------------------------------------------------------------
+; PushBullet ----------------------------------------------------------------------------------------------------------
 ; ---------------------------------------------------------------------------------------------------------------------
 $pagenotificationSetting = GUICtrlCreateTabItem(GetLangText("pagenotificationSetting"))
-$lblpushbullet = GUICtrlCreateGroup(GetLangText("lblpushbullet"), 20, 40, 370, 220)
+$lblpushbullet = GUICtrlCreateGroup(GetLangText("lblpushbullet"), 20, 40, 370, 170)
 $pushbullettoken1 = GUICtrlCreateLabel(GetLangText("pushbullettoken1"), 30, 90, 80, 17, $SS_CENTER)
 $pushbullettokenvalue = GUICtrlCreateInput("", 120, 90, 260, 17)
 $lblpushbulletenabled = GUICtrlCreateCheckbox(GetLangText("lblpushbulletenabled"), 30, 65, 60, 17)
@@ -251,8 +234,7 @@ $lbldisconnect = GUICtrlCreateCheckbox(GetLangText("lbldisconnect"), 40, 140, 95
 $lblmatchfound = GUICtrlCreateCheckbox(GetLangText("lblmatchfound"), 40, 160, 95, 17)
 $lbllastraid = GUICtrlCreateCheckbox(GetLangText("lbllastraid"), 140, 140, 80, 17)
 $lblfreebuilder = GUICtrlCreateCheckbox(GetLangText("lblfreebuilder"), 140, 160, 80, 17)
-$lblvillagereport = GUICtrlCreateCheckbox(GetLangText("lblvillagereport"), 40, 180, 95, 17)
-$lblchatlog = GUICtrlCreateCheckbox(GetLangText("lblchatlog"), 140, 180, 80, 17)
+$lblvillagereport = GUICtrlCreateCheckbox(GetLangText("lblvillagereport"), 40, 180, 150, 17)
 
 $lblpushbulletloot = GUICtrlCreateGroup(GetLangText("lblpushbulletloot"), 240, 115, 140, 88)
 $UseJPG = GUICtrlCreateCheckbox(GetLangText("UseJPG"), 260, 135, 60, 17)
@@ -260,31 +242,9 @@ GUICtrlSetTip(-1, GetLangText("UseJPGTip"))
 $UseAttackJPG = GUICtrlCreateCheckbox(GetLangText("UseAttackJPG"), 260, 155, 60, 17)
 GUICtrlSetTip(-1, GetLangText("UseAttackJPGTip"))
 
-$lblpushUser = GUICtrlCreateLabel(GetLangText("lblpushuser"), 30, 210, 350, 20)
-$inppushUser = GUICtrlCreateInput("", 30, 230, 150, 20)
-
-$lblStats = GUICtrlCreateGroup(GetLangText("lblBBStats"), 20, 270, 370, 85)
-$lblBBUser = GUICtrlCreateLabel(GetLangText("lblBBUser"), 30, 293, 60, 20)
-GUICtrlSetTip(-1, GetLangText("tipBBUser"))
-$inpBBUser = GUICtrlCreateInput("", 90, 290, 90, 20)
-GUICtrlSetTip(-1, GetLangText("tipBBUser"))
-$lblBBPassword = GUICtrlCreateLabel(GetLangText("lblBBPassword"), 30, 323, 60, 20)
-GUICtrlSetTip(-1, GetLangText("tipBBPass1") & @CRLF & @CRLF & GetLangText("tipBBPass2") & @CRLF & GetLangText("tipBBPass3") & @CRLF & @CRLF & GetLangText("tipBBPass4") & @CRLF & GetLangText("tipBBPass5") & @CRLF & GetLangText("tipBBPass6") & @CRLF & GetLangText("tipBBPass7"))
-$inpBBPassword = GUICtrlCreateInput("", 90, 320, 90, 20, BitOR($ES_LEFT, $ES_AUTOHSCROLL, $ES_PASSWORD))
-GUICtrlSetTip(-1, GetLangText("tipBBPass1") & @CRLF & @CRLF & GetLangText("tipBBPass2") & @CRLF & GetLangText("tipBBPass3") & @CRLF & @CRLF & GetLangText("tipBBPass4") & @CRLF & GetLangText("tipBBPass5") & @CRLF & GetLangText("tipBBPass6") & @CRLF & GetLangText("tipBBPass7"))
-$btnBBValidate = GUICtrlCreateButton("", 305, 290, 70, 20)
-GUICtrlSetColor($btnBBValidate, 0xFFFFFF)
-$prevBBUser = (IniRead(@LocalAppDataDir & "\BrokenBot.org.ini", "default", "1", "") = "") ? ("") : (_Decrypt(IniRead(@LocalAppDataDir & "\BrokenBot.org.ini", "default", "1", "")))
-GUICtrlSetData($inpBBUser, $prevBBUser)
-$prevBBPass = ""
-
-;~ GUICtrlSetTip($btnBBValidate, GetLangText("tipBBValidCheck"))
-;~ $chkBBSendData = GUICtrlCreateCheckbox(GetLangText("chkBBSendData"), 30, 320, 175, 20)
-;~ GUICtrlSetTip($chkBBSendData, GetLangText("tipBBSendData"))
-
-$lblBBRegister = GUICtrlCreateLabel(GetLangText("lblBBRegister"), 230, 323, 150, 20)
-GUICtrlSetColor($lblBBRegister, 0x0000FF)
-GUICtrlSetCursor($lblBBRegister, 0)
+$lblpushbullet2 = GUICtrlCreateGroup(GetLangText("lblpushbullet2"), 20, 210, 370, 70)
+$lblpushUser = GUICtrlCreateLabel(GetLangText("lblpushuser"), 30, 230, 350, 20)
+$inppushUser = GUICtrlCreateInput("", 30, 250, 150, 20)
 
 ; ---------------------------------------------------------------------------------------------------------------------
 ; Misc ----------------------------------------------------------------------------------------------------------------
@@ -298,6 +258,8 @@ GUICtrlSetLimit(-1, 2)
 $lblReconnectmin = GUICtrlCreateLabel(GetLangText("lblReconnectmin"), 165, 65, 100, 17)
 $lblSpellCap = GUICtrlCreateLabel(GetLangText("lblSpellCap"), 217, 118, 120, 17)
 $txtSpellCap = GUICtrlCreateInput("3", 335, 115, 50, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
+$lblCapacity = GUICtrlCreateLabel(GetLangText("lblCapacity"), 30, 118, 95, 17)
+$txtCapacity = GUICtrlCreateInput("0", 120, 115, 56, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 
 $chkTrap = GUICtrlCreateCheckbox(GetLangText("chkTrap"), 270, 65, 110, 17)
 GUICtrlSetState(-1, $GUI_CHECKED)
@@ -316,8 +278,6 @@ GUICtrlSetLimit(-1, 2)
 $lblReturndelay = GUICtrlCreateLabel(GetLangText("lblReturndelay"), 165, 146, 200, 17)
 
 $chkWideEdge = GUICtrlCreateCheckbox(GetLangText("chkWideEdge"), 30, 180, 177, 17)
-$chkClearField = GUICtrlCreateCheckbox(GetLangText("chkClearField"), 253, 180, 100, 17)
-GUICtrlSetTip(-1, GetLangText("chkClearFieldTip"))
 
 $chkAlertSearch = GUICtrlCreateCheckbox(GetLangText("chkAlertSearch"), 30, 205, 100, 17)
 $chkCollect = GUICtrlCreateCheckbox(GetLangText("chkCollect"), 30, 230, 110, 17)
@@ -329,7 +289,7 @@ $chkTakeAttackSS = GUICtrlCreateCheckbox(GetLangText("chkTakeAttackSS"), 140, 23
 GUICtrlSetTip(-1, GetLangText("chkTakeAttackSSTip"))
 $chkDebug = GUICtrlCreateCheckbox(GetLangText("chkDebug"), 253, 230, 141, 17)
 GUICtrlSetTip(-1, GetLangText("chkDebugTip"))
-;~ If @Compiled Then GUICtrlSetState($chkDebug, $GUI_HIDE)
+If @Compiled Then GUICtrlSetState($chkDebug, $GUI_HIDE)
 
 $LocationSettings = GUICtrlCreateGroup(GetLangText("LocationSettings"), 20, 255, 375, 100)
 $btnLocateKingAltar = GUICtrlCreateButton(GetLangText("btnLocateKingAltar"), 32, 270, 83, 25)

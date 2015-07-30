@@ -6,7 +6,7 @@ Func BotStopped($CheckLimits = True)
 	If $CheckLimits Then
 		If IsChecked($chkBotStop) Then
 			$MeetCondStop = False
-			Local $TrophyCount = Number(ReadText(59, 75, 60, $textMainScreen))
+			Local $TrophyCount = getOther(50, 74, "Trophy")
 			Local $TrophyMax = Number($TrophyCount) > Number($itxtMaxTrophy)
 			If $TrophyMax Then
 				$Trophy = "Max. Trophy Reached!"
@@ -16,40 +16,30 @@ Func BotStopped($CheckLimits = True)
 
 			Switch $icmbBotCond
 				Case 0
-					If isGoldFull() And isElixirFull() And isDarkElixirFull() And $TrophyMax Then $MeetCondStop = True
-				Case 1
-					If (isGoldFull() And isElixirFull() And isDarkElixirFull()) Or $TrophyMax Then $MeetCondStop = True
-				Case 2
-					If isGoldFull() And isElixirFull() And isDarkElixirFull() Then $MeetCondStop = True
-				Case 3
-					If isGoldFull() Or isElixirFull() Or isDarkElixirFull() Then $MeetCondStop = True
-				Case 4
-					If isDarkElixirFull() Then $MeetCondStop = True
-				Case 5
 					If isGoldFull() And isElixirFull() And $TrophyMax Then $MeetCondStop = True
-				Case 6
+				Case 1
 					If (isGoldFull() And isElixirFull()) Or $TrophyMax Then $MeetCondStop = True
-				Case 7
+				Case 2
 					If (isGoldFull() Or isElixirFull()) And $TrophyMax Then $MeetCondStop = True
-				Case 8
+				Case 3
 					If isGoldFull() Or isElixirFull() Or $TrophyMax Then $MeetCondStop = True
-				Case 9
+				Case 4
 					If isGoldFull() And isElixirFull() Then $MeetCondStop = True
-				Case 10
+				Case 5
 					If isGoldFull() Or isElixirFull() Then $MeetCondStop = True
-				Case 11
+				Case 6
 					If isGoldFull() And $TrophyMax Then $MeetCondStop = True
-				Case 12
+				Case 7
 					If isElixirFull() And $TrophyMax Then $MeetCondStop = True
-				Case 13
+				Case 8
 					If isGoldFull() Or $TrophyMax Then $MeetCondStop = True
-				Case 14
+				Case 9
 					If isElixirFull() Or $TrophyMax Then $MeetCondStop = True
-				Case 15
+				Case 10
 					If isGoldFull() Then $MeetCondStop = True
-				Case 16
+				Case 11
 					If isElixirFull() Then $MeetCondStop = True
-				Case 17
+				Case 12
 					If $TrophyMax Then $MeetCondStop = True
 			EndSwitch
 
@@ -60,19 +50,15 @@ Func BotStopped($CheckLimits = True)
 				EndIf
 				Switch $icmbBotCommand
 					Case 0
-						SetLog(GetLangText("msgHaltExp"), $COLOR_BLUE)
-						$CurrentMode = $modeExperience ; Switch to exp mode
-						If _Sleep(500) Then Return
-					Case 1
 						SetLog(GetLangText("msgHaltDonate"), $COLOR_BLUE)
 						$CurrentMode = $modeDonateTrain ; Halt Attack
 						If _Sleep(500) Then Return
-					Case 2
+					Case 1
 						SetLog(GetLangText("msgForceShutdown"), $COLOR_BLUE)
 						If _Sleep(500) Then Return
 						Shutdown(5) ; Force Shutdown
 						btnStop()
-					Case 3
+					Case 2
 						SetLog(GetLangText("msgSleep"), $COLOR_BLUE)
 						If _Sleep(500) Then Return
 						Shutdown(32) ; Sleep / Stand by

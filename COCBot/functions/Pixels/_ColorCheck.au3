@@ -31,7 +31,6 @@ Func CheckPixel($tab)
 		SetLog(GetLangText("msgGot") & _GetPixelColor($tab[0], $tab[1]), $COLOR_RED)
 		SetLog(GetLangText("msgWanted") & Hex($tab[2], 6), $COLOR_RED)
 		SetLog(GetLangText("msgVariance") & $tab[3], $COLOR_RED)
-		_GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "Missedcolor-" & $tab[0] & "-" & $tab[1] & "-" & Hex($tab[2], 6) & "-" & _GetPixelColor($tab[0], $tab[1]) & ".png")
 		Return False
 	EndIf
 EndFunc   ;==>CheckPixel

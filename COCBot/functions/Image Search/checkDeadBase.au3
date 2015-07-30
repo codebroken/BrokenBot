@@ -64,35 +64,35 @@ $E[3][9] = @ScriptDir & "\images\ELIX4\E12F8.bmp"
 $E[3][10] = @ScriptDir & "\images\ELIX4\E12F9.bmp"
 
 #Region ### Check Dead Base Functions ###
-	;==============================================================================================================
-	;===Main Function==============================================================================================
-	;--------------------------------------------------------------------------------------------------------------
-	;Uses imagesearch to see whether a collector is full or semi-full to indicate that it is a dead base
-	;Returns True if it is, returns false if it is not a dead base
-	;--------------------------------------------------------------------------------------------------------------
+;==============================================================================================================
+;===Main Function==============================================================================================
+;--------------------------------------------------------------------------------------------------------------
+;Uses imagesearch to see whether a collector is full or semi-full to indicate that it is a dead base
+;Returns True if it is, returns false if it is not a dead base
+;--------------------------------------------------------------------------------------------------------------
 
-	Func ZombieSearch()
-		_CaptureRegion()
-		$ZombieCount = 0
-		$ZC = 0
-		For $s = 0 To ($ZombieFileSets - 1) Step 1
-			For $p = 10 To 0 + $ZSExclude Step -1
-				If FileExists($E[$s][$p]) Then
-					$Area[$s][$p][0] = _ImageSearch($E[$s][$p], 1, $IS_x[$p][0], $IS_y[$p][0], $Tolerance[$s][$p] + $AdjustTolerance)
-					If $Area[$s][$p][0] > 0 Then
-						$ZC = 1
-						ExitLoop (2)
-					EndIf
-				Else
-					$Area[$s][$p][0] = 0
+Func ZombieSearch()
+	_CaptureRegion()
+	$ZombieCount = 0
+	$ZC = 0
+	For $s = 0 To ($ZombieFileSets - 1) Step 1
+		For $p = 10 To 0 + $ZSExclude Step -1
+			If FileExists($E[$s][$p]) Then
+				$Area[$s][$p][0] = _ImageSearch($E[$s][$p], 1, $IS_x[$p][0], $IS_y[$p][0], $Tolerance[$s][$p] + $AdjustTolerance)
+				If $Area[$s][$p][0] > 0 Then
+					$ZC = 1
+					ExitLoop (2)
 				EndIf
-			Next
+			Else
+				$Area[$s][$p][0] = 0
+			EndIf
 		Next
-		$ZombieCount += $ZC
-		If $ZombieCount > 0 Then
-			Return True
-		Else
-			Return False
-		EndIf
-	EndFunc   ;==>ZombieSearch
+	Next
+	$ZombieCount += $ZC
+	If $ZombieCount > 0 Then
+		Return True
+	Else
+		Return False
+	EndIf
+EndFunc   ;==>ZombieSearch
 #EndRegion ### Check Dead Base Functions ###

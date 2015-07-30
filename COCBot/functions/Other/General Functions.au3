@@ -2,7 +2,7 @@ Func SetTime()
 	Local $time = _TicksToTime(Int(TimerDiff($sTimer)), $hour, $min, $sec)
 	If _GUICtrlTab_GetCurSel($tabMain) = 7 Then GUICtrlSetData($lblresultruntime, StringFormat("%02i:%02i:%02i", $hour, $min, $sec))
 	If IsChecked($lblpushbulletremote) Then
-		If StringRight(StringFormat("%02i", $sec), 2) = "30" Then
+		If StringRight(StringFormat("%02i", $sec),2) = "30" Then
 			_RemoteControl()
 		EndIf
 	EndIf
@@ -67,11 +67,6 @@ Func Initiate()
 		GUICtrlSetState($btnLocateClanCastle, $GUI_DISABLE)
 		GUICtrlSetState($btnLocateSFactory, $GUI_DISABLE)
 		$sTimer = TimerInit()
-		$GoldTotalLoot = 0
-		$ElixirTotalLoot = 0
-		$DarkTotalLoot = 0
-		$TrophyTotalLoot = 0
-
 		AdlibRegister("SetTime", 1000)
 		runBot()
 		GUICtrlSetState($btnStart, $GUI_ENABLE)
@@ -86,33 +81,26 @@ Func Open()
 	If $64Bit Then ;If 64-Bit
 		ShellExecute("C:\Program Files (x86)\BlueStacks\HD-StartLauncher.exe")
 		SetLog(GetLangText("msgStartingBS"), $COLOR_GREEN)
-		_ModifiedSleep(290)
+		Sleep(290)
 		SetLog(GetLangText("msgWaitingBS"), $COLOR_GREEN)
-		$Initiate = 0
 		Check()
 	Else ;If 32-Bit
 		ShellExecute("C:\Program Files\BlueStacks\HD-StartLauncher.exe")
 		SetLog(GetLangText("msgStartingBS"), $COLOR_GREEN)
-		_ModifiedSleep(290)
+		Sleep(290)
 		SetLog(GetLangText("msgWaitingBS"), $COLOR_GREEN)
-		$Initiate = 0
 		Check()
 	EndIf
 EndFunc   ;==>Open
 
 Func Check()
-	If $Initiate > 90 Then
-		restartBlueStack()
-		$Initiate = 0
+	If IsArray(ControlGetPos($Title, "_ctl.Window", "[CLASS:BlueStacksApp; INSTANCE:1]")) Then
+		SetLog(GetLangText("msgBSLoaded") & ($Initiate) & GetLangText("msgBSLoadSecs"), $COLOR_GREEN)
+		Initiate()
 	Else
-		If IsArray(ControlGetPos($Title, "_ctl.Window", "[CLASS:BlueStacksApp; INSTANCE:1]")) Then
-			SetLog(GetLangText("msgBSLoaded") & ($Initiate) & GetLangText("msgBSLoadSecs"), $COLOR_GREEN)
-			Initiate()
-		Else
-			_ModifiedSleep(1000)
-			$Initiate = $Initiate + 1
-			Check()
-		EndIf
+		Sleep(1000)
+		$Initiate = $Initiate + 1
+		Check()
 	EndIf
 EndFunc   ;==>Check
 

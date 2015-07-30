@@ -4,7 +4,7 @@ Func BoostAllBuilding()
 	If (GUICtrlRead($cmbBoostBarracks) > 0) And ($boostsEnabled = 1) Then
 
 		If $barrackPos[0][0] = "" Then
-			If Not LocateBarrack() Then Return
+		If Not LocateBarrack() Then Return
 			SaveConfig()
 			If _Sleep(2000) Then Return
 		EndIf

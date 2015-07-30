@@ -10,13 +10,18 @@ Func waitMainScreen() ;Waits for main screen to popup
 		_CaptureRegion()
 		If Not _ColorCheck(_GetPixelColor(284, 28), Hex(0x41B1CD, 6), 20) Then ;Checks for Main Screen
 			If _Sleep(2000) Then Return
-			;If checkObstacles() Then $i = 0 ;See if there is anything in the way of mainscreen
-			checkObstacles()	;in case of bluestack freeze, this may become dead loop. Just stick to 5 minutes waiting
+			If checkObstacles() Then $i = 0 ;See if there is anything in the way of mainscreen
 		Else
 			Return
 		EndIf
 	Next
 
 	SetLog(GetLangText("msgUnableLoad"), $COLOR_RED)
-	If Not restartBlueStack() Then Return
+	Local $RestartApp = StringReplace(_WinAPI_GetProcessFileName(WinGetProcess($Title)), "Frontend", "Restart")
+	Run($RestartApp & " Android")
+	If _Sleep(10000) Then Return
+
+	Do
+		If _Sleep(5000) Then Return
+	Until ControlGetHandle($Title, "", "BlueStacksApp1") <> 0
 EndFunc   ;==>waitMainScreen

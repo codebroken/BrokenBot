@@ -3,16 +3,16 @@
 #pragma compile(Icon, "BrokenBot.org\images\icons\brokenbot.ico")
 #pragma compile(FileDescription, BrokenBot.org - Clash of Clans Bot)
 #pragma compile(ProductName, BrokenBot.org - Clash of Clans Bot)
-#pragma compile(ProductVersion, 3.2.0)
-#pragma compile(FileVersion, 3.2.0)
+#pragma compile(ProductVersion, 2.8.0)
+#pragma compile(FileVersion, 2.8.0)
 
 #include <GUIConstants.au3>
 
-$sBotVersion = "3.2.0"
+$sBotVersion = "2.8.0"
 $sBotTitle = "BrokenBot.org - Break FREE - v" & $sBotVersion
 
-If FileExists(@ScriptDir & "\.developer") Then
-	$sBotTitle = "BrokenBot.org - In Development"
+If FileExists (@ScriptDir & "\.developer") Then
+	$sBotTitle = "BrokenBot - In Development"
 EndIf
 
 Global $StartupLanguage = IniRead(@ScriptDir & "\config\default.ini", "config", "language", "English")
@@ -79,27 +79,14 @@ _WinAPI_DeleteObject($hHBitmap)
 If Not IsArray($ret) Then
 	If MsgBox($MB_ICONWARNING + $MB_OKCANCEL, GetLangText("msgMissing"), GetLangText("msgMissing1") & @CRLF & @CRLF & GetLangText("msgMissing2") & @CRLF & @CRLF & GetLangText("msgMissing3") & " " & GetLangText("msgMissing4") & " " & GetLangText("msgMissing5") & @CRLF & @CRLF & GetLangText("msgMissing6")) = $IDOK Then
 		ShellExecute("https://www.microsoft.com/en-us/download/details.aspx?id=40784")
-		DllClose($KernelDLL)
 		_GDIPlus_Shutdown()
-		_Crypt_Shutdown()
 		_GUICtrlRichEdit_Destroy($txtLog)
 		Exit
 	EndIf
-ElseIf $ret[0] = -2 Then
-	MsgBox(48, "BrokenBot.org", GetLangText("msgLicense") & @CRLF & @CRLF & "Please visit BrokenBot.org")
-EndIf
-
-If IniRead(@LocalAppDataDir & "\BrokenBot.org.ini", "default", "1", "") = "" Or IniRead(@LocalAppDataDir & "\BrokenBot.org.ini", "default", "2", "") = "" Then
-	GUICtrlSetImage($btnBBValidate, @ScriptDir & "\images\Resource\bad.bmp")
-	GUICtrlSetTip($btnBBValidate, GetLangText("tipBBValidBad"))
-Else
-	GUICtrlSetData($inpBBPassword, _Decrypt(IniRead(@LocalAppDataDir & "\BrokenBot.org.ini", "default", "2", "")))
-	_btnBBValidate()
-	GUICtrlSetData($inpBBPassword, "")
 EndIf
 
 ;Only enable button start after all Initiation done.
-GUICtrlSetData($btnStart, GetLangText("btnStart"))
+GUICtrlSetData($btnStart,GetLangText("btnStart") )
 GUICtrlSetState($btnStart, $GUI_ENABLE)
 While 1
 	If $StartImmediately Then

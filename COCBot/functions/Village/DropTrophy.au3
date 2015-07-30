@@ -3,7 +3,7 @@
 
 Func DropTrophy()
 	Local $i
-	Local $TrophyCount = Number(ReadText(59, 75, 60, $textMainScreen))
+	Local $TrophyCount = getOther(50, 74, "Trophy")
 	If Number($TrophyCount) > Number($itxtMaxTrophy) Then
 		SetLog(GetLangText("msgTrophyCount") & $TrophyCount, $COLOR_GREEN)
 		While Number($TrophyCount) > Number($itxtMinTrophy)
@@ -13,17 +13,14 @@ Func DropTrophy()
 
 				PrepareSearch()
 
-				; Make sure end battle button is visible
-				If Not _WaitForColor(36, 523, Hex(0xEE5056, 6), 50, 10) Then
-					ChkDisconnection()
-					Return -1
-				EndIf
-
-				; Make sure clouds have cleared
-				If Not _WaitForColor(1, 670, Hex(0x02070D, 6), 50, 5) Then Return -1
-
-				; Wait just a bit extra
-				If _Sleep(100) Then Return
+				$i = 0
+				While getGold(51, 66) = "" ; Loops until gold is readable
+					If _Sleep(100) Then ExitLoop (2)
+					$i += 1
+					If $i >= 100 Then
+						Return True
+					EndIf
+				WEnd
 
 				$KingAt = -1
 				$QueenAt = -1
@@ -35,28 +32,28 @@ Func DropTrophy()
 				Next
 
 				$Zapped = False
-;~ 				If $LSpellAt <> -1 Then ; If we found a lightning spell
-;~ 					$DarkElix = 0
-;~ 					$Trophies = getTrophy(51, 66 + 90)
-;~ 					If $Trophies <> "" Then
-;~ 						$DarkElix = getDarkElixir(51, 66 + 57)
-;~ 					EndIf
-;~ 					If Number($DarkElix) >= GUICtrlRead($txtDENukeLimit) Then ; If there is enough DE present
-;~ 						If checkDarkElix() Then ; If we can see the DE storage
-;~ 							SelectDropTroupe($LSpellAt) ; All these checks passed so lets zap the damn thing
-;~ 							If _Sleep(200) Then Return False
-;~ 							$z = 0
-;~ 							Do
-;~ 								Click(Round(_Random_Gaussian($DEx, 2)), Round(_Random_Gaussian($DEy - 5, 2)))
-;~ 								If _Sleep(200) Then Return False
-;~ 								$nSpellQty = ReadTroopQuantity($LSpellAt)
-;~ 								$z = $z + 1
-;~ 							Until $nSpellQty = 0 Or $z = 100
-;~ 							$Zapped = True ; We zapped, so don't bother dropping a troop
-;~ 						EndIf
-;~ 					EndIf
-;~ 					If _Sleep(2000) Then Return False
-;~ 				EndIf
+				If $LSpellAt <> -1 Then ; If we found a lightning spell
+					$DarkElix = 0
+					$Trophies = getTrophy(51, 66 + 90)
+					If $Trophies <> "" Then
+						$DarkElix = getDarkElixir(51, 66 + 57)
+					EndIf
+					If Number($DarkElix) >= GUICtrlRead($txtDENukeLimit) Then ; If there is enough DE present
+						If checkDarkElix() Then ; If we can see the DE storage
+							SelectDropTroupe($LSpellAt) ; All these checks passed so lets zap the damn thing
+							If _Sleep(200) Then Return False
+							$z = 0
+							Do
+								Click(Round(_Random_Gaussian($DEx, 2)), Round(_Random_Gaussian($DEy - 5, 2)))
+								If _Sleep(200) Then Return False
+								$nSpellQty = ReadTroopQuantity($LSpellAt)
+								$z = $z + 1
+							Until $nSpellQty = 0 Or $z = 100
+							$Zapped = True ; We zapped, so don't bother dropping a troop
+						EndIf
+					EndIf
+					If _Sleep(2000) Then Return False
+				EndIf
 
 				If Not $Zapped Then
 					$DropTroop = 0 ; Default to dropping first troop available
@@ -72,16 +69,16 @@ Func DropTrophy()
 					Do
 						Switch Random(0, 3, 1) ; I despise everything looking bottish -- lets randomly drop on some side
 							Case 0
-								$x = Round(_Random_Gaussian(((($FurthestTopLeft[4][0] - $FurthestTopLeft[0][0]) / 2) + $FurthestTopLeft[0][0]), (($FurthestTopLeft[4][0] - $FurthestTopLeft[0][0]) / 5)))
+								$x = Round(_Random_Gaussian(((($FurthestTopLeft[4][0]-$FurthestTopLeft[0][0])/2)+$FurthestTopLeft[0][0]), (($FurthestTopLeft[4][0]-$FurthestTopLeft[0][0])/5)))
 								$y = Round((($FurthestTopLeft[4][1] - $FurthestTopLeft[0][1]) / ($FurthestTopLeft[4][0] - $FurthestTopLeft[0][0])) * ($x - $FurthestTopLeft[0][0])) + $FurthestTopLeft[0][1]
 							Case 1
-								$x = Round(_Random_Gaussian(((($FurthestTopRight[4][0] - $FurthestTopRight[0][0]) / 2) + $FurthestTopRight[0][0]), (($FurthestTopRight[4][0] - $FurthestTopRight[0][0]) / 5)))
+								$x = Round(_Random_Gaussian(((($FurthestTopRight[4][0]-$FurthestTopRight[0][0])/2)+$FurthestTopRight[0][0]), (($FurthestTopRight[4][0]-$FurthestTopRight[0][0])/5)))
 								$y = Round((($FurthestTopRight[4][1] - $FurthestTopRight[0][1]) / ($FurthestTopRight[4][0] - $FurthestTopRight[0][0])) * ($x - $FurthestTopRight[0][0])) + $FurthestTopRight[0][1]
 							Case 2
-								$x = Round(_Random_Gaussian(((($FurthestBottomLeft[4][0] - $FurthestBottomLeft[0][0]) / 2) + $FurthestBottomLeft[0][0]), (($FurthestBottomLeft[4][0] - $FurthestBottomLeft[0][0]) / 5)))
+								$x = Round(_Random_Gaussian(((($FurthestBottomLeft[4][0]-$FurthestBottomLeft[0][0])/2)+$FurthestBottomLeft[0][0]), (($FurthestBottomLeft[4][0]-$FurthestBottomLeft[0][0])/5)))
 								$y = Round((($FurthestBottomLeft[4][1] - $FurthestBottomLeft[0][1]) / ($FurthestBottomLeft[4][0] - $FurthestBottomLeft[0][0])) * ($x - $FurthestBottomLeft[0][0])) + $FurthestBottomLeft[0][1]
 							Case 3
-								$x = Round(_Random_Gaussian(((($FurthestBottomRight[4][0] - $FurthestBottomRight[0][0]) / 2) + $FurthestBottomRight[0][0]), (($FurthestBottomRight[4][0] - $FurthestBottomRight[0][0]) / 5)))
+								$x = Round(_Random_Gaussian(((($FurthestBottomRight[4][0]-$FurthestBottomRight[0][0])/2)+$FurthestBottomRight[0][0]), (($FurthestBottomRight[4][0]-$FurthestBottomRight[0][0])/5)))
 								$y = Round((($FurthestBottomRight[4][1] - $FurthestBottomRight[0][1]) / ($FurthestBottomRight[4][0] - $FurthestBottomRight[0][0])) * ($x - $FurthestBottomRight[0][0])) + $FurthestBottomRight[0][1]
 						EndSwitch
 						If $i = 4 Then
@@ -92,8 +89,9 @@ Func DropTrophy()
 						$DropFailed = False
 						If _Sleep(100) Then Return False
 						_CaptureRegion()
-						If _ColorCheck(_GetPixelColor(733, 499), Hex(0xEBAD28, 6), 20) Then
+						If _ColorCheck(_GetPixelColor(200, 190), Hex(0xFF1919, 6), 20) Then
 							$DropFailed = True
+							If _Sleep(5000) Then Return False ; Wait 3 seconds for the error message to disappear
 						EndIf
 						$i += 1
 					Until Not $DropFailed Or $i > 4
@@ -118,7 +116,7 @@ Func DropTrophy()
 
 				ReturnHome(False, False) ;Return home no screenshot
 				If StatusCheck() Then Return False
-				$TrophyCount = Number(ReadText(59, 75, 60, $textMainScreen))
+				$TrophyCount = getOther(50, 74, "Trophy")
 				SetLog(GetLangText("msgTrophyCount") & $TrophyCount, $COLOR_GREEN)
 			Else
 				SetLog(GetLangText("msgDropComplete"), $COLOR_BLUE)

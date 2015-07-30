@@ -1,27 +1,23 @@
 ;Checks the troops when in battle, checks for type, slot, and quantity.
 ;Saved in $atkTroops[SLOT][TYPE/QUANTITY] variable
 
-Func Standard_PrepareAttack($remaining = False, $AttackMethod = 1, $noPrint = False) ;Assigns troops
-	If Not $noPrint Then
-		If $remaining Then
-			SetLog(GetLangText("msgCheckingRem"), $COLOR_ORANGE)
-		Else
-			SetLog(GetLangText("msgPreparingAtt"), $COLOR_BLUE)
-		EndIf
+Func Standard_PrepareAttack($remaining = False, $AttackMethod = 1) ;Assigns troops
+	If $remaining Then
+		SetLog(GetLangText("msgCheckingRem"), $COLOR_ORANGE)
+	Else
+		SetLog(GetLangText("msgPreparingAtt"), $COLOR_BLUE)
 	EndIf
 	_CaptureRegion()
 
 	Local $iAlgorithm = ($AttackMethod = 0) ? _GUICtrlComboBox_GetCurSel($cmbDeadAlgorithm) : _GUICtrlComboBox_GetCurSel($cmbAlgorithm)
-	If $AttackMethod = 3 Then $iAlgorithm = 9 ; If sniping then have all troops ready
 	Local $BarrackControl
-	If $OverlayVisible And Not IsChecked($chkBackground) Then WinMove($frmOverlay, "", 10000, 10000, 860, 720)
 	For $i = 0 To 8
 		Local $troopKind = IdentifyTroopKind($i)
 		Switch $iAlgorithm
 			Case 0
 				; Archers only
 				If $troopKind <> $eArcher And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
-					If Not $remaining And Not $noPrint Then
+					If Not $remaining Then
 						If NameOfTroop($troopKind) <> "Unknown" Then SetLog(GetLangText("msgIgnoring") & NameOfTroop($troopKind))
 					EndIf
 					$troopKind = -1
@@ -29,7 +25,7 @@ Func Standard_PrepareAttack($remaining = False, $AttackMethod = 1, $noPrint = Fa
 			Case 1
 				; Barbarians only
 				If $troopKind <> $eBarbarian And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
-					If Not $remaining And Not $noPrint Then
+					If Not $remaining Then
 						If NameOfTroop($troopKind) <> "Unknown" Then SetLog(GetLangText("msgIgnoring") & NameOfTroop($troopKind))
 					EndIf
 					$troopKind = -1
@@ -37,7 +33,7 @@ Func Standard_PrepareAttack($remaining = False, $AttackMethod = 1, $noPrint = Fa
 			Case 2
 				; Goblins only
 				If $troopKind <> $eGoblin And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
-					If Not $remaining And Not $noPrint Then
+					If Not $remaining Then
 						If NameOfTroop($troopKind) <> "Unknown" Then SetLog(GetLangText("msgIgnoring") & NameOfTroop($troopKind))
 					EndIf
 					$troopKind = -1
@@ -45,7 +41,7 @@ Func Standard_PrepareAttack($remaining = False, $AttackMethod = 1, $noPrint = Fa
 			Case 3
 				; Barch
 				If $troopKind <> $eBarbarian And $troopKind <> $eArcher And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
-					If Not $remaining And Not $noPrint Then
+					If Not $remaining Then
 						If NameOfTroop($troopKind) <> "Unknown" Then SetLog(GetLangText("msgIgnoring") & NameOfTroop($troopKind))
 					EndIf
 					$troopKind = -1
@@ -53,7 +49,7 @@ Func Standard_PrepareAttack($remaining = False, $AttackMethod = 1, $noPrint = Fa
 			Case 4
 				; BAGG
 				If $troopKind <> $eBarbarian And $troopKind <> $eArcher And $troopKind <> $eGiant And $troopKind <> $eGoblin And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
-					If Not $remaining And Not $noPrint Then
+					If Not $remaining Then
 						If NameOfTroop($troopKind) <> "Unknown" Then SetLog(GetLangText("msgIgnoring") & NameOfTroop($troopKind))
 					EndIf
 					$troopKind = -1
@@ -61,7 +57,7 @@ Func Standard_PrepareAttack($remaining = False, $AttackMethod = 1, $noPrint = Fa
 			Case 5
 				; BAGiant
 				If $troopKind <> $eBarbarian And $troopKind <> $eArcher And $troopKind <> $eGiant And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
-					If Not $remaining And Not $noPrint Then
+					If Not $remaining Then
 						If NameOfTroop($troopKind) <> "Unknown" Then SetLog(GetLangText("msgIgnoring") & NameOfTroop($troopKind))
 					EndIf
 					$troopKind = -1
@@ -69,7 +65,7 @@ Func Standard_PrepareAttack($remaining = False, $AttackMethod = 1, $noPrint = Fa
 			Case 6
 				; BAGob
 				If $troopKind <> $eBarbarian And $troopKind <> $eArcher And $troopKind <> $eGoblin And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
-					If Not $remaining And Not $noPrint Then
+					If Not $remaining Then
 						If NameOfTroop($troopKind) <> "Unknown" Then SetLog(GetLangText("msgIgnoring") & NameOfTroop($troopKind))
 					EndIf
 					$troopKind = -1
@@ -77,7 +73,7 @@ Func Standard_PrepareAttack($remaining = False, $AttackMethod = 1, $noPrint = Fa
 			Case 7
 				; BAGGWB
 				If $troopKind <> $eBarbarian And $troopKind <> $eArcher And $troopKind <> $eGiant And $troopKind <> $eGoblin And $troopKind <> $eWallbreaker And $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
-					If Not $remaining And Not $noPrint Then
+					If Not $remaining Then
 						If NameOfTroop($troopKind) <> "Unknown" Then SetLog(GetLangText("msgIgnoring") & NameOfTroop($troopKind))
 					EndIf
 					$troopKind = -1
@@ -120,8 +116,8 @@ Func Standard_PrepareAttack($remaining = False, $AttackMethod = 1, $noPrint = Fa
 						$atkTroops[$i][0] = $troopKind
 						ExitLoop
 					ElseIf $troopKind <> $eKing And $troopKind <> $eQueen And $troopKind <> $eCastle And $troopKind <> $eLSpell Then
-						If Not $remaining And Not $noPrint Then
-;~ 							If NameOfTroop($troopKind) <> "Unknown" Then SetLog(GetLangText("msgIgnoring") & NameOfTroop($troopKind))
+						If Not $remaining Then
+							If NameOfTroop($troopKind) <> "Unknown" Then SetLog(GetLangText("msgIgnoring") & NameOfTroop($troopKind))
 						EndIf
 						$troopKind = -1
 					EndIf
@@ -132,10 +128,10 @@ Func Standard_PrepareAttack($remaining = False, $AttackMethod = 1, $noPrint = Fa
 		Local $useKing = ($AttackMethod = 0) ? (IsChecked($chkDeadUseKing) ? (True) : (False)) : (IsChecked($chkUseKing) ? (True) : (False))
 		Local $useQueen = ($AttackMethod = 0) ? (IsChecked($chkDeadUseQueen) ? (True) : (False)) : (IsChecked($chkUseQueen) ? (True) : (False))
 
-		If Not $useCastle And $troopKind = $eCastle Then $troopKind = -1
-		If Not $useKing And $troopKind = $eKing Then $troopKind = -1
-		If Not $useQueen And $troopKind = $eQueen Then $troopKind = -1
-		If $remaining And $troopKind = $eLSpell Then $troopKind = -1
+		If Not $useCastle and $troopKind = $eCastle Then $troopKind = -1
+		If Not $useKing and $troopKind = $eKing Then $troopKind = -1
+		If Not $useQueen and $troopKind = $eQueen Then $troopKind = -1
+		If $remaining and $troopKind = $eLSpell Then $troopKind = -1
 
 		If ($troopKind == -1) Then
 			$atkTroops[$i][1] = 0
@@ -146,9 +142,6 @@ Func Standard_PrepareAttack($remaining = False, $AttackMethod = 1, $noPrint = Fa
 		EndIf
 		$atkTroops[$i][0] = $troopKind
 
-		If Not $noPrint Then
-			If $troopKind <> -1 Then SetLog("-" & NameOfTroop($atkTroops[$i][0]) & " " & $atkTroops[$i][1], $COLOR_GREEN)
-		EndIf
+		If $troopKind <> -1 Then SetLog("-" & NameOfTroop($atkTroops[$i][0]) & " " & $atkTroops[$i][1], $COLOR_GREEN)
 	Next
-	If $OverlayVisible And Not IsChecked($chkBackground) Then WinMove($frmOverlay, "", $BSpos[0], $BSpos[1], 860, 720)
 EndFunc   ;==>Standard_PrepareAttack

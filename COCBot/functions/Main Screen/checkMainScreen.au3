@@ -11,7 +11,7 @@ Func checkMainScreen($Check = False, $maxDelay = 1) ;Checks if in main screen
 			If (Not checkObstacles()) And (BitAND(GUICtrlGetState($btnStart), $GUI_HIDE)) Then
 				Click(126, 700, 1, 500)
 				Local $RunApp = StringReplace(_WinAPI_GetProcessFileName(WinGetProcess($Title)), "Frontend", "RunApp")
-				Run($RunApp & " -p com.supercell.clashofclans -a com.supercell.clashofclans.GameApp")
+				Run($RunApp & " Android com.supercell.clashofclans com.supercell.clashofclans.GameApp")
 			EndIf
 			If _Sleep(3000) Then Return False
 			waitMainScreen()

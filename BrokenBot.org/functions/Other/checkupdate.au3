@@ -17,42 +17,42 @@
 ;==========================================================================================
 Func _ExtractZip($sZipFile, $sDestinationFolder, $sFolderStructure = "")
 
-	Local $i
-	Do
-		$i += 1
-		$sTempZipFolder = @TempDir & "\Temporary Directory " & $i & " for " & StringRegExpReplace($sZipFile, ".*\\", "")
-	Until Not FileExists($sTempZipFolder) ; this folder will be created during extraction
+    Local $i
+    Do
+        $i += 1
+        $sTempZipFolder = @TempDir & "\Temporary Directory " & $i & " for " & StringRegExpReplace($sZipFile, ".*\\", "")
+    Until Not FileExists($sTempZipFolder) ; this folder will be created during extraction
 
-	Local $oShell = ObjCreate("Shell.Application")
+    Local $oShell = ObjCreate("Shell.Application")
 
-	If Not IsObj($oShell) Then
-		Return SetError(1, 0, 0) ; highly unlikely but could happen
-	EndIf
+    If Not IsObj($oShell) Then
+        Return SetError(1, 0, 0) ; highly unlikely but could happen
+    EndIf
 
-	Local $oDestinationFolder = $oShell.NameSpace($sDestinationFolder)
-	If Not IsObj($oDestinationFolder) Then
-		DirCreate($sDestinationFolder)
+    Local $oDestinationFolder = $oShell.NameSpace($sDestinationFolder)
+    If Not IsObj($oDestinationFolder) Then
+        DirCreate($sDestinationFolder)
 ;~         Return SetError(2, 0, 0) ; unavailable destionation location
-	EndIf
+    EndIf
 
-	Local $oOriginFolder = $oShell.NameSpace($sZipFile & "\" & $sFolderStructure) ; FolderStructure is overstatement because of the available depth
-	If Not IsObj($oOriginFolder) Then
-		Return SetError(3, 0, 0) ; unavailable location
-	EndIf
+    Local $oOriginFolder = $oShell.NameSpace($sZipFile & "\" & $sFolderStructure) ; FolderStructure is overstatement because of the available depth
+    If Not IsObj($oOriginFolder) Then
+        Return SetError(3, 0, 0) ; unavailable location
+    EndIf
 
-	Local $oOriginFile = $oOriginFolder.Items();get all items
-	If Not IsObj($oOriginFile) Then
-		Return SetError(4, 0, 0) ; no such file in ZIP file
-	EndIf
+    Local $oOriginFile = $oOriginFolder.Items();get all items
+    If Not IsObj($oOriginFile) Then
+        Return SetError(4, 0, 0) ; no such file in ZIP file
+    EndIf
 
-	; copy content of origin to destination
-	$oDestinationFolder.CopyHere($oOriginFile, 20) ; 20 means 4 and 16, replaces files if asked
+    ; copy content of origin to destination
+    $oDestinationFolder.CopyHere($oOriginFile, 20) ; 20 means 4 and 16, replaces files if asked
 
-	DirRemove($sTempZipFolder, 1) ; clean temp dir
+    DirRemove($sTempZipFolder, 1) ; clean temp dir
 
-	Return 1 ; All OK!
+    Return 1 ; All OK!
 
-EndFunc   ;==>_ExtractZip
+EndFunc
 
 ; The code below was created for public use by BrokenBot.org and falls under the GPLv3 license.
 ; This code can be incorporated into open source/non-profit projects free of charge and without consent.
@@ -60,14 +60,10 @@ EndFunc   ;==>_ExtractZip
 ; You **MAY NOT SOLICIT DONATIONS** from any project which includes any part of the code in this sub-directory without express written consent of BrokenBot.org
 ;
 Func checkupdate()
-	$hUpdateTimer = TimerInit()
 	If IsChecked($chkUpdate) Then
 		Local $sFilePath = @TempDir & "\update.dat"
 
-		Local $UsingBeta = StringInStr($sBotVersion, "BETA")
-		Local $VersionCompare = StringReplace($sBotVersion, " BETA", "")
-;~ 		Local $hMasterVersion = InetGet("http://www.brokenbot.org/page.php?p=vcheck", $sFilePath, 3)
-		Local $hMasterVersion = InetGet("https://github.com/codebroken/BrokenBot/blob/master/BrokenBot.au3", $sFilePath, 3)
+		Local $hMasterVersion = InetGet("http://www.brokenbot.org/page.php?p=vcheck", $sFilePath, 3)
 
 		If $hMasterVersion = 0 Then
 			SetLog(GetLangText("msgFailedVersion"))
@@ -79,7 +75,7 @@ Func checkupdate()
 				If StringInStr($strReadLine, "$sBotVersion") Then
 					$split = StringSplit($strReadLine, "&quot;", 1)
 					SetLog(GetLangText("msgVersionOnline") & $split[2])
-					If ($VersionCompare < $split[2]) Or ($UsingBeta And $VersionCompare = $split[2]) Then
+					If $sBotVersion < $split[2] Then
 						SetLog(GetLangText("msgUpdateNeeded"))
 						InetGet("https://raw.githubusercontent.com/codebroken/BrokenBot/master/changelog.md", @TempDir & "\brokenbotchangelog.md", 3)
 						$strReleaseNotes = ""
@@ -91,7 +87,7 @@ Func checkupdate()
 							$line = FileReadLine($fileopen)
 							If @error Then ExitLoop
 							If StringLeft($line, 3) = "###" Then
-								If StringReplace($line, "### v", "") <= $VersionCompare Then
+								If StringReplace($line, "### v", "") <= $sBotVersion Then
 									ExitLoop
 								EndIf
 							EndIf
@@ -100,23 +96,21 @@ Func checkupdate()
 						WEnd
 						FileClose($fileopen)
 						FileDelete(@TempDir & "\brokenbotchangelog.md")
-						If MsgBox($MB_OKCANCEL, GetLangText("boxUpdate"), GetLangText("boxUpdate2") & @CRLF & @CRLF & GetLangText("boxUpdate3") & @CRLF & @CRLF & GetLangText("boxUpdate5") & @CRLF & @CRLF & GetLangText("boxUpdate6") & @CRLF & @CRLF & $strReleaseNotes, 0, $frmBot) = $IDOK Then
+						If MsgBox($MB_OKCANCEL, GetLangText("boxUpdate"), GetLangText("boxUpdate2") & @CRLF & @CRLF & GetLangText("boxUpdate3") &  @CRLF & @CRLF & GetLangText("boxUpdate5") & @CRLF & @CRLF & GetLangText("boxUpdate6") & @CRLF & @CRLF & $strReleaseNotes, 0, $frmBot) = $IDOK Then
 							SetLog(GetLangText("msgDownloading"))
 							InetGet("https://github.com/codebroken/BrokenBot/archive/master.zip", @TempDir & "\BrokenBot-master.zip", 3)
 							If Not FileExists(@TempDir & "\BrokenBot-master.zip") Then
 								MsgBox(0, "", GetLangText("boxUpdateError"))
 							Else
 								SetLog(GetLangText("msgUnzipping"))
-								If Not FileExists(@TempDir & "\TempUpdateFolder") Then
+								If not FileExists(@TempDir & "\TempUpdateFolder") Then
 									DirCreate(@TempDir & "\TempUpdateFolder")
 								EndIf
 								If _ExtractZip(@TempDir & "\BrokenBot-master.zip", @TempDir & "\TempUpdateFolder") <> 1 Then
 									MsgBox(0, "", GetLangText("boxUpdateExtract"))
 								Else
 									SetLog(GetLangText("msgInstallandRestart"))
-									DllClose($KernelDLL)
 									_GDIPlus_Shutdown()
-									_Crypt_Shutdown()
 									$fileopen = FileOpen(@TempDir & "\brokenbotupdate.bat", 2)
 									FileWriteLine($fileopen, 'xcopy "' & @TempDir & '\TempUpdateFolder\BrokenBot-master\*.*" "' & @ScriptDir & '\" /S /E /Y')
 									FileWriteLine($fileopen, 'del "' & @TempDir & '\TempUpdateFolder\*.*" /S /Q')
@@ -130,9 +124,7 @@ Func checkupdate()
 								EndIf
 							EndIf
 						EndIf
-					ElseIf $UsingBeta Then
-						SetLog(GetLangText("msgRunningBeta"))
-					ElseIf $VersionCompare > $split[2] Then
+					ElseIf $sBotVersion > $split[2] Then
 						SetLog(GetLangText("msgAheadMaster"))
 					Else
 						SetLog(GetLangText("msgNoUpdateNeeded"))
@@ -148,13 +140,4 @@ Func checkupdate()
 		EndIf
 	EndIf
 EndFunc   ;==>checkupdate
-
-Func _Dcrypt($sData)
-	Local $hKey = _Crypt_DeriveKey("DE8D16C2C59B93F3F0682250B", 0x00006610)
-	Local $sDecrypted = BinaryToString(_Crypt_DecryptData(Binary($sData), $hKey, $CALG_USERKEY))
-	_Crypt_DestroyKey($hKey)
-	Return $sBotVersion
-EndFunc   ;==>_Decrypt
-
-
 

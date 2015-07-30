@@ -84,7 +84,7 @@ Func LocateDarkBarrack()
 	Local $MsgBox
 	While 1
 		While 1
-			$MsgBox = MsgBox(6 + 262144, GetLangText("boxDark1"), GetLangText("boxDark1b"), 0, $frmBot)
+			$MsgBox = MsgBox(6 + 262144,GetLangText("boxDark1"), GetLangText("boxDark1b"), 0, $frmBot)
 			If $MsgBox = 11 Then
 				$DarkBarrackPos[0][0] = FindPos()[0]
 				$DarkBarrackPos[0][1] = FindPos()[1]
@@ -136,6 +136,13 @@ Func LocateCamp()
 		EndIf
 		ExitLoop
 	WEnd
+
+	$itxtcampCap = InputBox(GetLangText("inpCamp"), GetLangText("inpCampb"), "200", " M3")
+	If $itxtcampCap >= 25 And $itxtcampCap <= 240 Then
+		GUICtrlSetData($txtCapacity, $itxtcampCap)
+	Else
+		MsgBox(4096, GetLangText("boxError"), GetLangText("boxErrorb"))
+	EndIf
 EndFunc   ;==>LocateCamp
 
 Func LocateClanCastle()
@@ -348,7 +355,7 @@ Func LocateSpellFactory()
 		Return False
 	EndIf
 	While 1
-		$MsgBox = MsgBox(1 + 262144, GetLangText("boxFactory"), GetLangText("boxFactoryb"), 0, $frmBot)
+		$MsgBox = MsgBox(1 + 262144, GetLangText("boxFactory"), GetLangText(""), 0, $frmBot)
 		If $MsgBox = 1 Then
 			$SpellPos[0] = FindPos()[0]
 			$SpellPos[1] = FindPos()[1]

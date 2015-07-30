@@ -8,19 +8,14 @@ Func StatusCheck($OnMainScreen = True, $WriteLog = False, $maxDelay = 1)
 	; Checks for main screen if $OnMainScreen=True
 	; 	If unable to find zoomed out main screen after resuming, it will continue looping until such time as it does
 	; Returns True if bot no longer running after completion.
+
 	If Pause() Then Return
 	If $OnMainScreen Then
-		Local $waitCounter = 0
 		While Not checkMainScreen($WriteLog, $maxDelay)
-			If $waitCounter > 5 Then	;5 minutes passed
-				restartBlueStack()
-				$waitCounter = 0
-			EndIf
 			If BotStopped(False) Then Return True
 			SetLog(GetLangText("msgFailedZoomout"), $COLOR_RED)
 			SetLog(GetLangText("msgWaitMinute"), $COLOR_RED)
 			If _Sleep(6000) Then Return False
-			$waitCounter += 1
 		WEnd
 		If $PauseBot = True And GUICtrlRead($btnPause) = "Pause" Then btnPause()
 		If $PauseBot = False And GUICtrlRead($btnPause) = "Resume" Then btnPause()
