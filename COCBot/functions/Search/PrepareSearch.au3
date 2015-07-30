@@ -4,13 +4,16 @@ Func PrepareSearch() ;Click attack button and find match button, will break shie
 
 	Click(60, 614);Click Attack Button
 	SetLog(GetLangText("msgSearchingMatch"))
-	If _WaitForColor(287, 494, Hex(0xEEAC28, 6), 50) Then
+	If _WaitForColorArea(287, 494, 5, 5, Hex(0xEEAC28, 6), 50) Then
 		Click(217, 510);Click Find a Match Button
 		; Is shield active?
-		If _WaitForColor(513, 416, Hex(0x5DAC10, 6), 50, 1) Then
+		If _WaitForColorArea(513, 416, 5, 5, Hex(0x5DAC10, 6), 50, 1) Then
 			Click(513, 416)
 		EndIf
-		If _WaitForColor(30, 505, Hex(0xE80008, 6), 50, 10) Then Return True
+		If _WaitForColorArea(23, 523, 25, 10, Hex(0xEE5056, 6), 50, 10) Then Return True
+	Else
+		;Something is wrong here, restart bluestack
+		restartBlueStack()
 	EndIf
 	Return False
 EndFunc   ;==>PrepareSearch

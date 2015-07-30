@@ -1,6 +1,6 @@
 ;Saves a screenshot of the window into memory.
 
-Func _CaptureRegion($iLeft = 0, $iTop = 0, $iRight = 860, $iBottom = 720, $ReturnBMP = False)
+Func _CaptureRegion($iLeft = 0, $iTop = 0, $iRight = 860, $iBottom = 720, $ReturnBMP = False, $NeedMove = False)
 	_GDIPlus_BitmapDispose($hBitmap)
 	_WinAPI_DeleteObject($hHBitmap)
 
@@ -22,9 +22,15 @@ Func _CaptureRegion($iLeft = 0, $iTop = 0, $iRight = 860, $iBottom = 720, $Retur
 		_WinAPI_SelectObject($hMemDC, $hObjectOld)
 		_WinAPI_ReleaseDC($HWnD, $hDC_Capture)
 	Else
+		If $OverlayVisible And $NeedMove Then
+			WinMove($frmOverlay, "", 10000, 10000, 860, 720)
+		EndIf
 		getBSPos()
 		$hHBitmap = _ScreenCapture_Capture("", $iLeft + $BSpos[0], $iTop + $BSpos[1], $iRight + $BSpos[0], $iBottom + $BSpos[1])
 		Global $hBitmap = _GDIPlus_BitmapCreateFromHBITMAP($hHBitmap)
+		If $OverlayVisible And $NeedMove Then
+			WinMove($frmOverlay, "", $BSpos[0], $BSpos[1], 860, 720)
+		EndIf
 	EndIf
 
 	If $ReturnBMP Then Return $hBitmap

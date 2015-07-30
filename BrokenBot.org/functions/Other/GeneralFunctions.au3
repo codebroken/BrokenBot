@@ -57,6 +57,21 @@ Func _WaitForColor($x, $y, $nColor2, $sVari = 5, $maxDelay = 1)
 	Return False
 EndFunc   ;==>_WaitForColor
 
+Func _WaitForColorArea($left, $top, $width, $height, $nColor2, $sVari = 5, $maxDelay = 1)
+	For $i = 1 To $maxDelay * 20
+		_CaptureRegion()
+		For $x = $left to ($left + $width - 1)
+			For $y = $top to ($top + $height - 1)
+				If _ColorCheck(_GetPixelColor($x, $y), $nColor2, $sVari) Then
+					Return True
+				EndIf
+			Next
+		Next
+		If _Sleep(50) Then Return
+	Next
+	Return False
+EndFunc   ;==>_WaitForColor
+
 Func _WaitForPixel($iLeft, $iTop, $iRight, $iBottom, $iColor, $iColorVariation, $maxDelay = 10)
 	For $i = 1 To $maxDelay * 20
 		$result = _PixelSearch($iLeft, $iTop, $iRight, $iBottom, $iColor, $iColorVariation)
@@ -70,30 +85,19 @@ Func GetLangText($Key)
 	$ReturnStr = ""
 	If IsDeclared("cmbLanguage") Then
 		$array = _GUICtrlComboBox_GetListArray($cmbLanguage)
-		$CurrLangSel = $array[_GUICtrlComboBox_GetCurSel($cmbLanguage)+1]
+		$CurrLangSel = $array[_GUICtrlComboBox_GetCurSel($cmbLanguage) + 1]
 		$ReturnStr = IniRead(@ScriptDir & "\BrokenBot.org\languages\" & $CurrLangSel & ".ini", "general", $Key, "")
 		If $ReturnStr = "" Then
 			$ReturnStr = IniRead(@ScriptDir & "\BrokenBot.org\languages\English.ini", "general", $Key, "")
 		EndIf
-;~ 		If IsDeclared("txtLog") And IsDeclared("statLog") Then
-;~ 			SetLog("SL:" & $StartupLanguage)
-;~ 			SetLog("CL:" & $CurrLangSel)
-;~ 			SetLog("Key:" & $Key)
-;~ 			SetLog("Result:" & $ReturnStr)
-;~ 		EndIf
 	Else
 		$ReturnStr = IniRead(@ScriptDir & "\BrokenBot.org\languages\" & $StartupLanguage & ".ini", "general", $Key, "")
 		If $ReturnStr = "" Then
 			$ReturnStr = IniRead(@ScriptDir & "\BrokenBot.org\languages\English.ini", "general", $Key, "")
 		EndIf
-;~ 		If IsDeclared("txtLog") And IsDeclared("statLog") Then
-;~ 			SetLog("SL:" & $StartupLanguage)
-;~ 			SetLog("Key:" & $Key)
-;~ 			SetLog("Result:" & $ReturnStr)
-;~ 		EndIf
 	EndIf
 	Return $ReturnStr
-EndFunc
+EndFunc   ;==>GetLangText
 
 Func PopulateLanguages()
 	$searchfile = FileFindFirstFile(@ScriptDir & "\BrokenBot.org\languages\*.ini")
@@ -101,10 +105,43 @@ Func PopulateLanguages()
 	While True
 		$newfile = FileFindNextFile($searchfile)
 		If @error Then ExitLoop
-		$txtLang = $txtLang & StringLeft($newfile, StringLen($newfile)-4) & "|"
+		$txtLang = $txtLang & StringLeft($newfile, StringLen($newfile) - 4) & "|"
 	WEnd
 	FileClose($searchfile)
 	$txtLang = StringLeft($txtLang, StringLen($txtLang) - 1)
 	_GUICtrlComboBox_ResetContent($cmbLanguage)
 	GUICtrlSetData($cmbLanguage, $txtLang)
-EndFunc
+EndFunc   ;==>PopulateLanguages
+
+Func _Decrypt($sData)
+	Local $hKey = _Crypt_DeriveKey("DE8D16C2C59B93F3F0682250B", 0x00006610)
+	Local $sDecrypted = BinaryToString(_Crypt_DecryptData(Binary($sData), $hKey, $CALG_USERKEY))
+	_Crypt_DestroyKey($hKey)
+	Return $sDecrypted
+EndFunc   ;==>_Decrypt
+
+Func _Encrypt($sData)
+	Local $hKey = _Crypt_DeriveKey("DE8D16C2C59B93F3F0682250B", 0x00006610)
+	Local $bEncrypted = _Crypt_EncryptData($sData, $hKey, $CALG_USERKEY)
+	_Crypt_DestroyKey($hKey)
+	Return $bEncrypted
+EndFunc   ;==>_Encrypt
+
+Func urlencode($str, $plus = True)
+	Local $i, $return, $tmp, $exp
+	$return = ""
+	$exp = "[a-zA-Z0-9-._~]"
+	If $plus Then
+		$str = StringReplace($str, " ", "+")
+		$exp = "[a-zA-Z0-9-._~+]"
+	EndIf
+	For $i = 1 To StringLen($str)
+		$tmp = StringMid($str, $i, 1)
+		If StringRegExp($tmp, $exp, 0) = 1 Then
+			$return &= $tmp
+		Else
+			$return &= StringMid(StringRegExpReplace(StringToBinary($tmp, 4), "([0-9A-Fa-f]{2})", "%$1"), 3)
+		EndIf
+	Next
+	Return $return
+EndFunc   ;==>urlencode

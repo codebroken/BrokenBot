@@ -22,6 +22,9 @@
 #include <GuiTab.au3>
 #include <GuiListBox.au3>
 #include <MsgBoxConstants.au3>
+#include <Crypt.au3>
+
+Global $KernelDLL = DllOpen("kernel32.dll")
 
 Global Const $COLOR_ORANGE = 0xFFA500
 
@@ -35,7 +38,7 @@ EndIf
 Global $hBitmap; Image for pixel functions
 Global $hHBitmap; Handle Image for pixel functions
 Global $hAttackBitmap
-Global $Pen
+Global $BufferAvailable = False
 
 Global $Title = "BlueStacks App Player" ; Name of the Window
 Global $HWnD = WinGetHandle($Title) ;Handle for Bluestacks window
@@ -57,6 +60,29 @@ Global $AttackNow = False
 Global $AlertBaseFound = False
 Global $TakeLootSnapShot = True
 Global $TakeAllTownSnapShot = False
+Global $FasterExit
+
+Global $SubmissionMade = False
+Global $SubmissionTimer = TimerInit()
+Global $SearchTimer = TimerInit()
+Global $SubmissionGold
+Global $SubmissionGold = 0, $SubmissionElixir = 0, $SubmissionDE = 0
+Global $SubmissionAttacks = 0
+Global $SubmissionSearches = 0
+Global $SubmissionSGold = ""
+Global $SubmissionSElix = ""
+Global $SubmissionSDE = ""
+Global $SubmissionSTrophy = ""
+Global $SubmissionSTH = ""
+Global $SubmissionSDead = ""
+Global $SearchSubmitdelay = (1000 * 60 * 5)
+Global $AttackSubmitdelay = (1000 * 60 * 15)
+Global $LastAttackTH
+Global $LastAttackDead
+Global $TrophyCountOld
+
+Global $ValidAuth = False
+Global $THLevel
 
 Global $TakeAttackSnapShot = 0
 Global $DebugMode = 0
@@ -91,6 +117,7 @@ Global $THaddtiles, $THside, $THi
 Global $StratNames = ""
 Global $prevSelection = ""
 Global $DefaultTab = 0
+Global $prevBBUser, $prevBBPass
 
 Global $speedBump = 0
 Global $hTimerClickNext, $fdiffReadGold
@@ -101,22 +128,23 @@ Global $slideIn = 0
 
 ;Troop types, from 0 ~ 19 so far
 Global Enum $eBarbarian, $eArcher, $eGiant, $eGoblin, $eWallbreaker, _
-			$eBalloon, $eWizard, $eHealer, $eDragon, $ePekka, _
-			$eMinion, $eHog, $eValkyrie, $eGolem, $eWitch, _
-			$eLavaHound, _
-			$eKing, $eQueen, $eCastle, $eLSpell
+		$eBalloon, $eWizard, $eHealer, $eDragon, $ePekka, _
+		$eMinion, $eHog, $eValkyrie, $eGolem, $eWitch, _
+		$eLavaHound, _
+		$eKing, $eQueen, $eCastle, $eLSpell
 
 ;Attack Settings
 ; Shift outer corners 1 pixel for more random drop space
 Global $TopLeft[5][2] = [[78, 280], [169, 204], [233, 161], [295, 114], [367, 65]]
 Global $TopRight[5][2] = [[481, 62], [541, 103], [590, 145], [656, 189], [780, 277]]
-Global $BottomLeft[5][2] = [[78, 343], [141, 390], [209, 447], [275, 493], [338, 540]]
-Global $BottomRight[5][2] = [[524, 538], [596, 485], [655, 441], [716, 394], [780, 345]]
+Global $BottomLeft[5][2] = [[78, 343], [141, 390], [209, 447], [275, 493], [363, 560]]
+Global $BottomRight[5][2] = [[510, 560], [596, 485], [655, 441], [716, 394], [780, 345]]
 Global $FurthestTopLeft[5][2] = [[28, 314], [0, 0], [0, 0], [0, 0], [430, 9]]
 Global $FurthestTopRight[5][2] = [[430, 9], [0, 0], [0, 0], [0, 0], [820, 313]]
 Global $FurthestBottomLeft[5][2] = [[28, 314], [0, 0], [0, 0], [0, 0], [440, 612]]
 Global $FurthestBottomRight[5][2] = [[440, 612], [0, 0], [0, 0], [0, 0], [820, 313]]
 Global $Edges[4] = [$BottomRight, $TopLeft, $BottomLeft, $TopRight]
+Global $BaseCenter[2]
 
 Global $atkTroops[9][2] ;9 Slots of troops -  Name, Amount
 Global $THLoc
@@ -130,6 +158,8 @@ Global $LeftTHx, $RightTHx, $BottomTHy, $TopTHy
 Global $AtkTroopTH
 Global $GetTHLoc
 
+Global $hWaveTimer = TimerInit()
+Global $hUpdateTimer = TimerInit()
 
 Global $PluginEvents
 
@@ -141,6 +171,7 @@ Global $ichkTrap
 Global $itxtKingSkill ;Delay before activating King Skill
 Global $itxtQueenSkill ;Delay before activating Queen Skill
 Global $WideEdge, $chkWideEdge
+Global $iClearField, $chkClearField
 Global $ichkAvoidEdge, $chkAvoidEdge
 Global $chkCollect, $ichkCollect
 Global $icmbUnitDelay
@@ -179,7 +210,7 @@ Global $ichkDonateAllGiants = 0
 Global $ichkDonateGiants = 0
 Global $itxtDonateGiants = ""
 
-Global $itxtcampCap
+Global $itxtcampCap = 0
 Global $itxtspellCap
 Global $CurBarb
 Global $CurArch
@@ -192,8 +223,8 @@ Global $barrackPos[4][2] ;Positions of each barracks
 Global $barrackTroop[10] ;Barrack troop set
 Global $ArmyPos[2]
 Global $SpellPos[2]
-Global $KingPos[2] = ["",""]
-Global $QueenPos[2] = ["",""]
+Global $KingPos[2] = ["", ""]
+Global $QueenPos[2] = ["", ""]
 Global $BuildPos1[2]
 Global $BuildPos2[2]
 Global $BuildPos3[2]
@@ -209,6 +240,7 @@ Global $icmbTolerance
 Global $itxtReconnect
 Global $DarkBarrackPos[2][2]
 Global $DarkBarrackTroop[2]
+Global $DarkBarrackTroopNext[2]
 Global $iTimeTroops = 0
 Global $iTimeGiant = 120
 Global $iTimeWall = 120
@@ -266,12 +298,14 @@ Global $device = @ScriptDir & "\images\device.bmp"
 Global $GoldCount = 0, $ElixirCount = 0, $DarkCount = 0, $GemCount = 0, $FreeBuilder = 0
 Global $GoldGained = 0, $ElixirGained = 0, $DarkGained = 0, $TrophyGained = 0
 Global $GoldCountOld = 0, $ElixirCountOld = 0, $DarkCountOld = 0, $TrophyOld = 0
+Global $GoldTotalLoot = 0, $ElixirTotalLoot = 0, $DarkTotalLoot = 0, $TrophyTotalLoot = 0
 Global $WallUpgrade = 0
 Global $resArmy = 0
 Global $FirstAttack = True
 Global $CurTrophy = 0
 Global $sTimer, $hour, $min, $sec
 Global $CurCamp, $TotalCamp = 0
+Global $itxtcampCap = 0
 Global $NoLeague
 Global $FirstStart = True
 Global $MidAttack = False
@@ -286,6 +320,7 @@ Global $PushBullettype = 0
 Global $PushBulletattacktype = 0
 Global $FileName = ""
 Global $PushBulletvillagereport = 0
+Global $PushBulletchatlog = 0
 Global $PushBulletvillagereportTimer
 Global $PushBulletvillagereportInterval = 3600000 ; an hour
 Global $PushBulletmatchfound = 0
@@ -314,7 +349,7 @@ Global $sTimerRC
 Global $PauseBot = False
 
 ;Match found
-Global $MatchFoundText =""
+Global $MatchFoundText = ""
 
 ;Last Raid
 Global $LastRaidGold = 0
@@ -326,28 +361,6 @@ Global $ichkLab
 Global $icmbLaboratory
 Global $itxtLabX = -1
 Global $itxtLabY = -1
-Global $UpBar2X = 175
-Global $UpBar2Y = 379
-Global $UpArchX = 180
-Global $UpArchY = 468
-Global $GiantsX = 307
-Global $GiantsY = 361
-Global $WBreakerX = 373
-Global $WBreakerY = 373
-Global $WizardX = 489
-Global $WizardY = 323
-Global $UpHealX = 515
-Global $UpHealY = 431
-Global $UpDragonX = 591
-Global $UpDragonY = 388
-Global $UpPekkaX = 612
-Global $UpPekkaY = 479
-Global $SpellHealX = 527
-Global $SpellHealY = 381
-Global $SpellLightningX = 549
-Global $SpellLightningY = 461
-Global $SpellRageX = 650
-Global $SpellRageY = 372
 Global $LabPos[2]
 
 Global $FontSize
@@ -364,3 +377,6 @@ Global $MinDark
 Global $MinTrophy
 Global $MaxTH
 Global $iNukeLimit
+
+Global $ichkUpgradeKing, $ichkUpgradeQueen
+Global $itxtKeepFreeBuilder

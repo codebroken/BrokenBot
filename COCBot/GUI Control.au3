@@ -4,6 +4,7 @@ Opt("MouseClickDownDelay", 10)
 Opt("TrayMenuMode", 3)
 
 _GDIPlus_Startup()
+_Crypt_Startup()
 
 Global Const $64Bit = StringInStr(@OSArch, "64") > 0
 Global Const $DEFAULT_HEIGHT = 720
@@ -24,7 +25,9 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 				Switch $nID
 					Case $GUI_EVENT_CLOSE
 						SetLog(GetLangText("msgExit"), $COLOR_ORANGE)
+						DllClose($KernelDLL)
 						_GDIPlus_Shutdown()
+						_Crypt_Shutdown()
 						_GUICtrlRichEdit_Destroy($txtLog)
 						SaveConfig()
 						Exit
@@ -111,6 +114,24 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 						If $nNotifyCode = 1 Then _lstStrategies()
 					Case $cmbLanguage
 						If $nNotifyCode = 1 Then cmbLanguage()
+					Case $btnBBValidate
+						_btnBBValidate()
+					Case $inpBBUser
+						If GUICtrlRead($inpBBUser) <> $prevBBUser Then
+							GUICtrlSetData($btnBBValidate, "VALIDATE")
+							GUICtrlSetBkColor($btnBBValidate, 0xFF0000)
+;~ 							GUICtrlSetImage($btnBBValidate, @ScriptDir & "\images\Resource\unknown.bmp")
+;~ 							GUICtrlSetTip($btnBBValidate, GetLangText("tipBBValidCheck"))
+						EndIf
+					Case $inpBBPassword
+						If GUICtrlRead($inpBBPassword) <> $prevBBPass Then
+							GUICtrlSetData($btnBBValidate, "VALIDATE")
+							GUICtrlSetBkColor($btnBBValidate, 0xFF0000)
+;~ 							GUICtrlSetImage($btnBBValidate, @ScriptDir & "\images\Resource\unknown.bmp")
+;~ 							GUICtrlSetTip($btnBBValidate, GetLangText("tipBBValidCheck"))
+						EndIf
+					Case $lblBBRegister
+						lblBBRegister()
 					Case 10000
 						If _GUICtrlTab_GetCurSel($tabMain) = 0 Then
 							ControlShow("", "", $txtLog)
@@ -123,7 +144,9 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 				Switch $wParam
 					Case 0xf060
 						SetLog(GetLangText("msgExit"), $COLOR_ORANGE)
+						DllClose($KernelDLL)
 						_GDIPlus_Shutdown()
+						_Crypt_Shutdown()
 						_GUICtrlRichEdit_Destroy($txtLog)
 						SaveConfig()
 						Exit
@@ -180,6 +203,7 @@ EndFunc   ;==>btnStart
 
 Func btnStop()
 	If BitAND(GUICtrlGetState($btnStop), $GUI_SHOW) Then
+		If $OverlayVisible Then DeleteOverlay()
 		GUICtrlSetData($btnStart, "Stopping...")
 		GUICtrlSetState($btnStart, $GUI_SHOW)
 		GUICtrlSetState($btnStart, $GUI_DISABLE)
@@ -228,6 +252,7 @@ EndFunc   ;==>btnStop
 
 Func btnPause()
 	If GUICtrlRead($btnPause) = "Pause" Then
+		If $OverlayVisible Then DeleteOverlay()
 		GUICtrlSetData($btnPause, "Resume")
 		If _GUICtrlTab_GetCurSel($tabMain) = 1 Then
 			GUISetState(@SW_HIDE, $frmAttackConfig)
@@ -469,17 +494,18 @@ Func chkRequest()
 EndFunc   ;==>chkRequest
 
 Func tabMain()
+	If _GUICtrlTab_GetCurSel($tabMain) <> $prevTab Then GUICtrlSetData($inpBBPassword, "")
 	If _GUICtrlTab_GetCurSel($tabMain) = 0 Then
 		ControlShow("", "", $txtLog)
 	Else
 		ControlHide("", "", $txtLog)
 	EndIf
-	If _GUICtrlTab_GetCurSel($tabMain) = 1 And (BotStopped(False) Or GUICtrlRead($btnPause)="Resume") Then
+	If _GUICtrlTab_GetCurSel($tabMain) = 1 And (BotStopped(False) Or GUICtrlRead($btnPause) = "Resume") Then
 		GUISetState(@SW_HIDE, $frmAttackConfig)
 		DllCall("user32.dll", "int", "AnimateWindow", "hwnd", $frmAttackConfig, "int", 500, "long", $slideOut)
 		GUISetState(@SW_SHOW, $frmAttackConfig)
 		GUICtrlSetState($DefaultTab, $GUI_SHOW)
-	ElseIf $prevTab = 1 And (BotStopped(False) Or GUICtrlRead($btnPause)="Resume") Then
+	ElseIf $prevTab = 1 And (BotStopped(False) Or GUICtrlRead($btnPause) = "Resume") Then
 		_btnSaveStrat(GUICtrlRead($lstStrategies))
 		DllCall("user32.dll", "int", "AnimateWindow", "hwnd", $frmAttackConfig, "int", 500, "long", $slideIn)
 		GUISetState(@SW_HIDE, $frmAttackConfig)
@@ -723,12 +749,40 @@ EndFunc   ;==>_lstStrategies
 
 Func btnLab()
 	LocateLab()
-EndFunc
+EndFunc   ;==>btnLab
 
 Func cmbLanguage()
 	$array = _GUICtrlComboBox_GetListArray($cmbLanguage)
-	If $array[_GUICtrlComboBox_GetCurSel($cmbLanguage)+1] <> $StartupLanguage Then
-		MsgBox(0, $array[_GUICtrlComboBox_GetCurSel($cmbLanguage)+1], GetLangText("msgRestartNeeded"))
-		$StartupLanguage = $array[_GUICtrlComboBox_GetCurSel($cmbLanguage)+1]
+	If $array[_GUICtrlComboBox_GetCurSel($cmbLanguage) + 1] <> $StartupLanguage Then
+		MsgBox(0, $array[_GUICtrlComboBox_GetCurSel($cmbLanguage) + 1], GetLangText("msgRestartNeeded"))
+		$StartupLanguage = $array[_GUICtrlComboBox_GetCurSel($cmbLanguage) + 1]
 	EndIf
+EndFunc   ;==>cmbLanguage
+
+Func _btnBBValidate()
+	IniWrite(@LocalAppDataDir & "\BrokenBot.org.ini", "default", "1", _Encrypt(GUICtrlRead($inpBBUser)))
+	IniWrite(@LocalAppDataDir & "\BrokenBot.org.ini", "default", "2", _Encrypt(GUICtrlRead($inpBBPassword)))
+	Local $oHTTP = ObjCreate("winhttp.winhttprequest.5.1")
+	$oHTTP.Open("GET", "http://forum.brokenbot.org/bot_stat_submit.php?a=auth&u=" & GUICtrlRead($inpBBUser) & "&p=" & GUICtrlRead($inpBBPassword), False)
+	$oHTTP.SetRequestHeader("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.5) Gecko/2008120122 Firefox/3.0.5")
+	$oHTTP.Send("")
+	$authResult = $oHTTP.ResponseText()
+	If $authResult = 1 Then
+		GUICtrlSetData($btnBBValidate, "VALID")
+		GUICtrlSetBkColor($btnBBValidate, 0x00FF00)
+;~ 		GUICtrlSetImage($btnBBValidate, @ScriptDir & "\images\Resource\good.bmp")
+		GUICtrlSetTip($btnBBValidate, GetLangText("tipBBValidGood"))
+		GUICtrlSetData($inpBBPassword, "")
+		$ValidAuth = True
+	Else
+		GUICtrlSetData($btnBBValidate, "INVALID")
+		GUICtrlSetBkColor($btnBBValidate, 0xFF0000)
+;~ 		GUICtrlSetImage($btnBBValidate, @ScriptDir & "\images\Resource\bad.bmp")
+		GUICtrlSetTip($btnBBValidate, GetLangText("tipBBValidBad"))
+		$ValidAuth = False
+	EndIf
+EndFunc   ;==>_btnBBValidate
+
+Func lblBBRegister()
+	ShellExecute("http://www.brokenbot.org/page.php?p=register")
 EndFunc

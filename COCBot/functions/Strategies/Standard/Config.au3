@@ -185,7 +185,7 @@ Func Standard_LoadConfig()
 
 	;Troop Settings--------------------------------------------------------------------------
 	_GUICtrlComboBox_SetCurSel($cmbTroopComp, IniRead($configFile, "troop", "composition", "0"))
-	_GUICtrlComboBox_SetCurSel($cmbRaidcap, IniRead($configFile, "troop", "raidcapacity", "0"))
+	_GUICtrlComboBox_SetCurSel($cmbRaidcap, IniRead($configFile, "troop", "raidcapacity", "9"))
 	GUICtrlSetData($txtBarbarians, IniRead($configFile, "troop", "barbarian", "0"))
 	GUICtrlSetData($txtArchers, IniRead($configFile, "troop", "archer", "0"))
 	GUICtrlSetData($txtNumGiants, IniRead($configFile, "troop", "giant", "0"))
@@ -198,10 +198,20 @@ Func Standard_LoadConfig()
 	_GUICtrlComboBox_SetCurSel($cmbBarrack3, IniRead($configFile, "troop", "troop3", "0"))
 	_GUICtrlComboBox_SetCurSel($cmbBarrack4, IniRead($configFile, "troop", "troop4", "0"))
 	;Dark Troops---------------------------------------------
-	_GUICtrlComboBox_SetCurSel($cmbDarkBarrack1, $DarkBarrackTroop[0])
-	_GUICtrlComboBox_SetCurSel($cmbDarkBarrack2, $DarkBarrackTroop[1])
-	GUICtrlSetData($txtDarkBarrack1, IniRead($configFile, "other", "DarkRax1", "0"))
-	GUICtrlSetData($txtDarkBarrack2, IniRead($configFile, "other", "DarkRax2", "0"))
+ 	;_GUICtrlComboBox_SetCurSel($cmbDarkBarrack1, $DarkBarrackTroop[0])
+ 	;_GUICtrlComboBox_SetCurSel($cmbDarkBarrack2, $DarkBarrackTroop[1])
+	_GUICtrlComboBox_SetCurSel($cmbDarkBarrack1, IniRead($configFile, "other", "Darktroop1", "0"))
+ 	_GUICtrlComboBox_SetCurSel($cmbDarkBarrack2, IniRead($configFile, "other", "Darktroop2", "0"))
+ 	GUICtrlSetData($txtDarkBarrack1, IniRead($configFile, "other", "DarkRax1", "0"))
+ 	GUICtrlSetData($txtDarkBarrack2, IniRead($configFile, "other", "DarkRax2", "0"))
+	
+	$DarkBarrackTroop[0] = _GUICtrlComboBox_GetCurSel($cmbDarkBarrack1)
+	$DarkBarrackTroop[1] = _GUICtrlComboBox_GetCurSel($cmbDarkBarrack2)
+	
+	_GUICtrlComboBox_SetCurSel($cmbDarkBarrack1Next, IniRead($configFile, "other", "Darktroop1Next", "0"))
+ 	_GUICtrlComboBox_SetCurSel($cmbDarkBarrack2Next, IniRead($configFile, "other", "Darktroop2Next", "0"))
+ 	GUICtrlSetData($txtDarkBarrack1Next, IniRead($configFile, "other", "DarkRax1Next", "0"))
+ 	GUICtrlSetData($txtDarkBarrack2Next, IniRead($configFile, "other", "DarkRax2Next", "0"))
 
 	;Spell Settings--------------------------------------------------------------------------
 	If IniRead($configFile, "spells", "chkMakeSpells", "0") = 1 Then
@@ -366,13 +376,13 @@ Func Standard_SaveConfig($configFile)
 		IniWrite($configFile, "search", "conditionSnipe", 0)
 	EndIf
 	;Search reduction setting in search tab
-	If GUICtrlRead($txtRedNumOfSerach) = 0 Then GUICtrlSetData($txtRedNumOfSerach,30)
-	IniWrite($configFile, "search",  "RedutionNumOfSerach", GUICtrlRead($txtRedNumOfSerach))
-	IniWrite($configFile, "search",  "ReductionGoldPercent", GUICtrlRead($txtRedGoldPercent))
-	IniWrite($configFile, "search",  "ReductionElixirPercent", GUICtrlRead($txtRedElixirPercent))
-	IniWrite($configFile, "search",  "ReductionDEPercent", GUICtrlRead($txtRedDEPercent))
-	IniWrite($configFile, "search",  "ReductionTrophyPercent", GUICtrlRead($txtRedTrophyPercent))
-	IniWrite($configFile, "search",  "ReductionNukePercent", GUICtrlRead($txtRedNukePercent))
+	If GUICtrlRead($txtRedNumOfSerach) = 0 Then GUICtrlSetData($txtRedNumOfSerach, 30)
+	IniWrite($configFile, "search", "RedutionNumOfSerach", GUICtrlRead($txtRedNumOfSerach))
+	IniWrite($configFile, "search", "ReductionGoldPercent", GUICtrlRead($txtRedGoldPercent))
+	IniWrite($configFile, "search", "ReductionElixirPercent", GUICtrlRead($txtRedElixirPercent))
+	IniWrite($configFile, "search", "ReductionDEPercent", GUICtrlRead($txtRedDEPercent))
+	IniWrite($configFile, "search", "ReductionTrophyPercent", GUICtrlRead($txtRedTrophyPercent))
+	IniWrite($configFile, "search", "ReductionNukePercent", GUICtrlRead($txtRedNukePercent))
 
 	;Attack Settings-------------------------------------------------------------------------
 	IniWrite($configFile, "attack", "deploy-dead", _GUICtrlComboBox_GetCurSel($cmbDeadDeploy))
@@ -485,10 +495,15 @@ Func Standard_SaveConfig($configFile)
 	IniWrite($configFile, "troop", "troop4", _GUICtrlComboBox_GetCurSel($cmbBarrack4))
 
 	;Dark Barracks
-	IniWrite($configFile, "other", "Darktroop1", _GUICtrlComboBox_GetCurSel($cmbDarkBarrack1))
-	IniWrite($configFile, "other", "Darktroop2", _GUICtrlComboBox_GetCurSel($cmbDarkBarrack2))
-	IniWrite($configFile, "other", "DarkRax1", GUICtrlRead($txtDarkBarrack1))
-	IniWrite($configFile, "other", "DarkRax2", GUICtrlRead($txtDarkBarrack2))
+ 	IniWrite($configFile, "other", "Darktroop1", _GUICtrlComboBox_GetCurSel($cmbDarkBarrack1))
+ 	IniWrite($configFile, "other", "Darktroop2", _GUICtrlComboBox_GetCurSel($cmbDarkBarrack2))
+ 	IniWrite($configFile, "other", "DarkRax1", GUICtrlRead($txtDarkBarrack1))
+ 	IniWrite($configFile, "other", "DarkRax2", GUICtrlRead($txtDarkBarrack2))
+	
+	IniWrite($configFile, "other", "Darktroop1Next", _GUICtrlComboBox_GetCurSel($cmbDarkBarrack1Next))
+ 	IniWrite($configFile, "other", "Darktroop2Next", _GUICtrlComboBox_GetCurSel($cmbDarkBarrack2Next))
+ 	IniWrite($configFile, "other", "DarkRax1Next", GUICtrlRead($txtDarkBarrack1Next))
+ 	IniWrite($configFile, "other", "DarkRax2Next", GUICtrlRead($txtDarkBarrack2Next))
 
 	;Spell Settings--------------------------------------------------------------------------
 	If IsChecked($chkMakeSpells) Then
