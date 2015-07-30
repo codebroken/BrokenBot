@@ -6,6 +6,7 @@ Func readConfig() ;Reads config and sets it to the variables
 	;---------------------------------------------------------------------------------------
 	$itxtMinTrophy = IniRead($config, "general", "MinTrophy", "0")
 	$itxtMaxTrophy = IniRead($config, "general", "MaxTrophy", "3000")
+	GUICtrlSetData($txtSnipeBelow, IniRead($config, "general", "MinSnipe", "0"))
 	$ichkBotStop = IniRead($config, "general", "BotStop", "0")
 	$icmbBotCommand = IniRead($config, "general", "Command", "0")
 	$icmbBotCond = IniRead($config, "general", "Cond", "0")
@@ -15,8 +16,8 @@ Func readConfig() ;Reads config and sets it to the variables
 	;---------------------------------------------------------------------------------------
 	; Attack settings ----------------------------------------------------------------------
 	;---------------------------------------------------------------------------------------
-	$icmbUnitDelay = IniRead($config, "attack", "UnitD", "0")
-	$icmbWaveDelay = IniRead($config, "attack", "WaveD", "0")
+	_GUICtrlComboBox_SetCurSel($cmbUnitDelay, IniRead($config, "attack", "UnitD", "0"))
+	_GUICtrlComboBox_SetCurSel($cmbWaveDelay, IniRead($config, "attack", "WaveD", "0"))
 
 	;---------------------------------------------------------------------------------------
 	; Donate settings ----------------------------------------------------------------------
@@ -49,6 +50,11 @@ Func readConfig() ;Reads config and sets it to the variables
 	$itxtWallMinElixir = IniRead($config, "upgrade", "minwallelixir", "0")
 	$icmbTolerance = IniRead($config, "upgrade", "walltolerance", "0")
 
+	;UpgradeHeroes
+	$ichkUpgradeKing = IniRead($config, "Upgrade", "UpKing", "0")	;==>upgradeking
+	$ichkUpgradeQueen = IniRead($config, "Upgrade", "UpQueen", "0")	;==>upgradequeen
+	$itxtKeepFreeBuilder = IniRead($config, "Upgrade", "KeepFreeBuilder", "1") ;==>FreeBuilderBox
+
 	;Laboratory
 	$ichkLab = IniRead($config, "upgrade", "auto-uptroops", "0")
 	$icmbLaboratory = IniRead($config, "upgrade", "troops-name", "0")
@@ -61,6 +67,7 @@ Func readConfig() ;Reads config and sets it to the variables
 	$PushBullettype = IniRead($config, "notification", "lastraidtype", "0")
 	$PushBulletattacktype = IniRead($config, "notification", "attackimage", "0")
 	$PushBulletvillagereport = IniRead($config, "notification", "villagereport", "0")
+	$PushBulletchatlog = IniRead($config, "notification", "chatlog", "0")
 	$PushBulletmatchfound = IniRead($config, "notification", "matchfound", "0")
 	$PushBulletlastraid = IniRead($config, "notification", "lastraid", "0")
 	$PushBulletdebug = IniRead($config, "notification", "debug", "0")
@@ -69,7 +76,11 @@ Func readConfig() ;Reads config and sets it to the variables
 	$PushBulletfreebuilder = IniRead($config, "notification", "freebuilder", "0")
 	$PushBulletdisconnection = IniRead($config, "notification", "disconnection", "0")
 	GUICtrlSetData($inppushuser, IniRead($config, "notification", "user", ""))
-
+;~ 	If IniRead($config, "brokenbot.org", "senddata", "0") = 1 Then
+;~ 		GUICtrlSetState($chkBBSendData, $GUI_CHECKED)
+;~ 	Else
+;~ 		GUICtrlSetState($chkBBSendData, $GUI_UNCHECKED)
+;~ 	EndIf
 	;---------------------------------------------------------------------------------------
 	; Misc settings ------------------------------------------------------------------------
 	;---------------------------------------------------------------------------------------
@@ -84,8 +95,8 @@ Func readConfig() ;Reads config and sets it to the variables
 	$icmbSearchsp = IniRead($config, "misc", "searchspd", "0")
 	$ichkTrap = IniRead($config, "misc", "chkTrap", "0")
 	$WideEdge = IniRead($config, "misc", "WideEdge", "0")
+	$iClearField = IniRead($config, "misc", "ClearField", "0")
 	$ichkAvoidEdge = IniRead($config, "misc", "AvoidEdge", "0")
-	$itxtcampCap = IniRead($config, "misc", "capacity", "0")
 	$itxtspellCap = IniRead($config, "misc", "spellcap", "3")
 	; Import old setting to new method
 	If $ichkAvoidEdge = "0" Then

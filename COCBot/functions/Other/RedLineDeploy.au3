@@ -28,18 +28,22 @@ For $j = 0 To 42
 Next
 $AimCenter = 1
 $AimTH = 2
+$AimPoint = 3
 
 Func RedLineDeploy($x, $y, $times = 1, $speed = 0, $CenteredOn = 1, $BufferDist = -1, $CenterX = 395, $CenterY = 314, $RandomizeBuffer = 6)
-	If $BufferDist - 1  Then $BufferDist = GUICtrlRead($sldAcc) + 10
+	If $BufferDist = - 1 Then $BufferDist = GUICtrlRead($sldAcc) + 10
 	If $RandomizeBuffer > 0 Then
-		$BufferDist = $BufferDist + _Random_Gaussian($RandomizeBuffer/2, $RandomizeBuffer/6.2) ; Randomly distributes buffer zone from $BufferDist to $BufferDist + $RandomizeBuffer
+		$BufferDist = $BufferDist + _Random_Gaussian($RandomizeBuffer / 2, $RandomizeBuffer / 6.2) ; Randomly distributes buffer zone from $BufferDist to $BufferDist + $RandomizeBuffer
 	EndIf
 	If $CenteredOn = $AimCenter Then
-		$AimX = $CenterX
-		$AimY = $CenterY
+		$AimX = $BaseCenter[0]
+		$AimY = $BaseCenter[1]
 	ElseIf $CenteredOn = $AimTH Then
 		$AimX = $THx
 		$AimY = $THy
+	ElseIf $CenteredOn = $AimPoint Then
+		$AimX = $CenterX
+		$AimY = $CenterY
 	Else
 		SetLog(GetLangText("msgBadCall"))
 		Return
@@ -146,16 +150,17 @@ Func RedLineDeploy($x, $y, $times = 1, $speed = 0, $CenteredOn = 1, $BufferDist 
 		$AimX = Round($AimX + $deltaX)
 		$AimY = Round($AimY + $m * $deltaX)
 	EndIf
+
 	If $times <> 1 Then
 		For $i = 0 To ($times - 1)
-			ControlClick($Title, "", "", "left", "1", Random($AimX-2, $AimX +2, 1), Random($AimY-2, $AimY +2, 1))
-			_GDIPlus_GraphicsDrawEllipse($Buffer, $AimX - 2, $AimY - 2, 4, 4, $Pen)
-			If _Sleep(Standard_SetSleep(0), False) Then Return
+			ControlClick($Title, "", "", "left", "1", Random($AimX - 2, $AimX + 2, 1), Random($AimY - 2, $AimY + 2, 1))
+			OverlayX(Random($AimX - 2, $AimX + 2, 1) - 2, Random($AimY - 2, $AimY + 2, 1) - 2, 5, 5, $GlobalColor, 1)
+			If Wave_Sleep(0) Then Return
 		Next
 	Else
 		ControlClick($Title, "", "", "left", "1", $AimX, $AimY)
-		If _Sleep(Standard_SetSleep(0), False) Then Return
-		_GDIPlus_GraphicsDrawEllipse($Buffer, $AimX - 2, $AimY - 2, 4, 4, $Pen)
+		OverlayX($AimX - 2, $AimY - 2, 5, 5, $GlobalColor, 1)
+		If Wave_Sleep(0) Then Return
 	EndIf
 EndFunc   ;==>RedLineDeploy
 
@@ -164,17 +169,22 @@ Func SeekEdges()
 
 	$cl = 1
 	$cr = 1
-	$ci = 0
+	$ci = 1
 
 	If GUICtrlRead($sldAcc) < 10 Then
 		$mH = 65 + GUICtrlRead($sldAcc)
 		$mS = 135 - GUICtrlRead($sldAcc)
 	ElseIf GUICtrlRead($sldAcc) = 100 Then
-		$mH = 1024
-		$mS = 8
+		For $i = 0 To 42
+			For $j = 0 To 42
+				$Grid[$i][$j][2] = 1
+			Next
+		Next
+		FindCenter()
+		Return
 	Else
-		$mH = 75 + 10*((GUICtrlRead($sldAcc)-10)/90)
-		$mS = 125 - 10*((GUICtrlRead($sldAcc)-10)/90)
+		$mH = 75 + 10 * ((GUICtrlRead($sldAcc) - 10) / 90)
+		$mS = 125 - 10 * ((GUICtrlRead($sldAcc) - 10) / 90)
 	EndIf
 
 	; Clear edge data
@@ -185,24 +195,74 @@ Func SeekEdges()
 		Next
 	Next
 
-	Local $hHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hAttackBitmap)
-	$ret = ""
-	$ret = DllCall(@ScriptDir & "\BrokenBot.org\BrokenBot32.dll", "str", "BrokenBotRedLineCheck", "ptr", $hHBitmap, "int", $mH, "int", $mS, "int", $ci, "int", $cl, "int", $cr)
-	_WinAPI_DeleteObject($hHBitmap)
+	For $loop = 1 To 5
+		$ret = CallHelper("0 0 860 720 BrokenBotRedLineCheck " & $mH & " " & $mS & " " & $ci & " " & $cl & " " & $cr, 3)
 
-	If IsArray($ret) Then
-		$Array = StringSplit($ret[0], "|", 2)
-		For $i = 0 to (43*43)-1
-			$Grid[Floor($i/43)][Mod($i, 43)][2] = $Array[$i]
-		Next
-	Else
-		For $i = 0 To 42
-			For $j = 0 To 42
-				$Grid[$i][$j][2] = 1
+		If $ret = $DLLLicense or $ret = $DLLFailed Or $ret = $DLLTimeout Then
+			If $ret = $DLLLicense Then SetLog(GetLangText("msgLicense"), $COLOR_RED)
+			For $i = 0 To 42
+				For $j = 0 To 42
+					$Grid[$i][$j][2] = 1
+				Next
+			Next
+		Else
+			$Array = StringSplit($ret, "|", 2)
+			For $i = 0 To (43 * 43) - 1
+				If $Grid[Floor($i / 43)][Mod($i, 43)][2] = 0 Then
+					$Grid[Floor($i / 43)][Mod($i, 43)][2] = $Array[$i]
+				EndIf
+			Next
+		EndIf
+
+		For $i = 0 To 41
+			For $j = 0 To 41
+				If ($Grid[$i][$j][2] > 0 And $Grid[$i][$j + 1][2] > 0) Then ; Up and to the right edges
+					OverlayLine($Grid[$i][$j][0], $Grid[$i][$j][1], $Grid[$i][$j + 1][0], $Grid[$i][$j + 1][1], 0x22C0D9D9, 1)
+				EndIf
+				If ($Grid[$i][$j][2] > 0 And $Grid[$i + 1][$j][2] > 0) Then ; Down and to the right edges
+					OverlayLine($Grid[$i][$j][0], $Grid[$i][$j][1], $Grid[$i + 1][$j][0], $Grid[$i + 1][$j][1], 0x22C0D9D9, 1)
+				EndIf
 			Next
 		Next
-	EndIf
+		$j = 42
+		For $i = 0 To 41
+			If ($Grid[$i][$j][2] > 0 And $Grid[$i + 1][$j][2] > 0) Then ; Down and to the right edges
+				OverlayLine($Grid[$i][$j][0], $Grid[$i][$j][1], $Grid[$i + 1][$j][0], $Grid[$i + 1][$j][1], 0x22C0D9D9, 1)
+			EndIf
+		Next
+		$i = 42
+		For $j = 0 To 41
+			If ($Grid[$i][$j][2] > 0 And $Grid[$i][$j + 1][2] > 0) Then ; Up and to the right edges
+				OverlayLine($Grid[$i][$j][0], $Grid[$i][$j][1], $Grid[$i][$j + 1][0], $Grid[$i][$j + 1][1], 0x22C0D9D9, 1)
+			EndIf
+		Next
+	Next
+
+	FindCenter()
 
 	SetLog(GetLangText("msgDone"), $COLOR_BLUE)
 EndFunc   ;==>SeekEdges
 
+Func FindCenter()
+
+	Local $pointCount = 0
+	Local $sumX = 0
+	Local $sumY = 0
+	For $i = 0 To 42
+		For $j = 0 To 42
+			If $Grid[$i][$j][2] > 0 Then
+				$pointCount += 1
+				$sumX += $Grid[$i][$j][0]
+				$sumY += $Grid[$i][$j][1]
+			EndIf
+		Next
+	Next
+	If $sumX = 0 Then
+		$BaseCenter[0] = 395
+		$BaseCenter[1] = 314
+	Else
+		$BaseCenter[0] = Round($sumX / $pointCount)
+		$BaseCenter[1] = Round($sumY / $pointCount)
+	EndIf
+
+EndFunc   ;==>FindCenter

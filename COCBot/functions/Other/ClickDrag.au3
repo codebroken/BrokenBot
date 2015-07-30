@@ -20,54 +20,54 @@
 ; Author(s):        KillerDeluxe
 ;=================================================================================================
 Func _PostMessage_ClickDrag($X1, $Y1, $X2, $Y2, $Button = "left", $Delay = 50)
-    If Not IsHWnd($Title) And $Title <> "" Then
-        $Title = WinGetHandle($Title)
-    EndIf
+	If Not IsHWnd($Title) And $Title <> "" Then
+		$Title = WinGetHandle($Title)
+	EndIf
 
-    If Not IsHWnd($Title) Then
-        Return SetError(1, "", False)
-    EndIf
+	If Not IsHWnd($Title) Then
+		Return SetError(1, "", False)
+	EndIf
 
-    If Not IsInt($X1) Or Not IsInt($Y1) Then
-        Return SetError(2, "", False)
-    EndIf
+	If Not IsInt($X1) Or Not IsInt($Y1) Then
+		Return SetError(2, "", False)
+	EndIf
 
-    If Not IsInt($X2) Or Not IsInt($Y2) Then
-        Return SetError(3, "", False)
-    EndIf
+	If Not IsInt($X2) Or Not IsInt($Y2) Then
+		Return SetError(3, "", False)
+	EndIf
 
-    If StringLower($Button) == "left" Then
-        $Button = $WM_LBUTTONDOWN
-        $Pressed = 1
-    ElseIf StringLower($Button) == "right" Then
-        $Button = $WM_RBUTTONDOWN
-        $Pressed = 2
-    ElseIf StringLower($Button) == "middle" Then
-        $Button = $WM_MBUTTONDOWN
-        $Pressed = 10
-        If $Delay == 10 Then $Delay = 100
-    EndIf
+	If StringLower($Button) == "left" Then
+		$Button = $WM_LBUTTONDOWN
+		$Pressed = 1
+	ElseIf StringLower($Button) == "right" Then
+		$Button = $WM_RBUTTONDOWN
+		$Pressed = 2
+	ElseIf StringLower($Button) == "middle" Then
+		$Button = $WM_MBUTTONDOWN
+		$Pressed = 10
+		If $Delay == 10 Then $Delay = 100
+	EndIf
 
-    $User32 = DllOpen("User32.dll")
-    If @error Then Return SetError(4, "", False)
+	$User32 = DllOpen("User32.dll")
+	If @error Then Return SetError(4, "", False)
 
-    DllCall($User32, "bool", "PostMessage", "hwnd", $Title, "int", $Button, "int", "0", "long", _MakeLong($X1, $Y1))
-    If @error Then Return SetError(5, "", False)
+	DllCall($User32, "bool", "PostMessage", "hwnd", $Title, "int", $Button, "int", "0", "long", _MakeLong($X1, $Y1))
+	If @error Then Return SetError(5, "", False)
 
-    Sleep($Delay / 2)
+	_ModifiedSleep($Delay / 2)
 
-    DllCall($User32, "bool", "PostMessage", "hwnd", $Title, "int", $WM_MOUSEMOVE, "int", $Pressed, "long", _MakeLong($X2, $Y2))
-    If @error Then Return SetError(6, "", False)
+	DllCall($User32, "bool", "PostMessage", "hwnd", $Title, "int", $WM_MOUSEMOVE, "int", $Pressed, "long", _MakeLong($X2, $Y2))
+	If @error Then Return SetError(6, "", False)
 
-    Sleep($Delay / 2)
+	_ModifiedSleep($Delay / 2)
 
-    DllCall($User32, "bool", "PostMessage", "hwnd", $Title, "int", $Button + 1, "int", "0", "long", _MakeLong($X2, $Y2))
-    If @error Then Return SetError(7, "", False)
+	DllCall($User32, "bool", "PostMessage", "hwnd", $Title, "int", $Button + 1, "int", "0", "long", _MakeLong($X2, $Y2))
+	If @error Then Return SetError(7, "", False)
 
-    DllClose($User32)
-    Return SetError(0, 0, True)
- EndFunc
+	DllClose($User32)
+	Return SetError(0, 0, True)
+EndFunc   ;==>_PostMessage_ClickDrag
 
- Func _MakeLong($LowWORD, $HiWORD)
-    Return BitOR($HiWORD * 0x10000, BitAND($LowWORD, 0xFFFF))
-EndFunc
+Func _MakeLong($LowWORD, $HiWORD)
+	Return BitOR($HiWORD * 0x10000, BitAND($LowWORD, 0xFFFF))
+EndFunc   ;==>_MakeLong
