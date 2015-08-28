@@ -122,7 +122,7 @@ Func Standard_LoadGUI()
 
 	$DeadDeploySettings = GUICtrlCreateGroup(GetLangText("DeadDeploySettings"), 15, 40, 390, 123)
 	Global $cmbDeadDeploy = GUICtrlCreateCombo("", 30, 55, 360, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-	GUICtrlSetData(-1, GetLangText("cmbDeployMethods") & GetLangText("cmbDeployCollectors"), GetLangText("cmbDeployDefault"))
+	GUICtrlSetData(-1, GetLangText("cmbDeployMethods") & GetLangText("cmbDeployCollectors") & GetLangText("cmbDeployFocused"), GetLangText("cmbDeployDefault"))
 	Global $cmbDeadAlgorithm = GUICtrlCreateCombo("", 30, 85, 360, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 	GUICtrlSetData(-1, GetLangText("cmbAlgorithms"), GetLangText("cmbAlgorithmsDefault"))
 	Global $chkDeadUseKing = GUICtrlCreateCheckbox(GetLangText("chkUseKing"), 30, 115, 150, 17)
@@ -134,7 +134,7 @@ Func Standard_LoadGUI()
 
 	$AnyDeploySettings = GUICtrlCreateGroup(GetLangText("AnyDeploySettings"), 15, 164, 390, 123)
 	Global $cmbDeploy = GUICtrlCreateCombo("", 30, 182, 360, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-	GUICtrlSetData(-1, GetLangText("cmbDeployMethods") & GetLangText("cmbDeployCollectors"), GetLangText("cmbDeployDefault"))
+	GUICtrlSetData(-1, GetLangText("cmbDeployMethods") & GetLangText("cmbDeployCollectors") & GetLangText("cmbDeployFocused"), GetLangText("cmbDeployDefault"))
 	Global $cmbAlgorithm = GUICtrlCreateCombo("", 30, 212, 360, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 	GUICtrlSetData(-1, GetLangText("cmbAlgorithms"), GetLangText("cmbAlgorithmsDefault"))
 	Global $chkUseKing = GUICtrlCreateCheckbox(GetLangText("chkUseKing"), 30, 240, 97, 17)
@@ -155,8 +155,24 @@ Func Standard_LoadGUI()
 	Global $txtQueenSkill = GUICtrlCreateInput("10", 140, 329, 31, 21, BitOR($GUI_SS_DEFAULT_INPUT, $ES_CENTER, $ES_NUMBER))
 	GUICtrlSetLimit(-1, 2)
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
+	
+	Global $CollectorAtkSettings = GUICtrlCreateGroup(GetLangText("CollectorAtkSettings"), 15, 362, 220, 50)
+	Global $lblCollectorAtk = GUICtrlCreateLabel(GetLangText("lblCollectorAtk"), 25, 384, 40, 20)
+	Global $chkColAtkGold = GUICtrlCreateCheckbox(GetLangText("chkColAtkGold"), 68, 382, 45, 17)
+	Global $chkColAtkElix = GUICtrlCreateCheckbox(GetLangText("chkColAtkElix"),116, 382, 45, 17)
+	Global $chkColAtkDE = GUICtrlCreateCheckbox(GetLangText("chkColAtkDE"), 162, 382, 65, 17)
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+	
+	Global $FocusedAtkSettings = GUICtrlCreateGroup(GetLangText("FocusedAtkSettings"), 238, 362, 167, 70)
+	Global $chkFocusedIgnoreCenter = GUICtrlCreateCheckbox(GetLangText("chkFocusedIgnoreCenter"), 285, 408, 85, 17) 
+	GUICtrlSetTip(-1, GetLangText("chkFocusedIgnoreCenterTip"))
+	Global $lblFocusedAtk = GUICtrlCreateLabel(GetLangText("lblFocusedAtk"), 246, 384, 70, 20)
+	Global $cmbFocusedBuilding = GUICtrlCreateCombo("", 301, 382, 80, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 
-
+	GUICtrlSetData(-1,GetLangText("cmbFocusedBuilding"), GetLangText("cmbFocusedBuildingDefault"))
+	
+	GUICtrlCreateGroup("", -99, -99, 1, 1)
+	
 	; ---------------------------------------------------------------------------
 	$pageTroops = GUICtrlCreateTabItem(GetLangText("pageTroops"))
 
@@ -325,14 +341,33 @@ Func Standard_LoadGUI()
 	GUICtrlCreateTabItem("")
 	Standard_LoadConfig()
 
-	Global $PluginEvents[3][3]
-	$PluginEvents[0][0] = 2
+	Global $PluginEvents[9][3]
+	$PluginEvents[0][0] = 8
 	$PluginEvents[1][0] = $cmbTroopComp
 	$PluginEvents[1][1] = 1
 	$PluginEvents[1][2] = "_cmbTroopComp"
 	$PluginEvents[2][0] = $cmbSpellCreate
 	$PluginEvents[2][1] = 1
 	$PluginEvents[2][2] = "_cmbSpellCreate"
+	$PluginEvents[3][0] = $cmbDeadDeploy
+	$PluginEvents[3][1] = 1
+	$PluginEvents[3][2] = "_cmbCollectorAttack"
+	$PluginEvents[4][0] = $cmbDeploy
+	$PluginEvents[4][1] = 1
+	$PluginEvents[4][2] = "_cmbCollectorAttack"
+	$PluginEvents[5][0] = $cmbDeadDeploy
+	$PluginEvents[5][1] = 1
+	$PluginEvents[5][2] = "_cmbFocusedAttack"
+	$PluginEvents[6][0] = $cmbDeploy
+	$PluginEvents[6][1] = 1
+	$PluginEvents[6][2] = "_cmbFocusedAttack"
+	$PluginEvents[7][0] = $cmbDeadDeploy
+	$PluginEvents[7][1] = 1
+	$PluginEvents[7][2] = "_cmbCheckEnableTHAttackDead"
+	$PluginEvents[8][0] = $cmbDeploy
+	$PluginEvents[8][1] = 1
+	$PluginEvents[8][2] = "_cmbCheckEnableTHAttack"
+	
 
 	Return $pageSearch
 EndFunc   ;==>Standard_LoadGUI

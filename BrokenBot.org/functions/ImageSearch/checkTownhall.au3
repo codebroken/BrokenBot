@@ -6,7 +6,7 @@
 Func checkTownhall()
 	$res = CallHelper("0 0 860 720 BrokenBotMatchBuilding 1 1 1")
 
-	If $res = $DLLFailed or $res = $DLLTimeout Then
+	If $res = $DLLFailed or $res = $DLLTimeout or $res = $DLLError Then
 		SetLog(GetLangText("msgDLLError"), $COLOR_RED)
 		$THx = 0
 		$THy = 0
@@ -25,23 +25,30 @@ Func checkTownhall()
 			SetLog(GetLangText("msgLicense"), $COLOR_RED)
 		Else
 			$res = StringSplit($res, "|", 2)
-			$THx = $res[1]
-			$THy = $res[2]
-			If $DebugMode = 1 Then
-				_CaptureRegion()
-				$hClone = _GDIPlus_BitmapCloneArea($hBitmap, $THx - 30, $THy - 30, 60, 60, _GDIPlus_ImageGetPixelFormat($hBitmap))
-				$j = 1
-				Do
-					If Not FileExists($dirDebug & "PosTH-x" & $THx & "y" & $THy & " (" & $j & ").jpg") Then ExitLoop
-					$j = $j + 1
-				Until $j = 1000
-				_GDIPlus_ImageSaveToFile($hClone, $dirDebug & "PosTH-x" & $THx & "y" & $THy & " (" & $j & ").jpg")
-				_GDIPlus_ImageDispose($hClone)
-			EndIf
-			If $res[4] < 7 Then
-				Return $THText[0]
+			If UBound($res) < 3 Then
+				SetLog(GetLangText("msgDLLError"), $COLOR_RED)
+				$THx = 0
+				$THy = 0
+				Return "-" ; return 0
 			Else
-				Return $THText[$res[4] - 6]
+				$THx = $res[1]
+				$THy = $res[2]
+				If $DebugMode = 1 Then
+					_CaptureRegion()
+					$hClone = _GDIPlus_BitmapCloneArea($hBitmap, $THx - 30, $THy - 30, 60, 60, _GDIPlus_ImageGetPixelFormat($hBitmap))
+					$j = 1
+					Do
+						If Not FileExists($dirDebug & "PosTH-x" & $THx & "y" & $THy & " (" & $j & ").jpg") Then ExitLoop
+						$j = $j + 1
+					Until $j = 1000
+					_GDIPlus_ImageSaveToFile($hClone, $dirDebug & "PosTH-x" & $THx & "y" & $THy & " (" & $j & ").jpg")
+					_GDIPlus_ImageDispose($hClone)
+				EndIf
+				If $res[4] < 7 Then
+					Return $THText[0]
+				Else
+					Return $THText[$res[4] - 6]
+				EndIf
 			EndIf
 		EndIf
 	EndIf

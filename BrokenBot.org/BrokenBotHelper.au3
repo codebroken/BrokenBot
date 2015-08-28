@@ -41,6 +41,10 @@ If $BackgroundMode = 1 Then
 	_WinAPI_ReleaseDC($HWnD, $hDC_Capture)
 Else
 	$aPos = ControlGetPos($Title, "", "[CLASS:BlueStacksApp; INSTANCE:1]")
+	If Not IsArray($aPos) Then
+		RegWrite("HKEY_CURRENT_USER\Software\BrokenBot", "Transfer", "REG_SZ", "-4")
+		Exit
+	EndIf
 	$tPoint = DllStructCreate("int X;int Y")
 	DllStructSetData($tPoint, "X", $aPos[0])
 	DllStructSetData($tPoint, "Y", $aPos[1])

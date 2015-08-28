@@ -96,6 +96,9 @@ Func VillageReport()
 			EndIf
 			StatSubmission(True)
 			$Raid = 0
+			$closetofull = False
+			$anythingadded = True
+			$anythingdarkadded = True
 		EndIf
 	EndIf
 

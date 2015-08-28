@@ -1,5 +1,5 @@
 Func Standard_btnSearchMode()
-	While 1
+	;While 1
 		GUICtrlSetState($btnStart, $GUI_HIDE)
 		GUICtrlSetState($btnStop, $GUI_SHOW)
 
@@ -9,7 +9,50 @@ Func Standard_btnSearchMode()
 		GUICtrlSetState($cmbTroopComp, $GUI_DISABLE)
 		GUICtrlSetState($chkBackground, $GUI_DISABLE)
 		;GUICtrlSetState($btnLocateCollectors, $GUI_DISABLE)
+		
+		DllCall("user32.dll", "int", "AnimateWindow", "hwnd", $frmAttackConfig, "int", 500, "long", $slideIn)
+		GUISetState(@SW_HIDE, $frmAttackConfig)
+		_GUICtrlTab_SetCurSel($tabMain,0)
+		
+		If IsArray(ControlGetPos($Title, "_ctl.Window", "[CLASS:BlueStacksApp; INSTANCE:1]")) Then
+			Local $BSsize = [ControlGetPos($Title, "_ctl.Window", "[CLASS:BlueStacksApp; INSTANCE:1]")[2], ControlGetPos($Title, "_ctl.Window", "[CLASS:BlueStacksApp; INSTANCE:1]")[3]]
+			Local $fullScreenRegistryData = RegRead($REGISTRY_KEY_DIRECTORY, "FullScreen")
+			Local $guestHeightRegistryData = RegRead($REGISTRY_KEY_DIRECTORY, "GuestHeight")
+			Local $guestWidthRegistryData = RegRead($REGISTRY_KEY_DIRECTORY, "GuestWidth")
+			Local $windowHeightRegistryData = RegRead($REGISTRY_KEY_DIRECTORY, "WindowHeight")
+			Local $windowWidthRegistryData = RegRead($REGISTRY_KEY_DIRECTORY, "WindowWidth")
 
+			Local $BSx = ($BSsize[0] > $BSsize[1]) ? $BSsize[0] : $BSsize[1]
+			Local $BSy = ($BSsize[0] > $BSsize[1]) ? $BSsize[1] : $BSsize[0]
+
+			$Running = True
+
+			If $BSx <> 860 Or $BSy <> 720 Then
+				RegWrite($REGISTRY_KEY_DIRECTORY, "FullScreen", "REG_DWORD", "0")
+				RegWrite($REGISTRY_KEY_DIRECTORY, "GuestHeight", "REG_DWORD", $DEFAULT_HEIGHT)
+				RegWrite($REGISTRY_KEY_DIRECTORY, "GuestWidth", "REG_DWORD", $DEFAULT_WIDTH)
+				RegWrite($REGISTRY_KEY_DIRECTORY, "WindowHeight", "REG_DWORD", $DEFAULT_HEIGHT)
+				RegWrite($REGISTRY_KEY_DIRECTORY, "WindowWidth", "REG_DWORD", $DEFAULT_WIDTH)
+				SetLog(GetLangText("msgPleaseRestart"), $COLOR_ORANGE)
+				_Sleep(3000)
+				$MsgRet = MsgBox(BitOR($MB_OKCANCEL, $MB_SYSTEMMODAL), GetLangText("boxRestart"), GetLangText("boxRestart2") & @CRLF & GetLangText("boxRestart3"), 10)
+				If $MsgRet <> $IDOK Then
+					btnStop()
+					Return
+				EndIf
+			EndIf
+			
+			
+			WinActivate($Title)
+
+			SetLog(GetLangText("msgWelcome") & $sBotTitle & "!~~~~", $COLOR_PURPLE)
+			SetLog($Compiled & GetLangText("msgRunningOn") & @OSArch & " OS", $COLOR_GREEN)
+			SetLog(GetLangText("msgStarting"), $COLOR_ORANGE)
+		EndIf
+
+		$fullArmy = True
+		PrepareSearch()
+		
 		Standard_Search()
 
 		GUICtrlSetState($btnStart, $GUI_SHOW)
@@ -21,8 +64,8 @@ Func Standard_btnSearchMode()
 		GUICtrlSetState($cmbTroopComp, $GUI_ENABLE)
 		GUICtrlSetState($chkBackground, $GUI_ENABLE)
 		;GUICtrlSetState($btnLocateCollectors, $GUI_ENABLE)
-		ExitLoop
-	WEnd
+		;ExitLoop
+	;WEnd
 EndFunc   ;==>Standard_btnSearchMode
 
 Func Standard_chkDeadActivate()
@@ -313,3 +356,54 @@ Func Standard_SetComboTroopComp()
 	EndSwitch
 EndFunc   ;==>Standard_SetComboTroopComp
 
+Func Standard_cmbCollectorAttack()	
+	If _GUICtrlComboBox_GetCurSel($cmbDeadDeploy) = 5 Or _GUICtrlComboBox_GetCurSel($cmbDeadDeploy) = 6 Or _GUICtrlComboBox_GetCurSel($cmbDeploy) = 5 Or _GUICtrlComboBox_GetCurSel($cmbDeploy) = 6 Then
+		GUICtrlSetState($CollectorAtkSettings, $GUI_ENABLE)
+		GUICtrlSetState($lblCollectorAtk, $GUI_ENABLE)
+		GUICtrlSetState($chkColAtkGold, $GUI_ENABLE)
+		GUICtrlSetState($chkColAtkElix, $GUI_ENABLE)
+		GUICtrlSetState($chkColAtkDE, $GUI_ENABLE)
+		
+	Else
+		GUICtrlSetState($CollectorAtkSettings, $GUI_DISABLE)
+		GUICtrlSetState($lblCollectorAtk, $GUI_DISABLE)
+		GUICtrlSetState($chkColAtkGold, $GUI_DISABLE)
+		GUICtrlSetState($chkColAtkElix, $GUI_DISABLE)
+		GUICtrlSetState($chkColAtkDE, $GUI_DISABLE)
+	EndIf
+EndFunc     ;==>Standard_cmbCollectorAttack
+
+Func Standard_cmbFocusedAttack()	
+	If _GUICtrlComboBox_GetCurSel($cmbDeadDeploy) = 7 Or _GUICtrlComboBox_GetCurSel($cmbDeploy) = 7 Then
+		GUICtrlSetState($FocusedAtkSettings, $GUI_ENABLE)
+		GUICtrlSetState($lblFocusedAtk, $GUI_ENABLE)
+		GUICtrlSetState($cmbFocusedBuilding, $GUI_ENABLE)
+		GUICtrlSetState($chkFocusedIgnoreCenter, $GUI_ENABLE)
+	Else
+		GUICtrlSetState($FocusedAtkSettings, $GUI_DISABLE)
+		GUICtrlSetState($lblFocusedAtk, $GUI_DISABLE)
+		GUICtrlSetState($cmbFocusedBuilding, $GUI_DISABLE)
+		GUICtrlSetState($chkFocusedIgnoreCenter, $GUI_DISABLE)
+		
+	EndIf
+EndFunc ;==>Standard_cmbFocusedAttack
+
+Func Standard_cmbCheckEnableTHAttackDead()
+	If _GUICtrlComboBox_GetCurSel($cmbDeadDeploy) = 5 Or _GUICtrlComboBox_GetCurSel($cmbDeadDeploy) = 6 Or _GUICtrlComboBox_GetCurSel($cmbDeadDeploy) = 7 Then
+		_GUICtrlComboBox_SetCurSel($cmbDeadAttackTH, 0)
+		GUICtrlSetState($cmbDeadAttackTH, $GUI_DISABLE)
+	Else
+		GUICtrlSetState($cmbDeadAttackTH, $GUI_ENABLE)
+	EndIf
+
+EndFunc   ;==>Standard_cmbCheckEnableTHDeadAttack
+
+Func Standard_cmbCheckEnableTHAttack()
+	If _GUICtrlComboBox_GetCurSel($cmbDeploy) = 5 Or _GUICtrlComboBox_GetCurSel($cmbDeploy) = 6 Or _GUICtrlComboBox_GetCurSel($cmbDeploy) = 7 Then
+		_GUICtrlComboBox_SetCurSel($cmbAttackTH, 0)
+		GUICtrlSetState($cmbAttackTH, $GUI_DISABLE)
+	Else
+		GUICtrlSetState($cmbAttackTH, $GUI_ENABLE)
+	EndIf
+
+EndFunc   ;==>Standard_cmbCheckEnableTHAttack

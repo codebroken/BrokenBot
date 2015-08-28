@@ -173,6 +173,63 @@ Func Standard_Search()
 					If $THLO <> 1 Then $conditionDeadPass = False
 				EndIf
 
+				If _GUICtrlComboBox_GetCurSel($cmbDeadDeploy) = 7 And $conditionDeadPass Then
+					;Focused Attack mode, make sure we can find the building
+					$focusBuildingX = 0
+					$focusBuildingY = 0
+					If _GUICtrlComboBox_GetCurSel($cmbFocusedBuilding) = 0 Then
+						;TH
+						If $THx <> 0 Then
+							$focusBuildingX = $THx
+							$focusBuildingY = $THy
+						Else
+							$conditionDeadPass = False
+						EndIf
+					ElseIf _GUICtrlComboBox_GetCurSel($cmbFocusedBuilding) = 1 Then
+						;DE Storage
+						If $OverlayVisible And Not IsChecked($chkBackground) Then WinMove($frmOverlay, "", 10000, 10000, 860, 720)
+						$res = CallHelper("0 0 860 720 BrokenBotMatchBuilding 13 1 1")
+						If $OverlayVisible And Not IsChecked($chkBackground) Then WinMove($frmOverlay, "", $BSpos[0], $BSpos[1], 860, 720)
+
+						If $res <> $DLLFailed And $res <> $DLLTimeout And $res <> $DLLError Then
+							If $res = $DLLLicense Then
+								SetLog(GetLangText("msgLicense"), $COLOR_RED)
+								$conditionDeadPass = False
+							ElseIf $res <> $DLLNegative And StringLen($res) > 2 Then
+								$expRet = StringSplit($res, "|", 2)
+
+								If $expRet[0] = 0 Then
+									; Finding building failed
+									$conditionDeadPass = False
+								Else
+									$focusBuildingX = $expRet[1]
+									$focusBuildingY = $expRet[2]
+								EndIf
+							Else
+								; Finding building failed
+								$conditionDeadPass = False
+							EndIf
+						Else
+							; Finding building failed
+							$conditionDeadPass = False
+						EndIf
+					EndIf
+
+					If IsChecked($chkFocusedIgnoreCenter) And $conditionDeadPass Then
+						SeekEdges()
+						If Not CloseToEdge($focusBuildingX, $focusBuildingY, 170) Then
+							;deep in base
+							SetLog(GetLangText("msgFocalBuildingBuried"), $COLOR_RED)
+							$conditionDeadPass = False
+							$focusBuildingX = 0
+							$focusBuildingY = 0
+						EndIf
+					ElseIf Not $conditionDeadPass Then
+						SetLog(GetLangText("msgCannotLocateFocalBuilding"), $COLOR_RED)
+					EndIf
+
+				EndIf
+
 				If $BaseData[0] And $conditionDeadPass Then
 					SetLog(GetLangText("msgDeadFound"), $COLOR_GREEN)
 					$GoodBase = True
@@ -213,6 +270,62 @@ Func Standard_Search()
 						If $THLO <> 1 Then $conditionAnyPass = False
 					EndIf
 
+					If _GUICtrlComboBox_GetCurSel($cmbDeploy) = 7 And $conditionAnyPass Then
+						;Focused Attack mode, make sure we can find the building
+						If _GUICtrlComboBox_GetCurSel($cmbFocusedBuilding) = 0 Then
+							;TH
+							If $THx <> 0 Then
+								$focusBuildingX = $THx
+								$focusBuildingY = $THy
+							Else
+								$conditionAnyPass = False
+							EndIf
+						ElseIf _GUICtrlComboBox_GetCurSel($cmbFocusedBuilding) = 1 Then
+							;DE Storage
+							If $OverlayVisible And Not IsChecked($chkBackground) Then WinMove($frmOverlay, "", 10000, 10000, 860, 720)
+							$res = CallHelper("0 0 860 720 BrokenBotMatchBuilding 13 1 1")
+							If $OverlayVisible And Not IsChecked($chkBackground) Then WinMove($frmOverlay, "", $BSpos[0], $BSpos[1], 860, 720)
+
+							If $res <> $DLLFailed And $res <> $DLLTimeout And $res <> $DLLError Then
+								If $res = $DLLLicense Then
+									SetLog(GetLangText("msgLicense"), $COLOR_RED)
+									$conditionAnyPass = False
+								ElseIf $res <> $DLLNegative And StringLen($res) > 2 Then
+									$expRet = StringSplit($res, "|", 2)
+
+									If $expRet[0] = 0 Then
+										; Finding building failed
+										$conditionAnyPass = False
+									Else
+										$focusBuildingX = $expRet[1]
+										$focusBuildingY = $expRet[2]
+									EndIf
+								Else
+									; Finding building failed
+									$conditionAnyPass = False
+								EndIf
+							Else
+								; Finding building failed
+								$conditionAnyPass = False
+							EndIf
+
+						EndIf
+
+						If IsChecked($chkFocusedIgnoreCenter) And $conditionAnyPass Then
+							SeekEdges()
+							If Not CloseToEdge($focusBuildingX, $focusBuildingY, 170) Then
+								;deep in base
+								SetLog(GetLangText("msgFocalBuildingBuried"), $COLOR_RED)
+								$conditionAnyPass = False
+								$focusBuildingX = 0
+								$focusBuildingY = 0
+							EndIf
+						ElseIf Not $conditionAnyPass Then
+							SetLog(GetLangText("msgCannotLocateFocalBuilding"), $COLOR_RED)
+						EndIf
+
+					EndIf
+
 					If $conditionAnyPass Then
 						SetLog(GetLangText("msgOtherFound"), $COLOR_GREEN)
 						$GoodBase = True
@@ -245,12 +358,45 @@ Func Standard_Search()
 					If $AttackNow Then
 						GUICtrlSetState($btnAtkNow, $GUI_DISABLE)
 						$AttackNow = False
+						$searchBuilding = False
 						If $BaseData[0] Then
 							$AttackMethod = 0
+							If _GUICtrlComboBox_GetCurSel($cmbDeadDeploy) = 7 Then $searchBuilding = True
 						Else
 							$AttackMethod = 1
+							If _GUICtrlComboBox_GetCurSel($cmbDeploy) = 7 Then $searchBuilding = True
 						EndIf
 						SetLog(GetLangText("msgAttackNowClicked"), $COLOR_GREEN)
+
+						If $searchBuilding Then
+							$focusBuildingX = 0
+							$focusBuildingY = 0
+							If _GUICtrlComboBox_GetCurSel($cmbFocusedBuilding) = 0 Then
+								;TH
+								If $THx <> 0 Then
+									$focusBuildingX = $THx
+									$focusBuildingY = $THy
+								EndIf
+							ElseIf _GUICtrlComboBox_GetCurSel($cmbFocusedBuilding) = 1 Then
+								;DE Storage
+								If $OverlayVisible And Not IsChecked($chkBackground) Then WinMove($frmOverlay, "", 10000, 10000, 860, 720)
+								$res = CallHelper("0 0 860 720 BrokenBotMatchBuilding 13 1 1")
+								If $OverlayVisible And Not IsChecked($chkBackground) Then WinMove($frmOverlay, "", $BSpos[0], $BSpos[1], 860, 720)
+
+								If $res <> $DLLFailed And $res <> $DLLTimeout And $res <> $DLLError Then
+									If $res = $DLLLicense Then
+										SetLog(GetLangText("msgLicense"), $COLOR_RED)
+									ElseIf $res <> $DLLNegative And StringLen($res) > 2 Then
+										$expRet = StringSplit($res, "|", 2)
+										If $expRet[0] <> 0 Then
+											$focusBuildingX = $expRet[1]
+											$focusBuildingY = $expRet[2]
+										EndIf
+									EndIf
+								EndIf
+							EndIf
+						EndIf
+
 						ExitLoop
 					EndIf
 
@@ -263,13 +409,45 @@ Func Standard_Search()
 					If $AttackNow Then
 						GUICtrlSetState($btnAtkNow, $GUI_DISABLE)
 						$AttackNow = False
+						$searchBuilding = False
 						If $BaseData[0] Then
 							$AttackMethod = 0
+							If _GUICtrlComboBox_GetCurSel($cmbDeadDeploy) = 7 Then $searchBuilding = True
 						Else
 							$AttackMethod = 1
+							If _GUICtrlComboBox_GetCurSel($cmbDeploy) = 7 Then $searchBuilding = True
 						EndIf
 						SetLog(GetLangText("msgAttackNowClicked"), $COLOR_GREEN)
-						SetLog(GetLangText("msgAttackNowClicked"), $COLOR_GREEN)
+
+						If $searchBuilding Then
+							$focusBuildingX = 0
+							$focusBuildingY = 0
+							If _GUICtrlComboBox_GetCurSel($cmbFocusedBuilding) = 0 Then
+								;TH
+								If $THx <> 0 Then
+									$focusBuildingX = $THx
+									$focusBuildingY = $THy
+								EndIf
+							ElseIf _GUICtrlComboBox_GetCurSel($cmbFocusedBuilding) = 1 Then
+								;DE Storage
+								If $OverlayVisible And Not IsChecked($chkBackground) Then WinMove($frmOverlay, "", 10000, 10000, 860, 720)
+								$res = CallHelper("0 0 860 720 BrokenBotMatchBuilding 13 1 1")
+								If $OverlayVisible And Not IsChecked($chkBackground) Then WinMove($frmOverlay, "", $BSpos[0], $BSpos[1], 860, 720)
+
+								If $res <> $DLLFailed And $res <> $DLLTimeout And $res <> $DLLError Then
+									If $res = $DLLLicense Then
+										SetLog(GetLangText("msgLicense"), $COLOR_RED)
+									ElseIf $res <> $DLLNegative And StringLen($res) > 2 Then
+										$expRet = StringSplit($res, "|", 2)
+										If $expRet[0] <> 0 Then
+											$focusBuildingX = $expRet[1]
+											$focusBuildingY = $expRet[2]
+										EndIf
+									EndIf
+								EndIf
+							EndIf
+						EndIf
+
 						ExitLoop
 					EndIf
 

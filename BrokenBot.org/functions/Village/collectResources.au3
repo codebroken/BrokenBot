@@ -10,7 +10,7 @@ Func collectResources()
 		SetLog(GetLangText("msgCollecting"), $COLOR_BLUE)
 		Do
 			$res = CallHelper("0 0 860 720 BrokenBotMatchObject 27 17 1")
-			If $res <> $DLLFailed And $res <> $DLLTimeout Then
+			If $res <> $DLLFailed And $res <> $DLLTimeout And $res <> $DLLError Then
 				If $res = $DLLLicense Then
 					SetLog(GetLangText("msgLicense"), $COLOR_RED)
 				ElseIf $res = $DLLNegative And Not $foundResource Then

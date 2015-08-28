@@ -14,7 +14,7 @@ Func clearField()
 
 		$res = CallHelper("0 0 860 720 BrokenBotMatchObject 25 5 4")
 
-		If $res <> $DLLFailed And $res <> $DLLTimeout Then
+		If $res <> $DLLFailed And $res <> $DLLTimeout And $res <> $DLLError Then
 			If $res = $DLLNegative Then
 				; failed to find any obstacles to clear on the field
 				SetLog(GetLangText("msgNoClearField"), $COLOR_RED)
@@ -42,7 +42,7 @@ Func clearField()
 
 					$resUI = CallHelper("0 0 860 720 BrokenBotMatchButton 110 1 3")
 
-					If $resUI <> $DLLFailed And $resUI <> $DLLTimeout Then
+					If $resUI <> $DLLFailed And $resUI <> $DLLTimeout And $resUI <> $DLLError Then
 						If $resUI = -1 Or $resUI = -2 Then ExitLoop
 						$expUIRet = StringSplit($resUI, "|", 2)
 						If $DebugMode = 1 Then SetLog("Obstacle X:" & $expUIRet[1] & " Y:" & $expUIRet[2])

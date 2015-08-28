@@ -23,6 +23,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True, $AbortSearch = False) ;Ret
 
 	If (_WaitForColor(304, 569, Hex(0x020202, 6), 30, 5) And $AbortSearch = False) Then
 		If _Sleep(1500) Then Return	;wait until number stop changing.
+		_CaptureRegion()
 		$Raid = 1
 		;Get Last Raid Resources
 		$LastRaidGold = ReadText(300, 291, 140, $textReturnHome, 0)
@@ -50,6 +51,7 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True, $AbortSearch = False) ;Ret
 			_CaptureRegion()
 			_GDIPlus_ImageSaveToFile($hBitmap, $dirLoots & $FileName)
 		EndIf
+		If _Sleep(2000) Then Return
 		Click(428, 544) ;Click Return Home Button
 	Else
 		checkMainScreen(True)
@@ -58,7 +60,6 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True, $AbortSearch = False) ;Ret
 	If _GUICtrlEdit_GetLineCount($txtLog) > 5000 Then
 		_GUICtrlEdit_SetText($txtLog, "")
 	EndIf
-
 	Local $counter = 0
 	While 1
 		If _Sleep(200) Then Return

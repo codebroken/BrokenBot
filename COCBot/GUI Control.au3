@@ -138,6 +138,19 @@ Func GUIControl($hWind, $iMsg, $wParam, $lParam)
 						Else
 							ControlHide("", "", $txtLog)
 						EndIf
+					Case $chkHelper
+						If IsChecked($chkHelper) Then
+							$aPos = ControlGetPos($Title, "", "[CLASS:BlueStacksApp; INSTANCE:1]")
+							If IsArray($aPos) Then
+								$ret = CallHelper("0 0 860 720 BrokenBotRedLineCheck 1 1 0 0 0", 5)
+								If $ret = $DLLFailed Or $ret = $DLLTimeout Then
+									MsgBox($MB_ICONWARNING + $MB_OK, GetLangText("msgMissing"), GetLangText("msgMissingDLL1") & @CRLF & @CRLF & GetLangText("msgMissingDLL2") & @CRLF & @CRLF & GetLangText("msgMissingDLL3"))
+									GUICtrlSetState($chkHelper, $GUI_UNCHECKED)
+								ElseIf $ret = $DLLLicense Then
+									MsgBox(48, "BrokenBot.org", GetLangText("msgLicense") & @CRLF & @CRLF & "Please visit BrokenBot.org")
+								EndIf
+							EndIf
+						EndIf
 					Case Else
 				EndSwitch
 			Case 274
@@ -224,6 +237,7 @@ Func btnStop()
 		GUICtrlSetState($btnLocateQueenAltar, $GUI_ENABLE)
 		GUICtrlSetState($btnLocateCamp, $GUI_ENABLE)
 		GUICtrlSetState($btnFindWall, $GUI_ENABLE)
+		GUICtrlSetState($btnFindWall2, $GUI_ENABLE)
 		GUICtrlSetState($chkBackground, $GUI_ENABLE)
 		GUICtrlSetState($chkNoAttack, $GUI_ENABLE)
 		GUICtrlSetState($chkDonateOnly, $GUI_ENABLE)
@@ -415,8 +429,7 @@ Func btnFindWall()
 	$Running = True
 	GUICtrlSetState($chkWalls, $GUI_DISABLE)
 	GUICtrlSetState($UseGold, $GUI_DISABLE)
-	GUICtrlSetState($UseElixir, $GUI_DISABLE)
-	GUICtrlSetState($UseGoldElix, $GUI_DISABLE)
+	GUICtrlSetState($UseElixir, $GUI_DISABLE)	
 	While 1
 		SaveConfig()
 		readConfig()
@@ -428,7 +441,25 @@ Func btnFindWall()
 	GUICtrlSetState($chkWalls, $GUI_ENABLE)
 	GUICtrlSetState($UseGold, $GUI_ENABLE)
 	GUICtrlSetState($UseElixir, $GUI_ENABLE)
-	GUICtrlSetState($UseGoldElix, $GUI_ENABLE)
+	$Running = False
+EndFunc   ;==>btnFindWall
+
+Func btnFindWallElix()
+	$Running = True
+	GUICtrlSetState($chkWalls, $GUI_DISABLE)
+	GUICtrlSetState($UseGold, $GUI_DISABLE)
+	GUICtrlSetState($UseElixir, $GUI_DISABLE)
+	While 1
+		SaveConfig()
+		readConfig()
+		applyConfig()
+		ZoomOut()
+		FindWallE()
+	ExitLoop
+	WEnd
+	GUICtrlSetState($chkWalls, $GUI_ENABLE)
+	GUICtrlSetState($UseGold, $GUI_ENABLE)
+	GUICtrlSetState($UseElixir, $GUI_ENABLE)
 	$Running = False
 EndFunc   ;==>btnFindWall
 
@@ -444,11 +475,16 @@ EndFunc   ;==>btnLocateCamp
 
 Func btnHide()
 	If $Hide = False Then
-		GUICtrlSetData($btnHide, "Show BS")
-		$botPos[0] = WinGetPos($Title)[0]
-		$botPos[1] = WinGetPos($Title)[1]
-		WinMove($Title, "", -32000, -32000)
-		$Hide = True
+		Local $window = WinGetPos($Title)		
+		If IsArray($window) Then	
+			GUICtrlSetData($btnHide, "Show BS")
+			$botPos[0] = $window[0]
+			$botPos[1] = $window[1]
+			WinMove($Title, "", -32000, -32000)
+			$Hide = True
+		Else
+			SetLog(GetLangText("msgBSHideFail"), $COLOR_RED)
+		EndIf
 	Else
 		GUICtrlSetData($btnHide, "Hide BS")
 

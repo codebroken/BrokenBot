@@ -123,19 +123,20 @@ Func _PushFile($File, $Folder, $FileType, $title, $body)
 		EndIf
 		If Not FileExists($dirLogs & "curl.log") Then _FileCreate($dirLogs & "curl.log")
 		If _FileCountLines(@ScriptDir & '\logs\curl.log') > 8 Then
-			Local $hFileOpen = FileOpen(@ScriptDir & '\logs\curl.log')
-			Local $sFileRead = FileReadLine($hFileOpen, 8)
-			Local $sFileRead1 = StringSplit($sFileRead, " ")
-			Local $sLink = $sFileRead1[2]
-			Local $findstr1 = StringRegExp($sLink, 'https://')
-			If $findstr1 = 1 Then
-				$oHTTP.Open("Post", "https://api.pushbullet.com/v2/pushes", False)
-				$oHTTP.SetCredentials($access_token, "", 0)
-				$oHTTP.SetRequestHeader("Content-Type", "application/json")
-				;Local $pPush = '{"type": "file", "file_name": "' & $FileName & '", "file_type": "' & $FileType & '", "file_url": "' & $file_url[0] & '", "title": "' & $title & '", "body": "' & $body & '"}'
-				Local $pPush = '{"type": "file", "file_name": "' & $File & '", "file_type": "' & $FileType & '", "file_url": "' & $sLink & '", "title": "' & $title & '", "body": "' & $body & '"}'
-				$oHTTP.Send($pPush)
-				$Result = $oHTTP.ResponseText
+            Local $hFileOpen = FileOpen(@ScriptDir & '\logs\curl.log')
+            Local $sFileRead = FileReadLine($hFileOpen, 3)
+            Local $sFileRead1 = StringSplit($sFileRead, " ")
+            Local $sLink = $sFileRead1[2]
+            Local $fLink = $file_url[0]
+            Local $findstr1 = StringRegExp($sLink, '204')
+            If $findstr1 = 1 Then
+                $oHTTP.Open("Post", "https://api.pushbullet.com/v2/pushes", False)
+                $oHTTP.SetCredentials($access_token, "", 0)
+                $oHTTP.SetRequestHeader("Content-Type", "application/json")
+                ;Local $pPush = '{"type": "file", "file_name": "' & $FileName & '", "file_type": "' & $FileType & '", "file_url": "' & $file_url[0] & '", "title": "' & $title & '", "body": "' & $body & '"}'
+                Local $pPush = '{"type": "file", "file_name": "' & $File & '", "file_type": "' & $FileType & '", "file_url": "' & $fLink & '", "title": "' & $title & '", "body": "' & $body & '"}'
+                $oHTTP.Send($pPush)
+                $Result = $oHTTP.ResponseText
 			Else
 				If IsChecked($lblpushbulletdebug) Then
 					SetLog($hFileOpen)

@@ -207,6 +207,10 @@ Func SeekEdges()
 			Next
 		Else
 			$Array = StringSplit($ret, "|", 2)
+			If UBound($Array) < ((43 * 43) - 1) Then
+				ContinueLoop
+			EndIf
+
 			For $i = 0 To (43 * 43) - 1
 				If $Grid[Floor($i / 43)][Mod($i, 43)][2] = 0 Then
 					$Grid[Floor($i / 43)][Mod($i, 43)][2] = $Array[$i]

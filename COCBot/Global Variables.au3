@@ -95,6 +95,9 @@ $brerror[2] = False
 $brerror[3] = False
 $needzoomout = False
 
+Global $barracksCampFull = False
+Global $restartBSAttemptedCount = 0
+
 Global $iCollectCounter = 0 ; Collect counter, when reaches $COLLECTATCOUNT, it will collect
 Global $COLLECTATCOUNT = 8 ; Run Collect() after this amount of times before actually collect
 ;---------------------------------------------------------------------------------------------------
@@ -113,6 +116,7 @@ $THText[3] = "9"
 $THText[4] = "10"
 Global $SearchCount = 0 ;Number of searches
 Global $SearchFailed = False ; Last search failed or not
+Global $failedcampCap = True
 Global $THaddtiles, $THside, $THi
 Global $StratNames = ""
 Global $prevSelection = ""
@@ -145,6 +149,7 @@ Global $FurthestBottomLeft[5][2] = [[28, 314], [0, 0], [0, 0], [0, 0], [440, 612
 Global $FurthestBottomRight[5][2] = [[440, 612], [0, 0], [0, 0], [0, 0], [820, 313]]
 Global $Edges[4] = [$BottomRight, $TopLeft, $BottomLeft, $TopRight]
 Global $BaseCenter[2]
+Global $focusBuildingX, $focusBuildingY
 
 Global $atkTroops[9][2] ;9 Slots of troops -  Name, Amount
 Global $THLoc
@@ -233,7 +238,9 @@ Global $BuildPos3[2]
 Global $CurMinion, $CurHog, $CurValkyrie
 Global $ichkWalls
 Global $icmbWalls
-Global $iUseStorage
+Global $icmbWallsE
+Global $iWallUseGold
+Global $iWallUseElixer
 Global $itxtWallMinGold
 Global $itxtWallMinElixir
 Global $icmbTolerance
@@ -294,6 +301,7 @@ Global $collectorPos[17][2] ;Positions of each collectors
 
 Global $break = @ScriptDir & "\images\break.bmp"
 Global $device = @ScriptDir & "\images\device.bmp"
+Global $maintenance = @ScriptDir & "\images\Maintenance.bmp"
 
 Global $GoldCount = 0, $ElixirCount = 0, $DarkCount = 0, $GemCount = 0, $FreeBuilder = 0
 Global $GoldGained = 0, $ElixirGained = 0, $DarkGained = 0, $TrophyGained = 0
@@ -380,3 +388,6 @@ Global $iNukeLimit
 
 Global $ichkUpgradeKing, $ichkUpgradeQueen
 Global $itxtKeepFreeBuilder
+Global $closetofull = False
+Global $anythingdarkadded = True
+Global $anythingadded = True

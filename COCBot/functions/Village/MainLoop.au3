@@ -19,6 +19,16 @@ Func runBot() ;Bot that runs everything in order
 		chkNoAttack()
 		If StatusCheck(True, True, 3) Then Return
 
+		If $FirstStart And IsChecked($chkHelper) Then
+			$ret = CallHelper("0 0 860 720 BrokenBotRedLineCheck 1 1 0 0 0", 10)
+			If $ret = $DLLFailed Or $ret = $DLLTimeout Then
+				MsgBox($MB_ICONWARNING + $MB_OK, GetLangText("msgMissing"), GetLangText("msgMissingDLL1") & @CRLF & @CRLF & GetLangText("msgMissingDLL2") & @CRLF & @CRLF & GetLangText("msgMissingDLL3"))
+				GUICtrlSetState($chkHelper, $GUI_UNCHECKED)
+			ElseIf $ret = $DLLLicense Then
+				MsgBox(48, "BrokenBot.org", GetLangText("msgLicense") & @CRLF & @CRLF & "Please visit BrokenBot.org")
+			EndIf
+		EndIf
+
 		; Collect stats
 		VillageReport()
 		If StatusCheck() Then Return
@@ -150,7 +160,15 @@ Func Idle($Plugin) ;Sequence that runs until Full Army
 		$TimeSinceTroop = TimerDiff($hTroopTimer) / 1000
 		SetLog(GetLangText("msgTimeIdle") & Floor(Floor($TimeIdle / 60) / 60) & GetLangText("msgTimeIdleHours") & Floor(Mod(Floor($TimeIdle / 60), 60)) & GetLangText("msgTimeIdleMin") & Floor(Mod($TimeIdle, 60)) & GetLangText("msgTimeIdleSec"), $COLOR_ORANGE)
 		$hIdle = TimerInit()
-		While TimerDiff($hIdle) < 30000
+		If IsChecked($mixmodenormexp) Then
+			Experience()
+		EndIf
+		If $closetofull Then
+			$loopdelay = 1000
+		Else
+			$loopdelay = 30000
+		EndIf
+		While TimerDiff($hIdle) < $loopdelay
 			DonateCC(True)
 			If _Sleep(1000) Then Return
 		WEnd

@@ -182,6 +182,40 @@ Func Standard_LoadConfig()
 
 	GUICtrlSetData($txtKingSkill, IniRead($configFile, "attack", "kingskilldelay", "10"))
 	GUICtrlSetData($txtQueenSkill, IniRead($configFile, "attack", "queenskilldelay", "10"))
+	
+	If IniRead($configFile, "attack", "colatk-gold", "1") = 1 Then
+		GUICtrlSetState($chkColAtkGold, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkColAtkGold, $GUI_UNCHECKED)
+	EndIf
+	
+	If IniRead($configFile, "attack", "colatk-elixir", "1") = 1 Then
+		GUICtrlSetState($chkColAtkElix, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkColAtkElix, $GUI_UNCHECKED)
+	EndIf
+	
+	If IniRead($configFile, "attack", "colatk-DE", "1") = 1 Then
+		GUICtrlSetState($chkColAtkDE, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkColAtkDE, $GUI_UNCHECKED)
+	EndIf
+	
+	If IniRead($configFile, "attack", "focusatk-IgnoreCenter", "0") = 1 Then
+		GUICtrlSetState($chkFocusedIgnoreCenter, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkFocusedIgnoreCenter, $GUI_UNCHECKED)
+	EndIf
+	
+	Standard_cmbCollectorAttack()
+	
+	_GUICtrlComboBox_SetCurSel($cmbFocusedBuilding, IniRead($configFile, "attack", "focatck-focus", "1"))
+	
+	Standard_cmbFocusedAttack()
+	
+	Standard_cmbCheckEnableTHAttack()
+	
+	Standard_cmbCheckEnableTHAttackDead()
 
 	;Troop Settings--------------------------------------------------------------------------
 	_GUICtrlComboBox_SetCurSel($cmbTroopComp, IniRead($configFile, "troop", "composition", "0"))
@@ -433,6 +467,33 @@ Func Standard_SaveConfig($configFile)
 
 	IniWrite($configFile, "attack", "kingskilldelay", GUICtrlRead($txtKingSkill))
 	IniWrite($configFile, "attack", "queenskilldelay", GUICtrlRead($txtQueenSkill))
+	
+	If IsChecked($chkColAtkGold) Then
+		IniWrite($configFile, "attack", "colatk-gold", "1") 
+	Else
+		IniWrite($configFile, "attack", "colatk-gold", "0") 
+	EndIf
+	
+	If IsChecked($chkColAtkElix) Then
+		IniWrite($configFile, "attack", "colatk-elixir", "1") 
+	Else
+		IniWrite($configFile, "attack", "colatk-elixir", "0") 
+	EndIf
+	
+	If IsChecked($chkColAtkDE) Then
+		IniWrite($configFile, "attack", "colatk-DE", "1") 
+	Else
+		IniWrite($configFile, "attack", "colatk-DE", "0") 
+	EndIf
+	
+	If IsChecked($chkFocusedIgnoreCenter) Then
+		IniWrite($configFile, "attack", "focusatk-IgnoreCenter", "1") 
+	Else
+		IniWrite($configFile, "attack", "focusatk-IgnoreCenter", "0") 
+	EndIf
+	
+	IniWrite($configFile, "attack", "focatck-focus", _GUICtrlComboBox_GetCurSel($cmbFocusedBuilding))
+	
 	;Troop Settings--------------------------------------------------------------------------
 	IniWrite($configFile, "troop", "raidcapacity", _GUICtrlComboBox_GetCurSel($cmbRaidcap))
 	IniWrite($configFile, "troop", "composition", _GUICtrlComboBox_GetCurSel($cmbTroopComp))

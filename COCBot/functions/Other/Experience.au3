@@ -2,8 +2,10 @@ Func experience()
 		Local $totalLoops = 0
 		Local $successfulLoops = 0
 		Local $expGained = 0
+		Local $maxLoops = 30
+		If IsChecked($mixmodenormexp) Then $maxLoops = 15
 
-        While True And $totalLoops < 30
+        While True And $totalLoops < $maxLoops
 				$totalLoops += 1
 
                 ;if the AQ is available, attack Goblin Picnic with her
@@ -165,7 +167,7 @@ Func experience()
                         If $kingPos = -1 Then
 							SetLog("Cannot find BK. Try again...", $COLOR_RED)
 							_Sleep(500)
-							$kingPos = getQueenPos() ; find AQ, make sure you have AQ
+							$kingPos = getKingPos() ; find AQ, make sure you have AQ
 							If $queenPos = -1 Then
 								SetLog("Cannot find BK. Return Home", $COLOR_RED)
 								errorReturnHome()
@@ -187,11 +189,14 @@ Func experience()
                         SetLog(GetLangText("msgVictory") & " " & $successfulLoops & " out of " & $totalLoops & " successful. " & $expGained & " Exp gained since start", $COLOR_BLUE)
                         If _Sleep(500) Then Return
                 Else
+					;If in hybrid mode, break out of loop
+					If IsChecked($mixmodenormexp) Then Return
+
 					;If neither hero is available, wait 30 seconds then check heroes again
-						$totalLoops -= 1
-                        SetLog("Waiting for Hero...", $COLOR_BLUE)
-                        If _Sleep(30000) Then Return
-                EndIf
+					$totalLoops -= 1
+					SetLog("Waiting for Hero...", $COLOR_BLUE)
+					If _Sleep(30000) Then Return
+				EndIf
 
         WEnd
 EndFunc   ;==>experience
