@@ -27,11 +27,14 @@ Func CheckPixel($tab)
 	If _ColorCheck(_GetPixelColor($tab[0], $tab[1]), Hex($tab[2], 6), $tab[3]) Then
 		Return True
 	Else
-		SetLog(GetLangText("msgLocationX") & $tab[0] & " Y:" & $tab[1], $COLOR_RED)
-		SetLog(GetLangText("msgGot") & _GetPixelColor($tab[0], $tab[1]), $COLOR_RED)
-		SetLog(GetLangText("msgWanted") & Hex($tab[2], 6), $COLOR_RED)
-		SetLog(GetLangText("msgVariance") & $tab[3], $COLOR_RED)
-		_GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "Missedcolor-" & $tab[0] & "-" & $tab[1] & "-" & Hex($tab[2], 6) & "-" & _GetPixelColor($tab[0], $tab[1]) & ".png")
+		If $DebugMode = 1 Then
+			SetLog(GetLangText("msgLocationX") & $tab[0] & " Y:" & $tab[1], $COLOR_RED)
+			SetLog(GetLangText("msgGot") & _GetPixelColor($tab[0], $tab[1]), $COLOR_RED)
+			SetLog(GetLangText("msgWanted") & Hex($tab[2], 6), $COLOR_RED)
+			SetLog(GetLangText("msgVariance") & $tab[3], $COLOR_RED)
+			_GDIPlus_ImageSaveToFile($hBitmap, $dirDebug & "Missedcolor-" & $tab[0] & "-" & $tab[1] & "-" & Hex($tab[2], 6) & "-" & _GetPixelColor($tab[0], $tab[1]) & ".png")
+		EndIf
+		
 		Return False
 	EndIf
 EndFunc   ;==>CheckPixel

@@ -14,17 +14,15 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True, $AbortSearch = False) ;Ret
 	SetLog(GetLangText("msgReturnHome"), $COLOR_BLUE)
 	If $Running = False Then Return
 	_CaptureRegion()
-	If _ColorCheck(_GetPixelColor(36, 523), Hex(0xEE5056, 6), 30) Then
+	If _WaitForColorArea(19, 519, 100, 30, Hex(0xEE5056, 6), 50, 2) Then
 		Click(77, 529) ;Click Surrender
-		If _WaitForColor(374, 416, Hex(0xCF4010, 6), 30, 2) Then
+		If _WaitForColorArea(280, 372, 130, 50, Hex(0xCF4010, 6), 30, 2) Then
 			Click(522, 384) ; Click confirm
 		EndIf
 	EndIf
-	_WaitForColor(304, 569, Hex(0x020202, 6), 20, 5)
-	; And wait a bitlonger
-	If _Sleep(1000) Then Return
 
-	If $AbortSearch = False Then
+	If (_WaitForColor(304, 569, Hex(0x020202, 6), 30, 5) And $AbortSearch = False) Then
+		If _Sleep(1500) Then Return	;wait until number stop changing.
 		_CaptureRegion()
 		$Raid = 1
 		;Get Last Raid Resources
@@ -53,7 +51,6 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True, $AbortSearch = False) ;Ret
 			_CaptureRegion()
 			_GDIPlus_ImageSaveToFile($hBitmap, $dirLoots & $FileName)
 		EndIf
-
 		If _Sleep(2000) Then Return
 		Click(428, 544) ;Click Return Home Button
 	Else
@@ -63,7 +60,6 @@ Func ReturnHome($TakeSS = 1, $GoldChangeCheck = True, $AbortSearch = False) ;Ret
 	If _GUICtrlEdit_GetLineCount($txtLog) > 5000 Then
 		_GUICtrlEdit_SetText($txtLog, "")
 	EndIf
-
 	Local $counter = 0
 	While 1
 		If _Sleep(200) Then Return

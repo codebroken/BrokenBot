@@ -1,10 +1,11 @@
 ; Improved attack algorithm, using Barbarians, Archers, Goblins, Giants and Wallbreakers as they are available
 ; Create by Fast French, edited by safar46
+Global $EdgeOrder[4]
 
 Func Wave_Sleep($type)
 	Switch $type
 		Case 0
-			$delay = (_GUICtrlComboBox_GetCurSel($cmbUnitDelay) + 1) * 20 ;Random Gaussian is always positive, compensate for that
+			$delay = (_GUICtrlComboBox_GetCurSel($cmbUnitDelay) + 1) * 20
 		Case 1
 			$delay = (_GUICtrlComboBox_GetCurSel($cmbWaveDelay) + 1) * 200
 	EndSwitch
@@ -51,9 +52,6 @@ Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1,
 		$Clickx = Round(_Random_Gaussian(((($edge[4][0] - $edge[0][0]) / 3) + $edge[0][0]), (($edge[4][0] - $edge[0][0]) / 10)))
 		$Clicky = Round((($edge[4][1] - $edge[0][1]) / ($edge[4][0] - $edge[0][0])) * ($Clickx - $edge[0][0])) + $edge[0][1]
 		Click($Clickx, $Clicky, $half, 0, $Center, $BufferDist)
-		If GUICtrlRead($sldAcc) < 100 Then
-			If Wave_Sleep(0) Then Return
-		EndIf
 		$Clickx = Round(_Random_Gaussian(((($edge[4][0] - $edge[0][0]) * 2 / 3) + $edge[0][0]), (($edge[4][0] - $edge[0][0]) / 10)))
 		$Clicky = Round((($edge[4][1] - $edge[0][1]) / ($edge[4][0] - $edge[0][0])) * ($Clickx - $edge[0][0])) + $edge[0][1]
 		Click($Clickx, $Clicky, $number - $half, 0, $Center, $BufferDist)
@@ -62,9 +60,6 @@ Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1,
 			$Clickx = Round(_Random_Gaussian(((($edge2[4][0] - $edge2[0][0]) / 3) + $edge2[0][0]), (($edge2[4][0] - $edge2[0][0]) / 10)))
 			$Clicky = Round((($edge2[4][1] - $edge2[0][1]) / ($edge2[4][0] - $edge2[0][0])) * ($Clickx - $edge2[0][0])) + $edge2[0][1]
 			Click($Clickx, $Clicky, $half, 0, $Center, $BufferDist)
-			If GUICtrlRead($sldAcc) < 100 Then
-				If Wave_Sleep(0) Then Return
-			EndIf
 			$Clickx = Round(_Random_Gaussian(((($edge2[4][0] - $edge2[0][0]) * 2 / 3) + $edge2[0][0]), (($edge2[4][0] - $edge2[0][0]) / 10)))
 			$Clicky = Round((($edge2[4][1] - $edge2[0][1]) / ($edge2[4][0] - $edge2[0][0])) * ($Clickx - $edge2[0][0])) + $edge2[0][1]
 			Click($Clickx, $Clicky, $number - $half, 0, $Center, $BufferDist)
@@ -96,9 +91,6 @@ Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1,
 			$posY = Round(_Random_Gaussian($posY, 3))
 			Click($posX, $posY, Ceiling($nbTroopsGoneDec - $nbTroopsGoneRound), 0, $Center, $BufferDist)
 			$nbTroopsGoneRound += Ceiling($nbTroopsGoneDec - $nbTroopsGoneRound)
-			If GUICtrlRead($sldAcc) < 100 Then
-				If Wave_Sleep(0) Then Return
-			EndIf
 		Next
 		If $edge2 <> -1 Then
 			If Wave_Sleep(1) Then Return
@@ -114,9 +106,6 @@ Func Standard_DropOnEdge($troop, $edge, $number, $slotsPerEdge = 0, $edge2 = -1,
 				$posY2 = Round(_Random_Gaussian($posY2, 3))
 				Click($posX2, $posY2, Ceiling($nbTroopsGoneDec - $nbTroopsGoneRound), 0, $Center, $BufferDist)
 				$nbTroopsGoneRound += Ceiling($nbTroopsGoneDec - $nbTroopsGoneRound)
-				If GUICtrlRead($sldAcc) < 100 Then
-					If Wave_Sleep(0) Then Return
-				EndIf
 			Next
 		EndIf
 	EndIf
@@ -130,25 +119,19 @@ Func Standard_DropOnEdges($troop, $nbSides, $number, $slotsPerEdge = 0, $miniEdg
 	If $nbSides < -1 Then Return
 	Local $nbTroopsLeft = $number
 	If Not $miniEdge Then
-		If $nbSides = 4 Then
-			For $i = 0 To $nbSides - 3
-				Local $nbTroopsPerEdge = Round($nbTroopsLeft / ($nbSides - $i * 2))
-				Standard_DropOnEdge($troop, $Edges[$i], $nbTroopsPerEdge, $slotsPerEdge, $Edges[$i + 2], $i)
-				$nbTroopsLeft -= $nbTroopsPerEdge * 2
-			Next
-			Return
-		EndIf
-		For $i = 0 To $nbSides - 1
-			If $nbSides = 1 Or ($nbSides = 3 And $i = 2) Then
-				Local $nbTroopsPerEdge = Round($nbTroopsLeft / ($nbSides - $i))
-				Standard_DropOnEdge($troop, $Edges[$i], $nbTroopsPerEdge, $slotsPerEdge)
-				$nbTroopsLeft -= $nbTroopsPerEdge
-			ElseIf ($nbSides = 2 And $i = 0) Or ($nbSides = 3 And $i <> 1) Then
-				Local $nbTroopsPerEdge = Round($nbTroopsLeft / ($nbSides - $i * 2))
-				Standard_DropOnEdge($troop, $Edges[$i + 3], $nbTroopsPerEdge, $slotsPerEdge, $Edges[$i + 1])
-				$nbTroopsLeft -= $nbTroopsPerEdge * 2
-			EndIf
-		Next
+		Local $nbTroopsPerEdge = Floor($number / $nbSides)
+		Switch $nbSides
+			Case 1
+				Standard_DropOnEdge($troop, $Edges[$EdgeOrder[0]], $number, $slotsPerEdge)
+			Case 2
+				Standard_DropOnEdge($troop, $Edges[$EdgeOrder[0]], Floor($number/2), $slotsPerEdge, $Edges[$EdgeOrder[1]])
+			Case 3
+				Standard_DropOnEdge($troop, $Edges[$EdgeOrder[0]], Floor($number/3), $slotsPerEdge, $Edges[$EdgeOrder[1]])
+				Standard_DropOnEdge($troop, $Edges[$EdgeOrder[2]], $number - (2*Floor($number/3)), $slotsPerEdge)
+			Case 4
+				Standard_DropOnEdge($troop, $Edges[$EdgeOrder[0]], Floor($number/4), $slotsPerEdge, $Edges[$EdgeOrder[1]])
+				Standard_DropOnEdge($troop, $Edges[$EdgeOrder[2]], Floor(($number - (2*Floor($number/4)))/2), $slotsPerEdge, $Edges[$EdgeOrder[3]])
+		EndSwitch
 	Else
 		Switch $THquadrant
 			Case 1
@@ -302,21 +285,21 @@ Func Standard_Attack($AttackMethod = 1)
 		If _Sleep(4000) Then Return
 		$FasterExit = True
 	Else
-		$King = -1
-		$Queen = -1
-		$CC = -1
-		$Barb = -1
-		$Arch = -1
-		$Giant = -1
-		$WB = -1
-		$Gob = -1
-		$Hog = -1
-		$Minion = -1
-		$Valk = -1
-		$LSpell = -1
-		$SpellQty = 0
-		$KingWasHere = False
-		$QueenWasHere = False
+		Global $King = -1
+		Global $Queen = -1
+		Global $CC = -1
+		Global $Barb = -1
+		Global $Arch = -1
+		Global $Giant = -1
+		Global $WB = -1
+		Global $Gob = -1
+		Global $Hog = -1
+		Global $Minion = -1
+		Global $Valk = -1
+		Global $LSpell = -1
+		Global $SpellQty = 0
+		Global $KingWasHere = False
+		Global $QueenWasHere = False
 		For $i = 0 To 8
 			If $atkTroops[$i][0] = $eBarbarian Then
 				$Barb = $i
@@ -353,6 +336,8 @@ Func Standard_Attack($AttackMethod = 1)
 		$QueenUsedSnipe = False
 		$KingPowerSnipe = False
 		$QueenPowerSnipe = False
+		Global $KingPowerBuilding = False
+
 		Local $CollectorDeployOrder[11] = [$Giant, $Hog, $Valk, $WB, $Barb, $Arch, $Gob, $Minion, $King, $Queen, $CC]
 		Local $SnipeWaveMax = 6
 		Local $SnipeWaveSizes[5] = [5, 5, 15, 15, 15]
@@ -364,13 +349,15 @@ Func Standard_Attack($AttackMethod = 1)
 				[$Giant, $Hog, $Valk, $WB, $Barb, $Arch, $Gob, $Minion, $King, $Queen, $CC]]
 		Local $SnipeDeployOrder[11] = [$Giant, $Hog, $Valk, $WB, $Barb, $Arch, $Gob, $Minion, $King, $Queen, $CC]
 
-		Local $nbSides = 0
+		Global $nbSides = 0
 		Local $mixedMode = False
 		Local $collectorMode = False
+		Global $focusedMode = False
 		Local $EarlyExit = False
+		Global $hHeroTimer = ""
 
-		$attackTH = ($AttackMethod = 0) ? _GUICtrlComboBox_GetCurSel($cmbDeadAttackTH) : _GUICtrlComboBox_GetCurSel($cmbAttackTH)
-		Local $OuterQuad
+		Global $attackTH = ($AttackMethod = 0) ? _GUICtrlComboBox_GetCurSel($cmbDeadAttackTH) : _GUICtrlComboBox_GetCurSel($cmbAttackTH)
+		Global $OuterQuad
 		$OuterQuad = False
 		If $THquadrant >= 1 And $THquadrant <= 4 Then $OuterQuad = True
 		If $THquadrant >= 6 And $THquadrant <= 9 Then $OuterQuad = True
@@ -401,11 +388,27 @@ Func Standard_Attack($AttackMethod = 1)
 					Case 5
 						SetLog(GetLangText("msgCollectorMode"))
 						$collectorMode = True
+						$nbSides = 4 ;used for dropping remaining troops
 					Case 6
 						SetLog(GetLangText("msgCollectorMode"))
 						SetLog(GetLangText("msgCollectorSave"))
 						$collectorMode = True
 						$EarlyExit = True
+						$nbSides = 4 ;used for dropping remaining troops
+					Case 7
+						SetLog(GetLangText("msgFocusedAttackMode"), $COLOR_BLUE)
+						$focusedMode = True
+						$nbSides = 1 ;used for dropping remaining troops
+						If _GUICtrlComboBox_GetCurSel($cmbFocusedBuilding) = 0 Then
+							SetLog(GetLangText("msgFocusOnTH"), $COLOR_BLUE)
+						ElseIf _GUICtrlComboBox_GetCurSel($cmbFocusedBuilding) = 1 Then
+							SetLog(GetLangText("msgFocusOnDEStor"), $COLOR_BLUE)
+						Else
+							SetLog(GetLangText("msgFailedToLocateBuilding"),$COLOR_RED)
+							SetLog(GetLangText("msgRevertingToSingleSide"),$COLOR_RED)
+							SetLog(GetLangText("msgSingleSide"))
+							$focusedMode = False
+						EndIf
 				EndSwitch
 			Else
 				Switch _GUICtrlComboBox_GetCurSel($cmbDeploy)
@@ -428,11 +431,27 @@ Func Standard_Attack($AttackMethod = 1)
 					Case 5
 						SetLog(GetLangText("msgCollectorMode"))
 						$collectorMode = True
+						$nbSides = 4 ;used for dropping remaining troops
 					Case 6
 						SetLog(GetLangText("msgCollectorMode"))
 						SetLog(GetLangText("msgCollectorSave"))
 						$collectorMode = True
 						$EarlyExit = True
+						$nbSides = 4 ;used for dropping remaining troops
+					Case 7
+						SetLog(GetLangText("msgFocusedAttackMode"), $COLOR_BLUE)
+						$focusedMode = True
+						$nbSides = 1 ;used for dropping remaining troops
+						If _GUICtrlComboBox_GetCurSel($cmbFocusedBuilding) = 0 Then
+							SetLog(GetLangText("msgFocusOnTH"), $COLOR_BLUE)
+						ElseIf _GUICtrlComboBox_GetCurSel($cmbFocusedBuilding) = 1 Then
+							SetLog(GetLangText("msgFocusOnDEStor"), $COLOR_BLUE)
+						Else
+							SetLog(GetLangText("msgFailedToLocateBuilding"),$COLOR_RED)
+							SetLog(GetLangText("msgRevertingToSingleSide"),$COLOR_RED)
+							SetLog(GetLangText("msgSingleSide"))
+							$focusedMode = False
+						EndIf
 				EndSwitch
 			EndIf
 			If ($OuterQuad And $attackTH = 1 And Not $collectorMode) Then SetLog(GetLangText("msgLimitedTH"))
@@ -489,7 +508,8 @@ Func Standard_Attack($AttackMethod = 1)
 				If $Waves < ($SnipeWaveMax - 1) Then
 					$TroopsAdded = 0
 					$TroopsLeft = True
-					While ($TroopsAdded < $SnipeWaveSizes[$Waves]) And $TroopsLeft
+					$protection = 0
+					While ($TroopsAdded < $SnipeWaveSizes[$Waves]) And $TroopsLeft And $protection < 10000
 						For $WaveTroop = 0 to 10
 							If $SnipeWaves[$Waves][$WaveTroop] > -1 Then
 								If $atkTroops[$SnipeWaves[$Waves][$WaveTroop]][1] > 0 Then
@@ -503,6 +523,7 @@ Func Standard_Attack($AttackMethod = 1)
 						For $NumCheck = 0 to 8
 							If $atkTroops[$NumCheck][1] = 1 Then $TroopsLeft = True
 						Next
+						$protection += 1
 					WEnd
 				Else
 					For $WaveTroop = 0 to 10
@@ -520,9 +541,13 @@ Func Standard_Attack($AttackMethod = 1)
 			$QueenUsedSnipe = False
 			$AllDone = False
 			$Wave = 0
-			While Not $AllDone
+			$protection = 0
+			While Not $AllDone And $protection < 200
+				$protection += 1
 				; Deploy next wave of troops
+				$protect2 = 0
 				Do
+					$protect2 += 1
 					$AllGone = True
 					For $SnipeTroop In $SnipeDeployOrder
 						If $SnipeTroop > -1 Then
@@ -557,7 +582,6 @@ Func Standard_Attack($AttackMethod = 1)
 									$Clickx = Round(_Random_Gaussian($DropCurve[89][0], 3))
 									$Clicky = Round(_Random_Gaussian($DropCurve[89][1], 3))
 									RedLineDeploy($Clickx, $Clicky, 1, 0, $AimPoint, $BufferDist, $THx, $THy)
-									If Wave_Sleep(0) Then Return
 									$Clickx = Round(_Random_Gaussian($DropCurve[149][0], 3))
 									$Clicky = Round(_Random_Gaussian($DropCurve[149][1], 3))
 									RedLineDeploy($Clickx, $Clicky, 1, 0, $AimPoint, $BufferDist, $THx, $THy)
@@ -574,7 +598,6 @@ Func Standard_Attack($AttackMethod = 1)
 										$Clickx = Round(_Random_Gaussian($DropCurve[$curvepoint][0], 3))
 										$Clicky = Round(_Random_Gaussian($DropCurve[$curvepoint][1], 3))
 										RedLineDeploy($Clickx, $Clicky, 1, 0, $AimPoint, $BufferDist, $THx, $THy)
-										If Wave_Sleep(0) Then Return
 									Next
 									$TroopBins[$Wave][$SnipeTroop] -= $WaveSize
 									If $TroopBins[$Wave][$SnipeTroop] > 0 Then $AllGone = False
@@ -616,7 +639,7 @@ Func Standard_Attack($AttackMethod = 1)
 							EndIf
 						EndIf
 					Next
-				Until $AllGone
+				Until $AllGone Or $protect2 > 200
 
 				; Wait until income stopped, 45 seconds have passed, or we have a star
 				SetLog(GetLangText("msgSnipeWaveWait"))
@@ -672,6 +695,10 @@ Func Standard_Attack($AttackMethod = 1)
 				If $Wave = $SnipeWaveMax Then $AllDone = True
 			WEnd
 			SetLog(GetLangText("msgSnipeAttackDone"))
+
+		ElseIf $focusedMode Then
+			Standard_AttackBuilding($AttackMethod)
+
 		ElseIf $collectorMode Then
 			; Collect red line data even if it is turned off
 
@@ -684,7 +711,6 @@ Func Standard_Attack($AttackMethod = 1)
 
 			; Find all the collectors
 			SetLog(GetLangText("msgFindColl"))
-			_CaptureRegion(0, 0, 860, 720, False, True)
 			Local $AllCollectors[18][7]
 			; 0 = type
 			; 1 = X
@@ -694,19 +720,20 @@ Func Standard_Attack($AttackMethod = 1)
 			; 5 = Still standing
 			; 6 = Deploy Timer
 			Local $CollectorCount = 0
-			$hDll = DllOpen(@ScriptDir & "\BrokenBot.org\BrokenBot32.dll")
 			For $collector = 14 To 16
-				$res = Null
-				$res = ""
-				$expRet = ""
-				$hCheckHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)
+				If $collector = 14 And Not IsChecked($chkColAtkGold) Then ContinueLoop
+				If $collector = 15 And Not IsChecked($chkColAtkElix) Then ContinueLoop
+				If $collector = 16 And Not IsChecked($chkColAtkDE) Then ContinueLoop
 				$max = ($collector = 16) ? (3) : (7)
-				$res = DllCall($hDll, "str", "BrokenBotMatchBuilding", "ptr", $hCheckHBitmap, "int", $collector, "int", 3, "int", $max, "int", 1, "int", (IsChecked($chkSpeedBoost) ? (1) : (0)))
-				If IsArray($res) Then
-					If $res[0] = -2 Then
+				If $OverlayVisible And Not IsChecked($chkBackground) Then WinMove($frmOverlay, "", 10000, 10000, 860, 720)
+				$res = CallHelper("0 0 860 720 BrokenBotMatchBuilding " & $collector & " " & $max & " 1")
+				If $OverlayVisible And Not IsChecked($chkBackground) Then WinMove($frmOverlay, "", $BSpos[0], $BSpos[1], 860, 720)
+
+				If $res <> $DLLFailed And $res <> $DLLTimeout And $res <> $DLLError Then
+					If $res = $DLLLicense Then
 						SetLog(GetLangText("msgLicense"), $COLOR_RED)
-					ElseIf $res[0] <> -1 And StringLen($res[0]) > 2 Then
-						$expRet = StringSplit($res[0], "|", 2)
+					ElseIf $res <> $DLLNegative And StringLen($res) > 2 Then
+						$expRet = StringSplit($res, "|", 2)
 						If $DebugMode = 1 Then SetLog($expRet[0] & " " & (($collector = 14) ? (GetLangText("msgColGM")) : (($collector = 15) ? (GetLangText("msgColElix")) : (GetLangText("msgColDE")))))
 						$i = 0
 						While $i < $expRet[0]
@@ -725,8 +752,6 @@ Func Standard_Attack($AttackMethod = 1)
 					EndIf
 				EndIf
 			Next
-			_WinAPI_DeleteObject($hCheckHBitmap)
-			DllClose($hDll)
 			; Find a good location to drop troops at
 			; Function will reduce $CollectorCount for those that are deemed too far away to attempt attacking
 			$OutsideCollector = 125
@@ -870,7 +895,6 @@ Func Standard_Attack($AttackMethod = 1)
 											$Clickx = Round(_Random_Gaussian($DropCurve[89][0], 3))
 											$Clicky = Round(_Random_Gaussian($DropCurve[89][1], 3))
 											RedLineDeploy($Clickx, $Clicky, 1, 0, $AimPoint, $BufferDist, $AllCollectors[$collector][1], $AllCollectors[$collector][2])
-											If Wave_Sleep(0) Then Return
 											$Clickx = Round(_Random_Gaussian($DropCurve[149][0], 3))
 											$Clicky = Round(_Random_Gaussian($DropCurve[149][1], 3))
 											RedLineDeploy($Clickx, $Clicky, 1, 0, $AimPoint, $BufferDist, $AllCollectors[$collector][1], $AllCollectors[$collector][2])
@@ -886,7 +910,6 @@ Func Standard_Attack($AttackMethod = 1)
 												$Clickx = Round(_Random_Gaussian($DropCurve[$curvepoint][0], 3))
 												$Clicky = Round(_Random_Gaussian($DropCurve[$curvepoint][1], 3))
 												RedLineDeploy($Clickx, $Clicky, 1, 0, $AimPoint, $BufferDist, $AllCollectors[$collector][1], $AllCollectors[$collector][2])
-												If Wave_Sleep(0) Then Return
 											Next
 											$TroopBins[$collector][$ColTroop] -= $WaveSize
 											If $TroopBins[$collector][$ColTroop] > 0 Then $AllGone = False
@@ -990,20 +1013,20 @@ Func Standard_Attack($AttackMethod = 1)
 							$AllCollectors[$check][5] = False
 						Next
 						SetLog(GetLangText("msgRecheckCollectors"))
-						_CaptureRegion(0, 0, 860, 720, False, True)
-						$hDll = DllOpen(@ScriptDir & "\BrokenBot.org\BrokenBot32.dll")
 						For $recheck = 14 To 16
-							$res = Null
-							$res = ""
-							$expRet = ""
-							$hCheckHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)
+							If $collector = 14 And Not IsChecked($chkColAtkGold) Then ContinueLoop
+							If $collector = 15 And Not IsChecked($chkColAtkElix) Then ContinueLoop
+							If $collector = 16 And Not IsChecked($chkColAtkDE) Then ContinueLoop
 							$max = ($recheck = 16) ? (3) : (7)
-							$res = DllCall($hDll, "str", "BrokenBotMatchBuilding", "ptr", $hCheckHBitmap, "int", $recheck, "int", 3, "int", $max, "int", 1, "int", (IsChecked($chkSpeedBoost) ? (1) : (0)))
-							If IsArray($res) Then
-								If $res[0] = -2 Then
+							If $OverlayVisible And Not IsChecked($chkBackground) Then WinMove($frmOverlay, "", 10000, 10000, 860, 720)
+							$res = CallHelper("0 0 860 720 BrokenBotMatchBuilding " & $recheck & " " & $max & " 1")
+							If $OverlayVisible And Not IsChecked($chkBackground) Then WinMove($frmOverlay, "", $BSpos[0], $BSpos[1], 860, 720)
+
+							If $res <> $DLLFailed And $res <> $DLLTimeout And $res <> $DLLError Then
+								If $res = $DLLLicense Then
 									SetLog(GetLangText("msgLicense"), $COLOR_RED)
-								ElseIf $res[0] <> -1 And StringLen($res[0]) > 2 Then
-									$expRet = StringSplit($res[0], "|", 2)
+								ElseIf $res <> $DLLNegative And StringLen($res) > 2 Then
+									$expRet = StringSplit($res, "|", 2)
 									If $DebugMode = 1 Then SetLog($expRet[0] & " " & (($recheck = 14) ? (GetLangText("msgColGM")) : (($recheck = 15) ? (GetLangText("msgColElix")) : (GetLangText("msgColDE")))))
 									$i = 0
 									While $i < $expRet[0]
@@ -1051,8 +1074,6 @@ Func Standard_Attack($AttackMethod = 1)
 								EndIf
 							EndIf
 						Next
-						_WinAPI_DeleteObject($hCheckHBitmap)
-						DllClose($hDll)
 
 						; If a collector is still standing, but has been deployed, take troops from one that is gone if possible
 						For $check = 0 To $CollectorCount - 1
@@ -1089,7 +1110,24 @@ Func Standard_Attack($AttackMethod = 1)
 		; ========= Here is coded the main attack strategy ===============================
 		; ========= Feel free to experiment something else ===============================
 		; ================================================================================?
-		If Not $collectorMode And $AttackMethod <> 3 Then
+
+		Local $EdgeUsed[4]
+		For $n=0 to 3
+			$EdgeUsed[$n] = False
+			$EdgeOrder[$n] = -1
+		Next
+		Local $EdgesFilled = 0
+		While $EdgesFilled < $nbSides
+			$guess = Random(0, 3, 1)
+			If Not $EdgeUsed[$guess] Then
+				$EdgeOrder[$EdgesFilled] = $guess
+				$EdgeUsed[$guess] = True
+				$EdgesFilled += 1
+			EndIf
+		WEnd
+
+		If Not $focusedMode And Not $collectorMode And $AttackMethod <> 3 Then
+
 			If Standard_LaunchTroop($eGiant, (($mixedMode) ? 1 : $nbSides), 1, 1, 1, ($OuterQuad And $attackTH = 2)) Then
 				If Wave_Sleep(1) Then Return
 			EndIf
@@ -1194,25 +1232,25 @@ Func Standard_Attack($AttackMethod = 1)
 						$DropY = $FurthestBottomRight[4][1]
 						Local $DropArray[5][2] = [[$DropX, $DropY], [0, 0], [0, 0], [0, 0], [$DropX, $DropY]]
 				EndSwitch
+				If Wave_Sleep(1) Then Return
 				Standard_dropCC($DropArray, $CC, $AttackMethod, $AimTH)
-				If _Sleep(100) Then Return
 				If Not $mixedMode Then
 					Standard_dropHeroes($DropArray, $King, $Queen, $AttackMethod, $AimTH)
 					$hHeroTimer = TimerInit()
 				EndIf
 			Else
 				If $nbSides = 1 Then
-					Standard_dropCC($BottomRight, $CC, $AttackMethod)
+					Standard_dropCC($Edges[$EdgeOrder[0]], $CC, $AttackMethod)
 				Else
-					Standard_dropCC($TopLeft, $CC, $AttackMethod)
+					Standard_dropCC($Edges[$EdgeOrder[0]], $CC, $AttackMethod)
 				EndIf
 				If _Sleep(100) Then Return
 				If Not $mixedMode Then
 					If $nbSides = 1 Then
-						Standard_dropHeroes($BottomRight, $King, $Queen, $AttackMethod)
+						Standard_dropHeroes($Edges[$EdgeOrder[0]], $King, $Queen, $AttackMethod)
 						$hHeroTimer = TimerInit()
 					Else
-						Standard_dropHeroes($TopLeft, $King, $Queen, $AttackMethod)
+						Standard_dropHeroes($Edges[$EdgeOrder[0]], $King, $Queen, $AttackMethod)
 						$hHeroTimer = TimerInit()
 					EndIf
 				EndIf
@@ -1236,7 +1274,7 @@ Func Standard_Attack($AttackMethod = 1)
 					Standard_dropHeroes($DropArray, $King, $Queen, $AttackMethod, $AimTH)
 					$hHeroTimer = TimerInit()
 				Else
-					Standard_dropHeroes($BottomRight, $King, $Queen, $AttackMethod)
+					Standard_dropHeroes($Edges[$EdgeOrder[0]], $King, $Queen, $AttackMethod)
 					$hHeroTimer = TimerInit()
 				EndIf
 				If Standard_LaunchTroop($eWallbreaker, 1, 3, 3, 1) Then
@@ -1253,7 +1291,7 @@ Func Standard_Attack($AttackMethod = 1)
 		EndIf
 
 		; Nuke DE if desired
-		If ($LastAttackDead = "0") And ($SpellQty >= GUICtrlRead($txtSpellNumber)) And Number($Resources[4]) >= Number(GUICtrlRead($txtDENukeLimit)) And IsChecked($chkNukeAttacking) Then
+		If ($LastAttackDead = "0") And ($SpellQty >= GUICtrlRead($txtSpellNumber)) And ($SpellQty > 0) And Number($Resources[4]) >= Number(GUICtrlRead($txtDENukeLimit)) And IsChecked($chkNukeAttacking) Then
 			SetLog(GetLangText("msgNuking"), $COLOR_BLUE)
 			Standard_DropNukes()
 		EndIf
@@ -1303,7 +1341,7 @@ Func Standard_Attack($AttackMethod = 1)
 				$QueenGone = True
 				If $KingUsed And $KingWasHere Then $KingGone = False
 				If $QueenUsed And $QueenWasHere Then $QueenGone = False
-				If $KingPowerCollector Or $KingPowerSnipe Then $KingGone = True
+				If $KingPowerCollector Or $KingPowerSnipe Or $KingPowerBuilding Then $KingGone = True
 				If $QueenPowerCollector Or $QueenPowerSnipe Then $QueenGone = True
 				Do
 					If $KingWasHere And TimerDiff($hHeroTimer) > 3000 Then
@@ -1396,20 +1434,17 @@ Func Standard_DropNukes()
 		EndIf
 	Next
 	If $nSpellQty > 0 Then
-		$hDll = DllOpen(@ScriptDir & "\BrokenBot.org\BrokenBot32.dll")
-		_CaptureRegion()
-		$res = Null
-		$res = ""
+		If $OverlayVisible And Not IsChecked($chkBackground) Then WinMove($frmOverlay, "", 10000, 10000, 860, 720)
+		$res = CallHelper("0 0 860 720 BrokenBotMatchBuilding 16 3 1")
+		If $OverlayVisible And Not IsChecked($chkBackground) Then WinMove($frmOverlay, "", $BSpos[0], $BSpos[1], 860, 720)
 		$DEDrills = ""
-		$hCheckHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)
-		$res = DllCall($hDll, "str", "BrokenBotMatchBuilding", "ptr", $hCheckHBitmap, "int", 16, "int", 3, "int", 3, "int", 1, "int", (IsChecked($chkSpeedBoost) ? (1) : (0)))
-		If IsArray($res) Then
-			If $res[0] = -2 Then
+		If $res <> $DLLFailed and $res <> $DLLTimeout And $res <> $DLLError Then
+			If $res = $DLLLicense Then
 				SetLog(GetLangText("msgLicense"), $COLOR_RED)
-			ElseIf $res[0] <> -1 Then
+			ElseIf $res <> $DLLNegative Then
 				SelectDropTroupe($nLSpell)
 				If _Sleep(200) Then Return
-				$DEDrills = StringSplit($res[0], "|", 2)
+				$DEDrills = StringSplit($res, "|", 2)
 				$i = 0
 				$loops = 0
 				While $i < $DEDrills[0]
@@ -1427,8 +1462,6 @@ Func Standard_DropNukes()
 				WEnd
 			EndIf
 		EndIf
-		_WinAPI_DeleteObject($hCheckHBitmap)
-		DllClose($hDll)
 	EndIf
 EndFunc   ;==>Standard_DropNukes
 
@@ -1457,6 +1490,7 @@ Func Standard_dropHeroes($edge, $KingSlot = -1, $QueenSlot = -1, $AttackMethod =
 		Local $useQueen = ($AttackMethod = 0) ? (IsChecked($chkDeadUseQueen) ? (1) : (0)) : (IsChecked($chkUseQueen) ? (1) : (0))
 
 		If $KingSlot <> -1 And $useKing = 1 Then
+			If Wave_Sleep(1) Then Return
 			SetLog(GetLangText("msgDroppingKing"), $COLOR_BLUE)
 			Click(68 + (72 * $KingSlot), 595) ;Select King
 			If _Sleep(200) Then Return
@@ -1467,9 +1501,8 @@ Func Standard_dropHeroes($edge, $KingSlot = -1, $QueenSlot = -1, $AttackMethod =
 			$checkKPower = True
 		EndIf
 
-		If _Sleep(Wave_Sleep(1)) Then ExitLoop
-
 		If $QueenSlot <> -1 And $useQueen = 1 Then
+			If Wave_Sleep(1) Then Return
 			SetLog(GetLangText("msgDroppingQueen"), $COLOR_BLUE)
 			Click(68 + (72 * $QueenSlot), 595) ;Select Queen
 			If _Sleep(200) Then Return
@@ -1485,33 +1518,9 @@ Func Standard_dropHeroes($edge, $KingSlot = -1, $QueenSlot = -1, $AttackMethod =
 EndFunc   ;==>Standard_dropHeroes
 
 Func checkHealth($troop)
-	If isColorBetween(_GetPixelColor(68 + (72 * $troop), 572), Hex(0x18BD02, 6), Hex(0x4AD505, 6)) Then
-		Return False
-	EndIf
-	Return True
+	; Returns true if King/Queen are low in health
+	Return Not _HueSearch(49 + (72 * $troop), 571, 2, 2, 24, 29)
 EndFunc   ;==>checkHealth
-
-Func isColorBetween($nColor1, $nColorLow, $nColorHigh)
-	Local $Red1, $Red2, $Red3, $Blue1, $Blue2, $Blue3, $Green1, $Green2, $Green3
-
-	$Red1 = Dec(StringMid(String($nColor1), 1, 2))
-	$Blue1 = Dec(StringMid(String($nColor1), 3, 2))
-	$Green1 = Dec(StringMid(String($nColor1), 5, 2))
-
-	$Red2 = Dec(StringMid(String($nColorLow), 1, 2))
-	$Blue2 = Dec(StringMid(String($nColorLow), 3, 2))
-	$Green2 = Dec(StringMid(String($nColorLow), 5, 2))
-
-	$Red3 = Dec(StringMid(String($nColorHigh), 1, 2))
-	$Blue3 = Dec(StringMid(String($nColorHigh), 3, 2))
-	$Green3 = Dec(StringMid(String($nColorHigh), 5, 2))
-
-	If $Red1 < $Red2 Or $Red1 > $Red3 Then Return False
-	If $Green1 < $Green2 Or $Green1 > $Green3 Then Return False
-	If $Blue1 < $Blue2 Or $Blue1 > $Blue3 Then Return False
-
-	Return True
-EndFunc   ;==>isColorBetween
 
 Func FixDropCurvePos(ByRef $arCurve, $index, $x, $y)
 	; If they are outside of bounds of base then move them back in
@@ -1548,20 +1557,567 @@ Func FixDropCurvePos(ByRef $arCurve, $index, $x, $y)
 		EndSwitch
 	Next
 	; Move points that are too low up
-	If $arCurve[$index][1] > 538 Then
-		$arCurve[$index][1] = 538
+	If $arCurve[$index][1] > 560 Then
+		$arCurve[$index][1] = 560
 		If $arCurve[$index][0] <= 402 Then
-			$GetPoint = GetPointDist(342, 538, 402, 538)
+			$GetPoint = GetPointDist(350, 560, 402, 560)
 			$NewPoint = $GetPoint[1]
 			$NewPoint -= 5
-			If $NewPoint < 342 Then $NewPoint = 342
+			If $NewPoint < 350 Then $NewPoint = 350
 			If $NewPoint < $arCurve[$index][0] Then $arCurve[$index][0] = $NewPoint
 		Else
-			$GetPoint = GetPointDist(518, 538, 402, 538)
+			$GetPoint = GetPointDist(510, 560, 402, 560)
 			$NewPoint = $GetPoint[1]
 			$NewPoint += 5
-			If $NewPoint > 518 Then $NewPoint = 518
+			If $NewPoint > 510 Then $NewPoint = 510
 			If $NewPoint > $arCurve[$index][0] Then $arCurve[$index][0] = $NewPoint
 		EndIf
 	EndIf
 EndFunc   ;==>FixDropCurvePos
+
+Func Standard_AttackBuilding($AttackMethod = 0)
+	;Attack building: $focusBuildingX, $focusBuildingY are defined in Search.au3
+	If $focusBuildingX = 0 And $focusBuildingY = 0 Then
+		;Didn't find building, revert to single sided attack
+		SetLog(GetLangText("msgFailedToLocateBuilding") ,$COLOR_RED)
+		SetLog(GetLangText("msgRevertingToSingleSide") ,$COLOR_RED)
+		$focusedMode = False
+		$nbSides = 1
+	Else
+
+		Local $BuildingDeployOrder[9] = [$Giant, $Hog, $WB, $Valk, $Barb, $King, $Arch, $Gob, $Minion];, $Queen, $CC] ;Queen and CC are done outside of the loop to trickle troops
+
+		If $DebugMode = 2 Then SetLog("Focal Building (" & $focusBuildingX & ", " & $focusBuildingY & ")")
+
+		; find an angle that would contain line from X, Y to center of base (put in building position)
+		$AngleTrue = PolarCoord($focusBuildingX, $focusBuildingY, $BaseCenter[0], $BaseCenter[1])
+
+		; How big you want the curve to be, this is in radians so an entire side would be _random_gaussian($pi/2, $pi/12) (too make it random)
+		$curveLimits = _Random_Gaussian(1.8, 0.2618 / 2) ; (112.5 deg =  1.9635), (90 deg = 1.5708)
+		$trickleCurveLimits = $curveLimits / 5
+
+		; are we going to deploy left to right or right to left?
+		$direction = ((Random(0, 1, 1) - .5) * 2)
+		$steppingangle = $AngleTrue[1] - (($curveLimits / 2) * $direction)
+
+		$trickledirection = ((Random(0, 1, 1) - .5) * 2)
+		$tricklesteppingangle = $AngleTrue[1] - (($trickleCurveLimits / 2) * $trickledirection)
+
+		Local $DropCurve[240][2], $trickleDropCurve[240][2]
+		; Make the curve of points
+		For $step = 0 To 239
+			$DeltaPos = CartCoord(860, $steppingangle)
+			$DropCurve[$step][0] = $focusBuildingX + $DeltaPos[0]
+			$DropCurve[$step][1] = $focusBuildingY + $DeltaPos[1]
+			$steppingangle = $steppingangle + (($curveLimits / 240) * $direction)
+
+			$trickleDeltaPos = CartCoord(860, $tricklesteppingangle)
+			$trickleDropCurve[$step][0] = $focusBuildingX + $trickleDeltaPos[0]
+			$trickleDropCurve[$step][1] = $focusBuildingY + $trickleDeltaPos[1]
+			$tricklesteppingangle = $tricklesteppingangle + (($tricklecurveLimits / 240) * $trickledirection)
+		Next
+		For $step = 0 To 239
+			FixDropCurvePos($DropCurve, $step, $focusBuildingX, $focusBuildingY)
+			FixDropCurvePos($trickleDropCurve, $step, $focusBuildingX, $focusBuildingY)
+		Next
+		For $step = 0 To 238
+			OverlayLine($DropCurve[$step][0], $DropCurve[$step][1], $DropCurve[$step + 1][0], $DropCurve[$step + 1][1], 0xFF0000FF, 2)
+			OverlayLine($trickleDropCurve[$step][0], $trickleDropCurve[$step][1], $trickleDropCurve[$step + 1][0], $trickleDropCurve[$step + 1][1], 0xFFBB00FF, 2)
+		Next
+
+		OverlayLine($DropCurve[0][0], $DropCurve[0][1], $focusBuildingX, $focusBuildingY, 0xFF0000FF, 2)
+		OverlayLine($DropCurve[239][0], $DropCurve[239][1], $focusBuildingX, $focusBuildingY, 0xFF0000FF, 2)
+
+		OverlayLine($trickleDropCurve[0][0], $trickleDropCurve[0][1], $focusBuildingX, $focusBuildingY, 0xFFBB00FF, 2)
+		OverlayLine($trickleDropCurve[239][0], $trickleDropCurve[239][1], $focusBuildingX, $focusBuildingY, 0xFFBB00FF, 2)
+
+
+		Local $spreadPerc = 25 ;Pecentage of troops (barbs, archs, minions) to use in the clearing wave
+		Local $trickleWavePerc = 25 ;Will drop this percentage of one troop before looping to next troop
+		Local $firstGiantWavePerc = 50 ;If number of giants is >=8 then split up the deployment
+		Local $giantWaitTime = 1500 ;msec Time to wait after deploying giants
+		Local $waitToClearTime = 2000 ;msec Time to wait after deploying clearing wave
+
+		; Figure out how many to spread vs trickle
+
+		If $Barb > -1 Then
+			If $atkTroops[$Barb][1] > 0 Then
+				$numSpreadBarb = Floor($atkTroops[$Barb][1] * $spreadPerc / 100)
+			Else
+				$numSpreadBarb = 0
+			EndIf
+		Else
+			$numSpreadBarb = 0
+		EndIf
+
+		If $Arch > -1 Then
+			If $atkTroops[$Arch][1] > 0 Then
+				$numSpreadArch = Floor($atkTroops[$Arch][1] * $spreadPerc / 100)
+			Else
+				$numSpreadArch = 0
+			EndIf
+		Else
+			$numSpreadArch = 0
+		EndIf
+
+		If $Minion > -1 Then
+			If $atkTroops[$Minion][1] > 0 Then
+				$numSpreadMinion = Floor($atkTroops[$Minion][1] * $spreadPerc / 100)
+			Else
+				$numSpreadMinion = 0
+			EndIf
+		Else
+			$numSpreadMinion = 0
+		EndIf
+
+		If $DebugMode = 2 Then
+			SetLog("Barbs to spread: "& $numSpreadBarb, $COLOR_BLUE)
+			SetLog("Archers to spread: "& $numSpreadArch, $COLOR_BLUE)
+			SetLog("Minions to spread: "& $numSpreadMinion, $COLOR_BLUE)
+		EndIf
+
+		$deployedGiants = False
+
+		If $Giant > -1 Then
+			If $atkTroops[$Giant][1] > 0 Then
+				;drop all giants in trickle drop area if <8 or drop part of the giants
+				If Wave_Sleep(1) Then Return
+				$numToDrop = $atkTroops[$Giant][1]
+
+				If $atkTroops[$Giant][1] >= 8 Then
+					$numToDrop = Floor($atkTroops[$Giant][1] * $firstGiantWavePerc / 100)
+					SetLog(GetLangText("msgDropping") & $firstGiantWavePerc & GetLangText("msgPercOfGiants"),$COLOR_BLUE)
+				Else
+					$numToDrop = $atkTroops[$Giant][1]
+					SetLog(GetLangText("msgDropping") & GetLangText("troopNamePlGiant"),$COLOR_BLUE)
+				EndIf
+
+				SelectDropTroupe($Giant)
+
+				; Random wave distance
+				$BufferDist = _Random_Gaussian(20, 6)
+				If $BufferDist < 2 Then $BufferDist = 2
+
+				For $TroopCount = 1 To $numToDrop
+					_CaptureRegion()
+					If _ColorCheck(_GetPixelColor(714, 538), Hex(0xC0C8C0, 6), 30) Then ExitLoop
+					$curvepoint = Floor((($TroopCount - 1) / ($numToDrop - 1)) * 239)
+					$Clickx = Round(_Random_Gaussian($trickleDropCurve[$curvepoint][0], 3))
+					$Clicky = Round(_Random_Gaussian($trickleDropCurve[$curvepoint][1], 3))
+					RedLineDeploy($Clickx, $Clicky, 1, 0, $AimPoint, $BufferDist, $focusBuildingX, $focusBuildingY)
+					If Wave_Sleep(0) Then Return
+				Next
+				$atkTroops[$Giant][1] -= $numToDrop
+				$deployedGiants = True
+				;wait for giants to get in range to tank for wbs
+				SetLog(GetLangText("msgWaitForGiants"),$COLOR_BLUE)
+				If _Sleep($giantWaitTime) Then Return
+
+			EndIf
+		EndIf
+
+		If $Hog > -1 Then
+			If $atkTroops[$Hog][1] > 0 Then
+				;drop hogs in trickle drop area
+
+				If Wave_Sleep(1) Then Return
+				SetLog("Dropping all Hogs",$COLOR_BLUE)
+				SetLog(GetLangText("msgDropping") & GetLangText("troopDarkPlHog"),$COLOR_BLUE)
+				SelectDropTroupe($Hog)
+
+				; Random wave distance
+				$BufferDist = _Random_Gaussian(20, 6)
+				If $BufferDist < 2 Then $BufferDist = 2
+
+				For $TroopCount = 1 To $atkTroops[$Hog][1]
+					_CaptureRegion()
+					If _ColorCheck(_GetPixelColor(714, 538), Hex(0xC0C8C0, 6), 30) Then ExitLoop
+					$curvepoint = Floor((($TroopCount - 1) / ($atkTroops[$Hog][1] - 1)) * 239)
+					$Clickx = Round(_Random_Gaussian($trickleDropCurve[$curvepoint][0], 3))
+					$Clicky = Round(_Random_Gaussian($trickleDropCurve[$curvepoint][1], 3))
+					RedLineDeploy($Clickx, $Clicky, 1, 0, $AimPoint, $BufferDist, $focusBuildingX, $focusBuildingY)
+				Next
+				$atkTroops[$Hog][1] = 0
+
+
+			EndIf
+		EndIf
+
+		If $WB > -1 Then
+			If $atkTroops[$WB][1] > 0 And $deployedGiants Then
+				;drop half WBs if > 3 , all otherwise in pairs of 2 in trickle drop area
+				If $atkTroops[$WB][1] > 3 Then
+					$numWBsToDrop = Floor($atkTroops[$WB][1] / 2)
+					$remainingWBs = $atkTroops[$WB][1] - $numWBsToDrop
+					SetLog(GetLangText("msgDropHalfWBs"),$COLOR_BLUE)
+				Else
+					$remainingWBs = 0
+					SetLog(GetLangText("msgDropAllWBs"),$COLOR_BLUE)
+				EndIf
+				SelectDropTroupe($WB)
+
+				$protect= 0
+				Do
+					$protect += 1
+
+					; Random wave distance
+					$BufferDist = _Random_Gaussian(20, 6)
+					If $BufferDist < 2 Then $BufferDist = 2
+
+					If Wave_Sleep(1) Then Return
+					If Wave_Sleep(1) Then Return
+					If Wave_Sleep(1) Then Return
+					If Wave_Sleep(1) Then Return
+					If Wave_Sleep(1) Then Return
+
+					_CaptureRegion()
+					If _ColorCheck(_GetPixelColor(714, 538), Hex(0xC0C8C0, 6), 30) Then ExitLoop
+
+					$Clickx = Round(_Random_Gaussian($trickleDropCurve[119][0], 3))
+					$Clicky = Round(_Random_Gaussian($trickleDropCurve[119][1], 3))
+					RedLineDeploy($Clickx, $Clicky, 1, 0, $AimPoint, $BufferDist, $focusBuildingX, $focusBuildingY)
+					$atkTroops[$WB][1] -= 1
+					If $atkTroops[$WB][1] <= $remainingWBs Then ExitLoop
+
+					If Wave_Sleep(0) Then Return
+
+					_CaptureRegion()
+					If _ColorCheck(_GetPixelColor(714, 538), Hex(0xC0C8C0, 6), 30) Then ExitLoop
+
+					$Clickx = Round(_Random_Gaussian($trickleDropCurve[119][0], 3))
+					$Clicky = Round(_Random_Gaussian($trickleDropCurve[119][1], 3))
+					RedLineDeploy($Clickx, $Clicky, 1, 0, $AimPoint, $BufferDist, $focusBuildingX, $focusBuildingY)
+					$atkTroops[$WB][1] -= 1
+
+					If Wave_Sleep(0) Then Return
+
+				Until $atkTroops[$WB][1] <= $remainingWBs Or $protect > 20
+
+				If $atkTroops[$WB][1] < 0 Then $atkTroops[$WB][1] = 0
+
+			EndIf
+		EndIf
+
+		If $Barb > -1 Then
+			If $atkTroops[$Barb][1] > 0 Then
+				;spread barbs
+				SetLog(GetLangText("msgDropping") & GetLangText("troopNamePlBarbarian") & " " & GetLangText("msgToClearPath"),$COLOR_BLUE)
+				SelectDropTroupe($Barb)
+
+				If Wave_Sleep(1) Then Return
+
+				; Random wave distance
+				$BufferDist = _Random_Gaussian(20, 6)
+				If $BufferDist < 2 Then $BufferDist = 2
+
+				For $TroopCount = 1 To $numSpreadBarb
+					_CaptureRegion()
+					If _ColorCheck(_GetPixelColor(714, 538), Hex(0xC0C8C0, 6), 30) Then ExitLoop
+					$curvepoint = Floor((($TroopCount - 1) / ($numSpreadBarb - 1)) * 239)
+					$Clickx = Round(_Random_Gaussian($DropCurve[$curvepoint][0], 3))
+					$Clicky = Round(_Random_Gaussian($DropCurve[$curvepoint][1], 3))
+					RedLineDeploy($Clickx, $Clicky, 1, 0, $AimPoint, $BufferDist, $THx, $THy)
+					$atkTroops[$Barb][1] -= 1
+					If Wave_Sleep(0) Then Return
+				Next
+
+			EndIf
+		EndIf
+
+		If $Arch > -1 Then
+			If $atkTroops[$Arch][1] > 0 Then
+				;spread arch
+				SetLog(GetLangText("msgDropping") & GetLangText("troopNamePlArcher") & " " & GetLangText("msgToClearPath"),$COLOR_BLUE)
+				SelectDropTroupe($Arch)
+
+				If Wave_Sleep(1) Then Return
+
+				; Random wave distance
+				$BufferDist = _Random_Gaussian(20, 6)
+				If $BufferDist < 2 Then $BufferDist = 2
+
+				For $TroopCount = 1 To $numSpreadBarb
+					_CaptureRegion()
+					If _ColorCheck(_GetPixelColor(714, 538), Hex(0xC0C8C0, 6), 30) Then ExitLoop
+					$curvepoint = Floor((($TroopCount - 1) / ($numSpreadBarb - 1)) * 239)
+					$Clickx = Round(_Random_Gaussian($DropCurve[$curvepoint][0], 3))
+					$Clicky = Round(_Random_Gaussian($DropCurve[$curvepoint][1], 3))
+					RedLineDeploy($Clickx, $Clicky, 1, 0, $AimPoint, $BufferDist, $THx, $THy)
+					$atkTroops[$Arch][1] -= 1
+					If Wave_Sleep(0) Then Return
+				Next
+
+			EndIf
+		EndIf
+
+		If $Minion > -1 Then
+			If $atkTroops[$Minion][1] > 0 Then
+				;spread minion
+				SetLog(GetLangText("msgDropping") & GetLangText("troopDarkPlMinion") & " " & GetLangText("msgToClearPath"),$COLOR_BLUE)
+				SelectDropTroupe($Minion)
+
+				If Wave_Sleep(1) Then Return
+
+				; Random wave distance
+				$BufferDist = _Random_Gaussian(20, 6)
+				If $BufferDist < 2 Then $BufferDist = 2
+
+				For $TroopCount = 1 To $numSpreadMinion
+					_CaptureRegion()
+					If _ColorCheck(_GetPixelColor(714, 538), Hex(0xC0C8C0, 6), 30) Then ExitLoop
+					$curvepoint = Floor((($TroopCount - 1) / ($numSpreadMinion - 1)) * 239)
+					$Clickx = Round(_Random_Gaussian($DropCurve[$curvepoint][0], 3))
+					$Clicky = Round(_Random_Gaussian($DropCurve[$curvepoint][1], 3))
+					RedLineDeploy($Clickx, $Clicky, 1, 0, $AimPoint, $BufferDist, $THx, $THy)
+					$atkTroops[$Minion][1] -= 1
+					If Wave_Sleep(0) Then Return
+				Next
+
+			EndIf
+		EndIf
+
+		If $Giant > -1 Then
+			If $atkTroops[$Giant][1] > 0 Then
+				;drop remaining giants in trickle drop area
+				If Wave_Sleep(1) Then Return
+
+				SetLog(GetLangText("msgDropping") & GetLangText("troopNamePlGiant"),$COLOR_BLUE)
+
+				SelectDropTroupe($Giant)
+
+				; Random wave distance
+				$BufferDist = _Random_Gaussian(20, 6)
+				If $BufferDist < 2 Then $BufferDist = 2
+
+				For $TroopCount = 1 To $atkTroops[$Giant][1]
+					_CaptureRegion()
+					If _ColorCheck(_GetPixelColor(714, 538), Hex(0xC0C8C0, 6), 30) Then ExitLoop
+					$curvepoint = Floor((($TroopCount - 1) / ($atkTroops[$Giant][1] - 1)) * 239)
+					$Clickx = Round(_Random_Gaussian($trickleDropCurve[$curvepoint][0], 3))
+					$Clicky = Round(_Random_Gaussian($trickleDropCurve[$curvepoint][1], 3))
+					RedLineDeploy($Clickx, $Clicky, 1, 0, $AimPoint, $BufferDist, $focusBuildingX, $focusBuildingY)
+					If Wave_Sleep(0) Then Return
+				Next
+				$atkTroops[$Giant][1] -= $atkTroops[$Giant][1]
+				;wait for giants to get in range to tank for wbs
+				SetLog("Wait until Giants get closer...",$COLOR_BLUE)
+				If _Sleep($giantWaitTime) Then Return
+
+			EndIf
+		EndIf
+
+		If $WB > -1 Then
+			If $atkTroops[$WB][1] > 0 Then
+				;drop rest of wbs in pairs of 2 in trickle drop area
+				SetLog(GetLangText("msgDropAllWBs"),$COLOR_BLUE)
+				SelectDropTroupe($WB)
+
+				$protect= 0
+				Do
+					$protect += 1
+
+					; Random wave distance
+					$BufferDist = _Random_Gaussian(20, 6)
+					If $BufferDist < 2 Then $BufferDist = 2
+
+					If Wave_Sleep(1) Then Return
+					If Wave_Sleep(1) Then Return
+					If Wave_Sleep(1) Then Return
+					If Wave_Sleep(1) Then Return
+					If Wave_Sleep(1) Then Return
+
+					_CaptureRegion()
+					If _ColorCheck(_GetPixelColor(714, 538), Hex(0xC0C8C0, 6), 30) Then ExitLoop
+
+					$Clickx = Round(_Random_Gaussian($trickleDropCurve[119][0], 3))
+					$Clicky = Round(_Random_Gaussian($trickleDropCurve[119][1], 3))
+					RedLineDeploy($Clickx, $Clicky, 1, 0, $AimPoint, $BufferDist, $focusBuildingX, $focusBuildingY)
+					$atkTroops[$WB][1] -= 1
+					If $atkTroops[$WB][1] <= 0 Then ExitLoop
+
+					If Wave_Sleep(0) Then Return
+
+					_CaptureRegion()
+					If _ColorCheck(_GetPixelColor(714, 538), Hex(0xC0C8C0, 6), 30) Then ExitLoop
+
+					$Clickx = Round(_Random_Gaussian($trickleDropCurve[119][0], 3))
+					$Clicky = Round(_Random_Gaussian($trickleDropCurve[119][1], 3))
+					RedLineDeploy($Clickx, $Clicky, 1, 0, $AimPoint, $BufferDist, $focusBuildingX, $focusBuildingY)
+					$atkTroops[$WB][1] -= 1
+
+					If Wave_Sleep(0) Then Return
+
+				Until $atkTroops[$WB][1] <= 0 Or $protect > 20
+
+				If $atkTroops[$WB][1] < 0 Then $atkTroops[$WB][1] = 0
+
+			EndIf
+		EndIf
+
+		SetLog(GetLangText("msgWaitToClear"),$COLOR_BLUE)
+		If _Sleep($waitToClearTime) Then Return
+
+		SetLog(GetLangText("msgDeployRemaining"),$COLOR_BLUE)
+
+		;fast trickle remaining troops in trickle drop area
+		;Drop king after first barb wave,
+		$KingUsedBuilding = False
+		$KingPowerBuilding = False
+		$AllDone = False
+		$firstBarbWave = False
+
+		Local $troopWaveSize[9]
+
+		For $Troop In $BuildingDeployOrder
+			If $Troop > -1 Then
+				Switch $Troop
+					Case $Giant, $Hog, $WB, $King, $Queen, $CC
+						$troopWaveSize[$Troop] = $atkTroops[$Troop][1] ;deploy all in one wave
+					Case Else
+						If $atkTroops[$Troop][1] >= 0 Then
+							$troopWaveSize[$Troop] = Floor($atkTroops[$Troop][1] * $trickleWavePerc / 100)
+						Else
+							$troopWaveSize[$Troop] = 0
+						EndIf
+				EndSwitch
+			EndIf
+		Next
+
+		$protect2 = 0
+		Do
+			$protect2 += 1
+
+			If $protect2 = 1 Then
+				Standard_PrepareAttack(True) ;Check remaining quantities
+			Else
+				Standard_PrepareAttack(True, 1, True)
+			EndIf
+
+			$AllGone = True
+			For $Troop In $BuildingDeployOrder
+				If $Troop > -1 Then
+					If $atkTroops[$Troop][1] > 0 Then
+
+						If Wave_Sleep(1) Then Return
+
+						SelectDropTroupe($Troop)
+
+						_CaptureRegion()
+						If _ColorCheck(_GetPixelColor(714, 538), Hex(0xC0C8C0, 6), 30) Then ExitLoop
+
+						If $Troop = $King Then
+							Local $useKing = ($AttackMethod = 0) ? (IsChecked($chkDeadUseKing) ? (1) : (0)) : (IsChecked($chkUseKing) ? (1) : (0))
+							If $useKing = 1 Then
+								$hHeroTimer = TimerInit()
+								$KingUsedBuilding = True
+							Else
+								ContinueLoop
+							EndIf
+						EndIf
+						
+						; Random wave distance
+						$BufferDist = _Random_Gaussian(20, 6)
+						If $BufferDist < 2 Then $BufferDist = 2
+
+						If $troopWaveSize[$Troop] = 1 Then
+							; Only a single unit, drop in middle
+							$Clickx = Round(_Random_Gaussian($trickleDropCurve[119][0], 3))
+							$Clicky = Round(_Random_Gaussian($trickleDropCurve[119][1], 3))
+							RedLineDeploy($Clickx, $Clicky, 1, 0, $AimPoint, $BufferDist, $THx, $THy)
+							$atkTroops[$Troop][1] -= 1
+						ElseIf $troopWaveSize[$Troop] = 2 Then
+							; Drop 2 units
+							$Clickx = Round(_Random_Gaussian($trickleDropCurve[89][0], 3))
+							$Clicky = Round(_Random_Gaussian($trickleDropCurve[89][1], 3))
+							RedLineDeploy($Clickx, $Clicky, 1, 0, $AimPoint, $BufferDist, $THx, $THy)
+							If Wave_Sleep(0) Then Return
+							$Clickx = Round(_Random_Gaussian($trickleDropCurve[149][0], 3))
+							$Clicky = Round(_Random_Gaussian($trickleDropCurve[149][1], 3))
+							RedLineDeploy($Clickx, $Clicky, 1, 0, $AimPoint, $BufferDist, $THx, $THy)
+							$atkTroops[$Troop][1] -= 2
+							If Wave_Sleep(0) Then Return
+						Else
+							; Many troops so spread out
+							If $troopWaveSize[$Troop] > $atkTroops[$Troop][1] Then $troopWaveSize[$Troop] = $atkTroops[$Troop][1]
+							For $TroopCount = 1 To $troopWaveSize[$Troop]
+								_CaptureRegion()
+								If _ColorCheck(_GetPixelColor(714, 538), Hex(0xC0C8C0, 6), 30) Then ExitLoop
+								$curvepoint = Floor((($TroopCount - 1) / ($troopWaveSize[$Troop] - 1)) * 239)
+								$Clickx = Round(_Random_Gaussian($trickleDropCurve[$curvepoint][0], 3))
+								$Clicky = Round(_Random_Gaussian($trickleDropCurve[$curvepoint][1], 3))
+								RedLineDeploy($Clickx, $Clicky, 1, 0, $AimPoint, $BufferDist, $THx, $THy)
+								If Wave_Sleep(0) Then Return
+							Next
+							$atkTroops[$Troop][1] -= $troopWaveSize[$Troop]
+							If $atkTroops[$Troop][1] > 0 Then $AllGone = False
+						EndIf
+					EndIf
+				EndIf
+				; All this looping around takes a while, so check for hero activation
+				If $KingUsedBuilding And Not $KingPowerBuilding And TimerDiff($hHeroTimer) > 3000 Then
+					If GUICtrlRead($txtKingSkill) = 0 Then
+						_CaptureRegion()
+						If (checkHealth($King) Or (TimerDiff($hHeroTimer) / 1000) > 60) Then
+							SetLog(GetLangText("msgActivateKing"), $COLOR_AQUA)
+							SelectDropTroupe($King)
+							$KingPowerBuilding = True
+						EndIf
+					Else
+						If ((TimerDiff($hHeroTimer) / 1000) > Number(GUICtrlRead($txtKingSkill))) Then
+							SetLog(GetLangText("msgActivateKing"), $COLOR_BLUE)
+							SelectDropTroupe($King)
+							$KingPowerBuilding = True
+						EndIf
+					EndIf
+				EndIf
+			Next
+		Until $AllGone Or $protect2 > 20
+
+		;Drop queen and cc at the end
+		Local $useQueen = ($AttackMethod = 0) ? (IsChecked($chkDeadUseQueen) ? (1) : (0)) : (IsChecked($chkUseQueen) ? (1) : (0))
+		Local $useCastle = ($AttackMethod = 0) ? (IsChecked($chkDeadUseClanCastle) ? (1) : (0)) : (IsChecked($chkUseClanCastle) ? (1) : (0))
+		If $Queen > -1 And $useQueen Then
+			If $atkTroops[$Queen][1] > 0 Then
+				;drop queen in trickle drop area
+
+				If Wave_Sleep(1) Then Return
+				SetLog(GetLangText("msgDroppingQueen"),$COLOR_BLUE)
+				SelectDropTroupe($Queen)
+
+				; Random wave distance
+				$BufferDist = _Random_Gaussian(20, 6)
+				If $BufferDist < 2 Then $BufferDist = 2
+
+				$hHeroTimer = TimerInit()
+
+				$Clickx = Round(_Random_Gaussian($trickleDropCurve[119][0], 3))
+				$Clicky = Round(_Random_Gaussian($trickleDropCurve[119][1], 3))
+				RedLineDeploy($Clickx, $Clicky, 1, 0, $AimPoint, $BufferDist, $focusBuildingX, $focusBuildingY)
+
+				$atkTroops[$Queen][1] = 0
+			EndIf
+		EndIf
+
+		If $CC > -1 And $useCastle Then
+			If $atkTroops[$CC][1] > 0 Then
+				;drop CC in trickle drop area
+
+				If Wave_Sleep(1) Then Return
+				SetLog(GetLangText("msgDroppingCC"),$COLOR_BLUE)
+				SelectDropTroupe($CC)
+
+				; Random wave distance
+				$BufferDist = _Random_Gaussian(20, 6)
+				If $BufferDist < 2 Then $BufferDist = 2
+
+				$Clickx = Round(_Random_Gaussian($trickleDropCurve[119][0], 3))
+				$Clicky = Round(_Random_Gaussian($trickleDropCurve[119][1], 3))
+				RedLineDeploy($Clickx, $Clicky, 1, 0, $AimPoint, $BufferDist, $focusBuildingX, $focusBuildingY)
+
+				$atkTroops[$CC][1] = 0
+			EndIf
+		EndIf
+		SetLog(GetLangText("msgFocusAttackComplete"),$COLOR_GREEN)
+
+	EndIf
+EndFunc   ;==>Standard_AttackBuilding

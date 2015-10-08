@@ -55,6 +55,7 @@ Func Initiate()
 		GUICtrlSetState($btnLocateBarracks, $GUI_DISABLE)
 		GUICtrlSetState($btnLocateCamp, $GUI_DISABLE)
 		GUICtrlSetState($btnFindWall, $GUI_DISABLE)
+		GUICtrlSetState($btnFindWall2, $GUI_DISABLE)
 		GUICtrlSetState($chkBackground, $GUI_DISABLE)
 		GUICtrlSetState($chkNoAttack, $GUI_DISABLE)
 		GUICtrlSetState($chkDonateOnly, $GUI_DISABLE)
@@ -82,30 +83,37 @@ Func Initiate()
 	EndIf
 EndFunc   ;==>Initiate
 
-Func Open()
+Func Open($initialize = True)
 	If $64Bit Then ;If 64-Bit
 		ShellExecute("C:\Program Files (x86)\BlueStacks\HD-StartLauncher.exe")
 		SetLog(GetLangText("msgStartingBS"), $COLOR_GREEN)
 		_ModifiedSleep(290)
 		SetLog(GetLangText("msgWaitingBS"), $COLOR_GREEN)
-		Check()
+		$Initiate = 0
+		Check($initialize)
 	Else ;If 32-Bit
 		ShellExecute("C:\Program Files\BlueStacks\HD-StartLauncher.exe")
 		SetLog(GetLangText("msgStartingBS"), $COLOR_GREEN)
 		_ModifiedSleep(290)
 		SetLog(GetLangText("msgWaitingBS"), $COLOR_GREEN)
-		Check()
+		$Initiate = 0
+		Check($initialize)
 	EndIf
 EndFunc   ;==>Open
 
-Func Check()
-	If IsArray(ControlGetPos($Title, "_ctl.Window", "[CLASS:BlueStacksApp; INSTANCE:1]")) Then
-		SetLog(GetLangText("msgBSLoaded") & ($Initiate) & GetLangText("msgBSLoadSecs"), $COLOR_GREEN)
-		Initiate()
+Func Check($initialize = True)
+	If $Initiate > 90 Then
+		restartBlueStack()
+		$Initiate = 0
 	Else
-		_ModifiedSleep(1000)
-		$Initiate = $Initiate + 1
-		Check()
+		If IsArray(ControlGetPos($Title, "_ctl.Window", "[CLASS:BlueStacksApp; INSTANCE:1]")) Then
+			SetLog(GetLangText("msgBSLoaded") & ($Initiate) & GetLangText("msgBSLoadSecs"), $COLOR_GREEN)
+			If $initialize Then Initiate()
+		Else
+			_ModifiedSleep(1000)
+			$Initiate = $Initiate + 1
+			Check($initialize)
+		EndIf
 	EndIf
 EndFunc   ;==>Check
 

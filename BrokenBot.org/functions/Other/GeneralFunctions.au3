@@ -57,6 +57,21 @@ Func _WaitForColor($x, $y, $nColor2, $sVari = 5, $maxDelay = 1)
 	Return False
 EndFunc   ;==>_WaitForColor
 
+Func _WaitForColorArea($left, $top, $width, $height, $nColor2, $sVari = 5, $maxDelay = 1)
+	For $i = 1 To $maxDelay * 20
+		_CaptureRegion()
+		For $x = $left to ($left + $width - 1)
+			For $y = $top to ($top + $height - 1)
+				If _ColorCheck(_GetPixelColor($x, $y), $nColor2, $sVari) Then
+					Return True
+				EndIf
+			Next
+		Next
+		If _Sleep(50) Then Return
+	Next
+	Return False
+EndFunc   ;==>_WaitForColor
+
 Func _WaitForPixel($iLeft, $iTop, $iRight, $iBottom, $iColor, $iColorVariation, $maxDelay = 10)
 	For $i = 1 To $maxDelay * 20
 		$result = _PixelSearch($iLeft, $iTop, $iRight, $iBottom, $iColor, $iColorVariation)

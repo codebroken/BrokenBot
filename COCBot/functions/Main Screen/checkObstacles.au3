@@ -23,6 +23,15 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 		Return True
 	EndIf
 
+	If _ImageSearch($maintenance, 0, $x, $y, 80) Then
+
+		SetLog(GetLangText("msgMaintenance"), $COLOR_RED)
+		If _Sleep(60000) Then Return ; 1 Minutes
+		Click(416, 399);Check for "Maintenance break" message
+		$Checkrearm = True
+		Return True
+	EndIf
+	
 	$Message = _PixelSearch(457, 300, 458, 330, Hex(0x33B5E5, 6), 10)
 	If IsArray($Message) Then
 		Click(416, 399);Check for out of sync or inactivity

@@ -12,7 +12,11 @@ Func readConfig() ;Reads config and sets it to the variables
 	$icmbBotCond = IniRead($config, "general", "Cond", "0")
 	$ichkNoAttack = IniRead($config, "general", "NoAttack", "0")
 	$ichkDonateOnly = IniRead($config, "general", "DonateOnly", "0")
-
+	If IniRead($config, "general", "MixedExpMode", "0") = 1 Then
+		GUICtrlSetState($mixmodenormexp, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($mixmodenormexp, $GUI_UNCHECKED)
+	EndIf
 	;---------------------------------------------------------------------------------------
 	; Attack settings ----------------------------------------------------------------------
 	;---------------------------------------------------------------------------------------
@@ -44,11 +48,18 @@ Func readConfig() ;Reads config and sets it to the variables
 	; Upgrade settings ---------------------------------------------------------------------
 	;---------------------------------------------------------------------------------------
 	$ichkWalls = IniRead($config, "upgrade", "auto-wall", "0")
-	$icmbWalls = IniRead($config, "upgrade", "walllvl", "0")
-	$iUseStorage = IniRead($config, "upgrade", "use-storage", "0")
+	$icmbWalls = IniRead($config, "upgrade", "walllvlG", "0")
+	$icmbWallsE = IniRead($config, "upgrade", "walllvlE", "0")
+	$iWallUseGold = IniRead($config,"upgrade","wallusegold","0")
+	$iWallUseElixer = IniRead($config,"upgrade","walluseelix","0")
 	$itxtWallMinGold = IniRead($config, "upgrade", "minwallgold", "0")
 	$itxtWallMinElixir = IniRead($config, "upgrade", "minwallelixir", "0")
 	$icmbTolerance = IniRead($config, "upgrade", "walltolerance", "0")
+
+	;UpgradeHeroes
+	$ichkUpgradeKing = IniRead($config, "Upgrade", "UpKing", "0")	;==>upgradeking
+	$ichkUpgradeQueen = IniRead($config, "Upgrade", "UpQueen", "0")	;==>upgradequeen
+	$itxtKeepFreeBuilder = IniRead($config, "Upgrade", "KeepFreeBuilder", "1") ;==>FreeBuilderBox
 
 	;Laboratory
 	$ichkLab = IniRead($config, "upgrade", "auto-uptroops", "0")
@@ -131,6 +142,11 @@ Func readConfig() ;Reads config and sets it to the variables
 		GUICtrlSetState($chkSpeedBoost, $GUI_CHECKED)
 	Else
 		GUICtrlSetState($chkSpeedBoost, $GUI_UNCHECKED)
+	EndIf
+	If IniRead($config, "config", "usehelper", "1") = 1 Then
+		GUICtrlSetState($chkHelper, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkHelper, $GUI_UNCHECKED)
 	EndIf
 
 	;---------------------------------------------------------------------------------------

@@ -12,54 +12,22 @@ Func UpgradeWall()
 	Local $MinWallElixir = Number($ElixirCount) > Number($itxtWallMinElixir)
 
 	If IsChecked($UseGold) Then
-		$iUseStorage = 1
-	ElseIf IsChecked($UseElixir) Then
-		$iUseStorage = 2
-	ElseIf IsChecked($UseGoldElix) Then
-		$iUseStorage = 3
+		If $MinWallGold Then
+			SetLog(GetLangText("msgWallUpGold"), $COLOR_BLUE)
+			UpgradeWallGold()			
+		Else
+			SetLog(GetLangText("msgGoldBelowMin"), $COLOR_RED)
+		EndIf
+	EndIf
+	If IsChecked($UseElixir) Then
+		If $MinWallElixir Then
+			Setlog(GetLangText("msgWallUpElix"), $COLOR_BLUE)
+			UpgradeWallelix()			
+		Else
+			Setlog(GetLangText("msgElixBelowMin"), $COLOR_BLUE)
+		EndIf
 	EndIf
 
-	Switch $iUseStorage
-		Case 1
-			If $MinWallGold Then
-				SetLog(GetLangText("msgWallUpGold"), $COLOR_BLUE)
-				UpgradeWallGold()
-				Return True
-			Else
-				SetLog(GetLangText("msgGoldBelowMin"), $COLOR_RED)
-			EndIf
-		Case 2
-			If $MinWallElixir Then
-				Setlog(GetLangText("msgWallUpElix"), $COLOR_BLUE)
-				UpgradeWallelix()
-				Return True
-			Else
-				Setlog(GetLangText("msgElixBelowMin"), $COLOR_BLUE)
-			EndIf
-		Case 3
-			If $MinWallGold Then
-				SetLog(GetLangText("msgWallUpGold"), $COLOR_BLUE)
-				UpgradeWallGold()
-				If $wallbuild = 0 And $walllowlevel = 0 Then
-					SetLog(GetLangText("msgWallNoGoldElixir"), $COLOR_BLUE)
-					;UpgradeWallElix()
-				EndIf
-			Else
-				SetLog(GetLangText("msgWallLowGoldElixir"), $COLOR_RED)
-			EndIf
-
-			;Do upgrade using Elixir
-			If $walllowlevel = 0 Then
-				If $MinWallElixir Then
-					UpgradeWallelix()
-				Else
-					Setlog(GetLangText("msgElixBelowMin"), $COLOR_BLUE)
-				EndIf
-			Else
-				SetLog(GetLangText("msgWallLowerLvl"), $COLOR_BLUE)
-			EndIf
-
-	EndSwitch
 EndFunc   ;==>UpgradeWall
 
 
@@ -70,7 +38,7 @@ Func UpgradeWallelix()
 		Return
 	EndIf
 
-	checkWall()
+	checkWallE()
 	If $checkwalllogic Then
 		Click(1, 1) ; Click Away
 		_Sleep(600)

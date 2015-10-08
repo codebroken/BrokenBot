@@ -1,6 +1,6 @@
 ;Donates troops
 
-Func DonateCC()
+Func DonateCC($Check = False)
 	Global $Troop, $TroopAmount, $ColDist = 1, $RowDist = 0 ; default to archer
 	Global $AmountBarbarians = Number(GUICtrlRead($NoOfBarbarians))
 	Global $AmountArchers = Number(GUICtrlRead($NoOfArchers))
@@ -9,8 +9,14 @@ Func DonateCC()
 	Global $Donate = IsChecked($chkDonateAllBarbarians) Or IsChecked($chkDonateBarbarians) Or IsChecked($chkDonateAllArchers) Or IsChecked($chkDonateArchers) Or IsChecked($chkDonateAllGiants) Or IsChecked($chkDonateGiants)
 	If $Donate = False Then Return
 	Local $y = 119
-	SetLog(GetLangText("msgDonatingTroops"), $COLOR_BLUE)
+	If $Check = True Then
+		_CaptureRegion()
+		If Not _ColorCheck(_GetPixelColor(26, 319), Hex(0xE80000, 6), 30) Then
+			Return ;exit if no new chats
+		EndIf
+	EndIf
 
+	SetLog(GetLangText("msgDonatingTroops"), $COLOR_BLUE)
 	_CaptureRegion()
 
 	Click(1, 1) ;Click Away
@@ -171,9 +177,11 @@ Func DonateCC()
 	If GUICtrlRead($gtfo) = 1 Then
 		Local $Scroll, $kick_y, $kicked = 0
 		While 1
+			Click(1, 1, 1, 2000)
+			If _Sleep(500) Then Return
 			Click($CCPos[0], $CCPos[1]) ; click clan castle
 			If _Sleep(500) Then Return
-			Click(530, 600) ; open clan page
+			Click(459, 600) ; open clan page
 			If _Sleep(5000) Then Return ; wait for it to load
 			$Scroll = 0
 			While 1

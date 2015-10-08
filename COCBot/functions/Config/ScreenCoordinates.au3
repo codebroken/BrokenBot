@@ -42,6 +42,10 @@ Global $TrainMinion[4] = [261, 365, 0x43D9E2, 28] ;
 Global $TrainHog[4] = [369, 366, 0x39CBDA, 10] ;
 Global $TrainValkyrie[4] = [475, 365, 0x3CD8E0, 10] ;
 
+Global $TrainMinionDll[2] = [-1, -1] ;
+Global $TrainHogDll[2] = [-1, -1] ;
+Global $TrainValkyrieDll[2] = [-1, -1] ;
+
 Global $NextBtn[2] = [750, 500]
 ; Someone asking troupes : Color 0xD0E978 in x = 121
 
@@ -61,20 +65,15 @@ Func ReadTroopQuantity($troop)
 		$ReturnQty = ReadText(43 + (72 * $troop), 583, 54, $textDeployNumber)
 	EndIf
 	$ReturnQty = StringStripWS($ReturnQty, 8)
-	If StringLeft($ReturnQty, 1) = "x" Then $ReturnQty = StringRight($ReturnQty, StringLen($ReturnQty) - 1)
+	If StringLeft($ReturnQty, 1) = "x" Then
+		$ReturnQty = StringRight($ReturnQty, StringLen($ReturnQty) - 1)
+	ElseIf StringLeft($ReturnQty, 2) = "11" Then
+		$ReturnQty = StringRight($ReturnQty, StringLen($ReturnQty) - 1)
+	EndIf
 	Return $ReturnQty
 EndFunc   ;==>ReadTroopQuantity
 
 Func IdentifyTroopKind($position)
-
-;~ 	If $position = 0 Then
-;~ 		Click(68 + 72, 595)
-;~ 	Else
-;~ 		Click(68, 595)
-;~ 	EndIf
-;~ 	If $position < 2 Then
-;~ 		If _Sleep(500) Then Return
-;~ 	EndIf
 
 	_CaptureRegion(32 + (72 * $position), 595, 104 + (72 * $position), 665)
 	$sendHBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hBitmap)

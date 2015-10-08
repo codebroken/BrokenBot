@@ -93,9 +93,12 @@ Func VillageReport()
 					_Push(GetLangText("pushLR"), $PushReportText)
 					SetLog(GetLangText("msgPushLastRaid"), $COLOR_GREEN)
 				EndIf
-				$Raid = 0
 			EndIf
 			StatSubmission(True)
+			$Raid = 0
+			$closetofull = False
+			$anythingadded = True
+			$anythingdarkadded = True
 		EndIf
 	EndIf
 

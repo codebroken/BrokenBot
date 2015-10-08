@@ -26,8 +26,7 @@ Func CheckCostPerSearch()
 				Return
 			Else
 				$MenuBar = StringStripWS(ReadText(175, 138, 500, $textWindowTitles),3)
-				$MenuBar = StringLeft($MenuBar, StringLen($MenuBar)-1)
-				$THLevel = Number(StringRegExpReplace(StringRight($MenuBar, 5),"[^0-9]",""))
+				$THLevel = Number(StringRegExpReplace(StringRight($MenuBar, 25),"[^0-9]",""))
 				If $THLevel = "1" Then
 					$SearchCost = 10
 				ElseIf $THLevel = "2" Then

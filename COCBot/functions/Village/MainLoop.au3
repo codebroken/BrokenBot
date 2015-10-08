@@ -5,6 +5,8 @@ Func runBot() ;Bot that runs everything in order
 			checkupdate()
 		EndIf
 
+		_ReduceMemory() ;=> added to reduce memory use
+
 		; Configuration and cleanup
 		$Restart = False
 		LootLogCleanup(100)
@@ -16,6 +18,16 @@ Func runBot() ;Bot that runs everything in order
 		;Check attack mode
 		chkNoAttack()
 		If StatusCheck(True, True, 3) Then Return
+
+		If $FirstStart And IsChecked($chkHelper) Then
+			$ret = CallHelper("0 0 860 720 BrokenBotRedLineCheck 1 1 0 0 0", 10)
+			If $ret = $DLLFailed Or $ret = $DLLTimeout Then
+				MsgBox($MB_ICONWARNING + $MB_OK, GetLangText("msgMissing"), GetLangText("msgMissingDLL1") & @CRLF & @CRLF & GetLangText("msgMissingDLL2") & @CRLF & @CRLF & GetLangText("msgMissingDLL3"))
+				GUICtrlSetState($chkHelper, $GUI_UNCHECKED)
+			ElseIf $ret = $DLLLicense Then
+				MsgBox(48, "BrokenBot.org", GetLangText("msgLicense") & @CRLF & @CRLF & "Please visit BrokenBot.org")
+			EndIf
+		EndIf
 
 		; Collect stats
 		VillageReport()
@@ -52,6 +64,9 @@ Func runBot() ;Bot that runs everything in order
 		If StatusCheck() Then Return
 
 		UpgradeWall()
+		If StatusCheck() Then Return
+
+		UpgradeHeroes()	;==> upgradeheroes
 		If StatusCheck() Then Return
 
 		If $PushBulletEnabled = 1 And $PushBulletchatlog = 1 Then
@@ -133,17 +148,38 @@ Func Idle($Plugin) ;Sequence that runs until Full Army
 		EndIf
 		$iCollectCounter += 1
 		DonateCC()
-		If StatusCheck() Then Return
 		_BumpMouse()
 		$TimeIdle = Round(TimerDiff($hTimer) / 1000, 2) ;In Seconds
 		If $CurCamp <> $prevCamp Then
 			$prevCamp = $CurCamp
 			$hTroopTimer = TimerInit()
 		EndIf
-		If $CurCamp = 0 Or $CurCamp = "" Then $hTroopTimer = TimerInit() ; Not a good fix, but will stop errors for people whose troop size can't be read for now
+		If $CurCamp = 0 Or $CurCamp = "" Then
+			$hTroopTimer = TimerInit() ; Not a good fix, but will stop errors for people whose troop size can't be read for now
+		EndIf
 		$TimeSinceTroop = TimerDiff($hTroopTimer) / 1000
 		SetLog(GetLangText("msgTimeIdle") & Floor(Floor($TimeIdle / 60) / 60) & GetLangText("msgTimeIdleHours") & Floor(Mod(Floor($TimeIdle / 60), 60)) & GetLangText("msgTimeIdleMin") & Floor(Mod($TimeIdle, 60)) & GetLangText("msgTimeIdleSec"), $COLOR_ORANGE)
-		If _Sleep(30000) Then ExitLoop
+		$hIdle = TimerInit()
+		If IsChecked($mixmodenormexp) Then
+			Experience()
+		EndIf
+		If $closetofull Then
+			$loopdelay = 1000
+		Else
+			$loopdelay = 30000
+		EndIf
+		While TimerDiff($hIdle) < $loopdelay
+			DonateCC(True)
+			If _Sleep(1000) Then Return
+		WEnd
+		If StatusCheck() Then Return
 	WEnd
 EndFunc   ;==>Idle
 
+Func _ReduceMemory()
+   Local $ai_GetCurrentProcessId = DllCall('kernel32.dll', 'int', 'GetCurrentProcessId')
+   Local $ai_Handle = DllCall("kernel32.dll", 'int', 'OpenProcess', 'int', 0x1f0fff, 'int', False, 'int', $ai_GetCurrentProcessId[0])
+   Local $ai_Return = DllCall("psapi.dll", 'int', 'EmptyWorkingSet', 'long', $ai_Handle[0])
+   DllCall('kernel32.dll', 'int', 'CloseHandle', 'int', $ai_Handle[0])
+   Return $ai_Return[0]
+EndFunc

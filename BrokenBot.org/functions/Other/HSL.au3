@@ -14,6 +14,22 @@ Func _SatSearch($iLeft, $iTop, $iWidth, $iHeight, $satMin, $satMax)
 	Return False
 EndFunc   ;==>_MultiPixelSearch
 
+Func _HueSearch($iLeft, $iTop, $iWidth, $iHeight, $hueMin, $hueMax)
+	_CaptureRegion($iLeft, $iTop, $iLeft + $iWidth, $iTop + $iHeight)
+	Local $RGB[3]
+	For $x = 0 To $iWidth - 1
+		For $y = 0 To $iHeight - 1
+			$color = _GetPixelColor($x, $y)
+			$RGB[0] = Dec(StringMid(String($Color), 1, 2))
+			$RGB[1] = Dec(StringMid(String($Color), 3, 2))
+			$RGB[2] = Dec(StringMid(String($Color), 5, 2))
+			$HSL = RGBtoHSL($RGB)
+			If $HSL[0] > $hueMin And $HSL[0] < $hueMax Then Return True
+		Next
+	Next
+	Return False
+EndFunc   ;==>_MultiPixelSearch
+
 
 Func RGBtoHSL($arColors)
 	Const $MaxHSL = 100

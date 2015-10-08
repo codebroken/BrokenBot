@@ -24,6 +24,11 @@ Func saveConfig() ;Saves the controls settings to the config
 	Else
 		IniWrite($config, "general", "BotStop", 0)
 	EndIf
+	If IsChecked($mixmodenormexp) Then
+		IniWrite($config, "general", "MixedExpMode", 1)
+	Else
+		IniWrite($config, "general", "MixedExpMode", 0)
+	EndIf
 	;---------------------------------------------------------------------------------------
 	; Attack settings ----------------------------------------------------------------------
 	;---------------------------------------------------------------------------------------
@@ -102,14 +107,18 @@ Func saveConfig() ;Saves the controls settings to the config
 	Else
 		IniWrite($config, "upgrade", "auto-wall", 0)
 	EndIf
-	IniWrite($config, "upgrade", "walllvl", _GUICtrlComboBox_GetCurSel($cmbWalls))
+	IniWrite($config, "upgrade", "walllvlG", _GUICtrlComboBox_GetCurSel($cmbWalls))
+	IniWrite($config, "upgrade", "walllvlE", _GUICtrlComboBox_GetCurSel($cmbWallsE))
 	IniWrite($config, "upgrade", "walltolerance", _GUICtrlComboBox_GetCurSel($cmbTolerance))
 	If IsChecked($UseGold) Then
-		IniWrite($config, "upgrade", "use-storage", 0)
-	ElseIf IsChecked($UseElixir) Then
-		IniWrite($config, "upgrade", "use-storage", 1)
-	ElseIf IsChecked($UseGoldElix) Then
-		IniWrite($config, "upgrade", "use-storage", 2)
+		IniWrite($config, "upgrade", "wallusegold", 1)
+	Else
+		IniWrite($config, "upgrade", "wallusegold", 0)
+	EndIf
+	If IsChecked($UseElixir) Then
+		IniWrite($config, "upgrade", "walluseelix", 1)
+	Else
+		IniWrite($config, "upgrade", "walluseelix", 0)
 	EndIf
 	IniWrite($config, "upgrade", "minwallgold", GUICtrlRead($txtWallMinGold))
 	IniWrite($config, "upgrade", "minwallelixir", GUICtrlRead($txtWallMinElixir))
@@ -156,6 +165,20 @@ Func saveConfig() ;Saves the controls settings to the config
 ;~ 	IniWrite($config, "upgrade", "PosX5", GUICtrlRead($txtUpgradeX5))
 ;~ 	IniWrite($config, "upgrade", "PosY6", GUICtrlRead($txtUpgradeY6))
 ;~ 	IniWrite($config, "upgrade", "PosX6", GUICtrlRead($txtUpgradeX6))
+
+	;UpgradeHeroes
+	If IsChecked($chkUpgradeKing) = $GUI_CHECKED Then	;==>upgradeking
+        IniWrite($config, "Upgrade", "UpKing", 1)
+    Else
+        IniWrite($config, "Upgrade", "UpKing", 0)
+    EndIf
+
+	If IsChecked($chkUpgradeQueen) = $GUI_CHECKED Then	;==>upgradequeen
+        IniWrite($config, "Upgrade", "UpQueen", 1)
+    Else
+        IniWrite($config, "Upgrade", "UpQueen", 0)
+    EndIf
+    IniWrite($config, "Upgrade", "KeepFreeBuilder", GUICtrlRead($txtKeepFreeBuilder)) ;==>FreeBuilderBox
 
 	If IsChecked($chkLab) Then
 		IniWrite($config, "upgrade", "auto-uptroops", 1)
@@ -316,6 +339,11 @@ Func saveConfig() ;Saves the controls settings to the config
 		IniWrite($config, "config", "speedboost", 1)
 	Else
 		IniWrite($config, "config", "speedboost", 0)
+	EndIf
+	If IsChecked($chkHelper) Then
+		IniWrite($config, "config", "usehelper", 1)
+	Else
+		IniWrite($config, "config", "usehelper", 0)
 	EndIf
 
 	;---------------------------------------------------------------------------------------

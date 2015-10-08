@@ -67,16 +67,20 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 		GUICtrlSetState($chkWalls, $GUI_UNCHECKED)
 	EndIf
 	_GUICtrlComboBox_SetCurSel($cmbWalls, $icmbWalls)
+	_GUICtrlComboBox_SetCurSel($cmbWallsE, $icmbWallsE)
 	_GUICtrlComboBox_SetCurSel($cmbTolerance, $icmbTolerance)
 
-	Switch $iUseStorage
-		Case 0
-			GUICtrlSetState($UseGold, $GUI_CHECKED)
-		Case 1
-			GUICtrlSetState($UseElixir, $GUI_CHECKED)
-		Case 2
-			GUICtrlSetState($UseGoldElix, $GUI_CHECKED)
-	EndSwitch
+	If $iWallUseGold = 1 Then
+		GUICtrlSetState($UseGold, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($UseGold, $GUI_UNCHECKED)
+	EndIf
+	
+	If $iWallUseElixer = 1 Then
+		GUICtrlSetState($UseElixir, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($UseElixir, $GUI_UNCHECKED)
+	EndIf
 
 	GUICtrlSetData($txtWallMinGold, $itxtWallMinGold)
 	GUICtrlSetData($txtWallMinElixir, $itxtWallMinElixir)
@@ -89,7 +93,23 @@ Func applyConfig() ;Applies the data from config to the controls in GUI
 	EndIf
 	_GUICtrlComboBox_SetCurSel($cmbLaboratory, $icmbLaboratory)
 
-	;General Settings--------------------------------------------------------------------------
+	;UpgradeHeroes
+	If $ichkUpgradeKing = 1 Then	;==>upgradeking
+		GUICtrlSetState($chkUpgradeKing, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkUpgradeKing, $GUI_UNCHECKED)
+	EndIf
+
+	If $ichkUpgradeQueen = 1 Then	;==>upgradequeen
+		GUICtrlSetState($chkUpgradeQueen, $GUI_CHECKED)
+	Else
+		GUICtrlSetState($chkUpgradeQueen, $GUI_UNCHECKED)
+	EndIf
+
+	GUICtrlSetData($txtKeepFreeBuilder, $itxtKeepFreeBuilder) ;==>FreeBuilderBox
+
+
+;General Settings--------------------------------------------------------------------------
 	If $frmBotPosX <> -32000 Then
 		WinMove($sBotTitle, "", $frmBotPosX, $frmBotPosY)
 		_WinMoved(0, 0, 0, 0)

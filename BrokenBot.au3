@@ -3,12 +3,12 @@
 #pragma compile(Icon, "BrokenBot.org\images\icons\brokenbot.ico")
 #pragma compile(FileDescription, BrokenBot.org - Clash of Clans Bot)
 #pragma compile(ProductName, BrokenBot.org - Clash of Clans Bot)
-#pragma compile(ProductVersion, 3.1.0)
-#pragma compile(FileVersion, 3.1.0)
+#pragma compile(ProductVersion, 3.3.0)
+#pragma compile(FileVersion, 3.3.0)
 
 #include <GUIConstants.au3>
 
-$sBotVersion = "3.1.0"
+$sBotVersion = "3.3.0"
 $sBotTitle = "BrokenBot.org - Break FREE - v" & $sBotVersion
 
 If FileExists(@ScriptDir & "\.developer") Then
@@ -76,8 +76,9 @@ EndIf
 $hHBitmap = _ScreenCapture_Capture("", 0, 0, 860, 720)
 $ret = DllCall(@ScriptDir & "\BrokenBot.org\BrokenBot32.dll", "str", "BrokenBotRedLineCheck", "ptr", $hHBitmap, "int", 1, "int", 1, "int", 0, "int", 0, "int", 0)
 _WinAPI_DeleteObject($hHBitmap)
+
 If Not IsArray($ret) Then
-	If MsgBox($MB_ICONWARNING + $MB_OKCANCEL, GetLangText("msgMissing"), GetLangText("msgMissing1") & @CRLF & @CRLF & GetLangText("msgMissing2") & @CRLF & @CRLF & GetLangText("msgMissing3") & " " & GetLangText("msgMissing4") & " " & GetLangText("msgMissing5") & @CRLF & @CRLF & GetLangText("msgMissing6")) = $IDOK Then
+	If MsgBox($MB_ICONWARNING + $MB_OK, GetLangText("msgMissing"), GetLangText("msgMissing1") & @CRLF & @CRLF & GetLangText("msgMissing2") & @CRLF & @CRLF & GetLangText("msgMissing3") & " " & GetLangText("msgMissing4")) = $IDOK Then
 		ShellExecute("https://www.microsoft.com/en-us/download/details.aspx?id=40784")
 		DllClose($KernelDLL)
 		_GDIPlus_Shutdown()
