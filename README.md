@@ -1,12 +1,11 @@
 # BrokenBot.org - Clash of Clans Bot
-Latest version: 3.2.0
+Best Free Clash of Clans Bot - Brokenbot https://brokenbot.org
 
 ## Community
-Forums available for discussion at: http://www.brokenbot.org/page.php?p=main
+CoC Bot Forums - https://brokenbot.org/forum
 
-### Reference
-For your convenience, and referring to pushbullet's document:
-https://docs.pushbullet.com/
+### Repo status
+This repository is no longer maintained.  Please visit the links above for current versions.
 
 ### Credit
 Much thanks to: the original creators of this bot at gamebot.org, clashbot.org, cool7su, maxcom, msh2050, usabug, cmestres, samkhowaja and anyone else who I missed but has contributed to this great project!
