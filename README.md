@@ -1,8 +1,8 @@
 # BrokenBot.org - Clash of Clans Bot
-Best Free Clash of Clans Bot - Brokenbot https://brokenbot.org
+Best Free Clash of Clans Bot as well as Robot players - Brokenbot https://brokenbot.org
 
 ## Community
-CoC Bot Forums - https://brokenbot.org/forum
+CoC Bot Forums is the ultimate place for the comunity guidelines - https://brokenbot.org/forum
 
 ### Repo status
 This repository is no longer maintained.  Please visit the links above for current versions.
